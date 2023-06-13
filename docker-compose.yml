@@ -21,6 +21,7 @@ services:
         DB_PASSWORD: password
         KEYCLOAK_ADMIN: admin
         KEYCLOAK_ADMIN_PASSWORD: admin
+        KC_HTTP_RELATIVE_PATH: /auth
         DB_URL_PORT: 3306
       ports:
         - "8180:8080"
