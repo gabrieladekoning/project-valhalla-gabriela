@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: mysql-keycloak
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak-db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+
+  keycloak:
+      image: quay.io/keycloak/keycloak:latest
+      command: start-dev
+      environment:
+        DB_VENDOR: MYSQL
+        DB_ADDR: db
+        DB_DATABASE: keycloak
+        DB_USERNAME: admin
+        DB_PASSWORD: password
+        KEYCLOAK_ADMIN: admin
+        KEYCLOAK_ADMIN_PASSWORD: admin
+        DB_URL_PORT: 3306
+      ports:
+        - "8180:8080"
+      depends_on:
+            - db
+
+
+
+
+
+
+
+
+
+
+
+
