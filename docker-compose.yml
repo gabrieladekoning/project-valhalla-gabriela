@@ -8,29 +8,31 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: keycloak-db
       MYSQL_USER: admin
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: admin
 
   keycloak:
       image: quay.io/keycloak/keycloak:latest
-      command: start-dev
+      command: start --auto-build
       environment:
         DB_VENDOR: MYSQL
         DB_ADDR: db
         DB_DATABASE: keycloak
         DB_USERNAME: admin
-        DB_PASSWORD: password
+        DB_PASSWORD: admin
+        DB_PORT: 3306
+
         KEYCLOAK_ADMIN: admin
-        KEYCLOAK_ADMIN_PASSWORD: admin
+        KEYCLOAK_ADMIN_PASSWORD: verystrongpassword
+
+        KC_HTTP_ENABLED: true
         KC_HTTP_RELATIVE_PATH: /auth
-        DB_URL_PORT: 3306
+        KC_HOSTNAME: localhost
+
+
       ports:
         - "8180:8080"
       depends_on:
             - db
-
-
-
-
 
 
 
