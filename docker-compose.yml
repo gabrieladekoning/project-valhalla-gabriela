@@ -3,7 +3,7 @@ version: '3.9'
 services:
   db:
     container_name: mysql-keycloak
-    image: mysql:latest
+    image: mysql:8.0.33
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: keycloak
@@ -16,7 +16,7 @@ services:
 
   keycloak:
     container_name: keycloak
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:21.1.0
     command: start
     environment:
       KC_DB: mysql
