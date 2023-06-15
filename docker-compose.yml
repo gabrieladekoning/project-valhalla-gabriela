@@ -4,7 +4,7 @@ services:
   db:
     container_name: mysql-keycloak
     image: mysql:8.0.33
-    env_file: test
+    env_file: .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: keycloak
@@ -18,7 +18,7 @@ services:
   keycloak:
     container_name: keycloak
     image: quay.io/keycloak/keycloak:21.1.0
-    env_file: test
+    env_file: .env
     command: start
     environment:
       KC_DB: mysql
