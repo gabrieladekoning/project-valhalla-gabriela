@@ -7,9 +7,6 @@
 /dataSources/
 /dataSources.local.xml
 
-### Custom ###
-.env
-
 ### STS ###
 .apt_generated
 .classpath
@@ -37,3 +34,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Custom ###
+.env
