@@ -14,7 +14,8 @@ spring:
           uri: lb://access-control-service
           predicates:
             - Path=/access-control-service/**
-            - Path=/**
+          filters:
+            - StripPrefix=1
 
 eureka:
   client:
