@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  db:
+    image: mysql:8.0.33
+    container_name: mysql_access_control
+    environment:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE: access-control
+    ports:
+      - "3306:3306"
+    volumes:
+      - devoteam_data:/var/lib/mysql
+
+volumes:
+  devoteam_data:

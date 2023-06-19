@@ -1,0 +1,22 @@
+server:
+  port: 8090
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: access-control-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/access-control?useSSL=false
+    username:
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  security:
+    user:
+      name:
+      password:
