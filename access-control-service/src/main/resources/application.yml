@@ -10,13 +10,9 @@ spring:
   application:
     name: access-control-service
   datasource:
-    url: jdbc:mysql://localhost:3306/access-control?useSSL=false
-    username:
-    password:
+    url: ${DATABASE_URL:jdbc:mysql://localhost:3307/access-control?useSSL=false&createDatabaseIfNotExist=true}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
-  security:
-    user:
-      name:
-      password:
