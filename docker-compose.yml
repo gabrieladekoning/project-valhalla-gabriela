@@ -6,10 +6,10 @@ services:
     image: mysql:8.0.33
     env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:root}
       MYSQL_DATABASE: keycloak
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER:admin}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:admin}
     ports:
       - "3306:3306"
     volumes:
@@ -23,16 +23,16 @@ services:
     environment:
       KC_DB: mysql
       KC_DB_URL: jdbc:mysql://mysql-keycloak:3306/keycloak?usessl=false
-      KC_DB_USERNAME: ${KC_DB_USERNAME}
-      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KC_DB_USERNAME: ${KC_DB_USERNAME:admin}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD:admin}
 
       KC_HOSTNAME_STRICT: false
 
       KC_HTTP_ENABLED: true
       KC_HTTP_RELATIVE_PATH: /auth
 
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:admin}
     ports:
       - "8180:8080"
     depends_on:
