@@ -22,7 +22,7 @@ services:
     command: start
     environment:
       KC_DB: mysql
-      KC_DB_URL: jdbc:mysql://mysql-keycloak:3306/keycloak?usessl=false
+      KC_DB_URL: ${KC_DB_URL:jdbc:mysql://mysql-keycloak:3306/keycloak?usessl=false&createDatabaseIfNotExist=true}
       KC_DB_USERNAME: ${KC_DB_USERNAME:admin}
       KC_DB_PASSWORD: ${KC_DB_PASSWORD:admin}
 
