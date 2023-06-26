@@ -12,6 +12,7 @@
 	<name>access-control-service</name>
 	<properties>
 		<springdoc.version>2.1.0</springdoc.version>
+		<keycloak.version>21.1.0</keycloak.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -39,6 +40,11 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>${springdoc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-admin-client</artifactId>
+			<version>${keycloak.version}</version>
 		</dependency>
 
 		<dependency>
