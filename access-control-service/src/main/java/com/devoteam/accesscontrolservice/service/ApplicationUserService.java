@@ -19,7 +19,6 @@ public class ApplicationUserService {
         UUID id = UUID.randomUUID();
         user.setId(id);
         ApplicationUser savedUser = applicationUserRepository.save(user);
-        ApplicationUserDto savedUserDto = applicationUserMapper.mapToApplicationUserDto(savedUser);
-        return savedUserDto;
+        return applicationUserMapper.mapToApplicationUserDto(savedUser);
     }
 }
