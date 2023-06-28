@@ -1,12 +1,9 @@
 package com.devoteam.accesscontrolservice.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.UUID;
-
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
 
 @Builder
 @Getter
@@ -20,14 +17,10 @@ public class ApplicationUser {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
-    @NotBlank(message = "First name is required")
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
-    @NotBlank(message = "Last name is required")
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email format is invalid")
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 }
