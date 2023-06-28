@@ -5,8 +5,8 @@ import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface ApplicationUserMapper {
-    ApplicationUser mapToApplicationUser(ApplicationUserDto dto);
+public interface UserMapper {
+    ApplicationUser mapToUser(ApplicationUserDto dto);
 
-    ApplicationUserDto mapToApplicationUserDto(ApplicationUser user);
+    ApplicationUserDto mapToUserDto(ApplicationUser user);
 }
