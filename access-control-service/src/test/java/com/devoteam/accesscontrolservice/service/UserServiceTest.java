@@ -37,9 +37,8 @@ class UserServiceTest {
     @BeforeEach
     public void setup() {
         UUID uuid = UUID.randomUUID();
-        testUserDto = new ApplicationUserDto("Tofu", "Taro", "tofu_taro@test.com");
+        testUserDto = new ApplicationUserDto("Tofu", "Taro", "tofu_taro@test.com", "verystrongpassword");
         testUser = new ApplicationUser(uuid, testUserDto.getFirstName(), testUserDto.getLastName(), testUserDto.getEmail());
-
     }
 
     @DisplayName("Test saving a new user successfully")
