@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface UserMapper {
-    ApplicationUser mapToUser(ApplicationUserDto dto);
+    ApplicationUser mapToApplicationUser(ApplicationUserDto dto);
 
-    ApplicationUserDto mapToUserDto(ApplicationUser user);
+    ApplicationUserDto mapToApplicationUserDto(ApplicationUser user);
 }
