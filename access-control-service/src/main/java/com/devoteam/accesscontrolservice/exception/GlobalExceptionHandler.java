@@ -15,24 +15,24 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleMethodArgumentNotValid(MethodArgumentNotValidException exception) {
-        log.error("Exception caught in handleMethodArgumentNotValid: {}", exception.getMessage(), exception);
+        log.info("Exception caught in handleMethodArgumentNotValid: {}", exception.getMessage(), exception);
         var error = exception.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .sorted()
                 .collect(Collectors.joining(", "));
-        log.error("Error is: {}", error);
+        log.info("Error is: {}", error);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<String> handleEmailAlreadyExists(EmailAlreadyExistsException exception) {
-        log.error("Exception caught in handleEmailAlreadyExists: {}", exception.getMessage(), exception);
+        log.info("Exception caught in handleEmailAlreadyExists: {}", exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception exception) {
-        log.error("General exception occurred: {}", exception.getMessage(), exception);
+        log.info("General exception occurred: {}", exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
     }
 }
