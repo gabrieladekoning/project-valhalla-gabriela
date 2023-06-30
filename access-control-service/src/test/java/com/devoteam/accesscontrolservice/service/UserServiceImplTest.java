@@ -24,33 +24,44 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock
     private UserMapper userMapper;
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     private ApplicationUserDto testUserDto;
     private ApplicationUser testUser;
 
     @BeforeEach
     public void setup() {
         UUID uuid = UUID.randomUUID();
-        testUserDto = new ApplicationUserDto("Tofu", "Taro", "tofu_taro@test.com", "verystrongpassword");
-        testUser = new ApplicationUser(uuid, testUserDto.getFirstName(), testUserDto.getLastName(), testUserDto.getEmail());
+        testUserDto = ApplicationUserDto.builder()
+                .firstName("Tofu")
+                .lastName("Taro")
+                .email("tofu_taro@test.com")
+                .password("verystrongpassword")
+                .build();
+
+        testUser = ApplicationUser.builder()
+                .id(uuid)
+                .firstName(testUserDto.getFirstName())
+                .lastName(testUserDto.getLastName())
+                .email(testUserDto.getEmail())
+                .build();
     }
 
     @DisplayName("Test saving a new user successfully")
     @Test
     void saveApplicationUser_SuccessfullySaved_WhenUserDoesNotAlreadyExist() {
         given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.empty());
-        given(userMapper.mapToUser(testUserDto)).willReturn(testUser);
+        given(userMapper.mapToApplicationUser(testUserDto)).willReturn(testUser);
         given(userRepository.save(testUser)).willReturn(testUser);
-        given(userMapper.mapToUserDto(testUser)).willReturn(testUserDto);
+        given(userMapper.mapToApplicationUserDto(testUser)).willReturn(testUserDto);
 
-        ApplicationUserDto savedUserDto = userService.saveApplicationUser(testUserDto);
-
+        ApplicationUserDto savedUserDto = userServiceImpl.saveApplicationUser(testUserDto);
+        // todo: see PR comment
         assertEquals(testUserDto, savedUserDto);
         then(userRepository).should(times(1)).findByEmail(testUserDto.getEmail());
         then(userRepository).should(times(1)).save(testUser);
@@ -59,9 +70,9 @@ class UserServiceTest {
     @DisplayName("Test saving a user with existing email")
     @Test
     void saveApplicationUser_ThrowsEmailAlreadyExistsException_WhenEmailAlreadyExists() {
-        given(userRepository.findByEmail(testUserDto.getEmail())).willThrow(EmailAlreadyExistsException.class);
+        given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.of(testUser));
 
-        assertThrows(EmailAlreadyExistsException.class, () -> userService.saveApplicationUser(testUserDto));
+        assertThrows(EmailAlreadyExistsException.class, () -> userServiceImpl.saveApplicationUser(testUserDto));
         then(userRepository).should(times(1)).findByEmail(testUserDto.getEmail());
         then(userRepository).should(times(0)).save(any(ApplicationUser.class));
     }
