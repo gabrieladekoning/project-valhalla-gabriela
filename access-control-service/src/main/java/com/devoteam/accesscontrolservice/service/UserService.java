@@ -1,7 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserRequestDto;
-import com.devoteam.accesscontrolservice.dto.ApplicationUserResponseDto;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserRequest;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
 import com.devoteam.accesscontrolservice.mapper.UserMapper;
@@ -19,7 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
-    public ApplicationUserResponseDto saveApplicationUser(ApplicationUserRequestDto userDto) {
+    public ApplicationUserCreationResponse saveApplicationUser(ApplicationUserRequest userDto) {
         assertEmailDoesNotExist(userDto);
         var user = userMapper.mapToApplicationUser(userDto);
         var id = UUID.randomUUID();
@@ -29,7 +29,7 @@ public class UserService {
         return userMapper.mapToApplicationUserDto(savedUser);
     }
 
-    private void assertEmailDoesNotExist(ApplicationUserRequestDto userDto) {
+    private void assertEmailDoesNotExist(ApplicationUserRequest userDto) {
         userRepository.findByEmail(userDto.getEmail()).ifPresent(user -> {
             throw new EmailAlreadyExistsException("Email is already registered: '%s'".formatted(user.getEmail()));
         });

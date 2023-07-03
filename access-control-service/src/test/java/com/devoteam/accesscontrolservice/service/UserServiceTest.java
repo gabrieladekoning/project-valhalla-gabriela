@@ -1,7 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserRequestDto;
-import com.devoteam.accesscontrolservice.dto.ApplicationUserResponseDto;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserRequest;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
 import com.devoteam.accesscontrolservice.mapper.UserMapperImpl;
@@ -33,13 +33,13 @@ class UserServiceTest {
     private UserRepository userRepository;
     @InjectMocks
     private UserService userService;
-    private ApplicationUserRequestDto testUserDto;
+    private ApplicationUserRequest testUserDto;
     private ApplicationUser testUser;
 
     @BeforeEach
     public void setup() {
         UUID uuid = UUID.randomUUID();
-        testUserDto = ApplicationUserRequestDto.builder()
+        testUserDto = ApplicationUserRequest.builder()
                 .firstName("Tofu")
                 .lastName("Taro")
                 .email("tofu_taro@test.com")
@@ -60,7 +60,7 @@ class UserServiceTest {
         given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.empty());
         given(userRepository.save(ArgumentMatchers.any())).willReturn(testUser);
 
-        ApplicationUserResponseDto savedUserDto = userService.saveApplicationUser(testUserDto);
+        ApplicationUserCreationResponse savedUserDto = userService.saveApplicationUser(testUserDto);
         savedUserDto.setId(testUser.getId());
 
         Assertions.assertThat(savedUserDto).hasNoNullFieldsOrProperties();

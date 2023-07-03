@@ -1,7 +1,7 @@
 package com.devoteam.accesscontrolservice.controller;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserRequestDto;
-import com.devoteam.accesscontrolservice.dto.ApplicationUserResponseDto;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserRequest;
 import com.devoteam.accesscontrolservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApplicationUserResponseDto> save(@Valid @RequestBody ApplicationUserRequestDto applicationUser) {
+    public ResponseEntity<ApplicationUserCreationResponse> save(@Valid @RequestBody ApplicationUserRequest applicationUser) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveApplicationUser(applicationUser));
     }
 }

@@ -11,6 +11,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ApplicationUserResponseDto {
+public class ApplicationUserCreationResponse {
 private UUID id;
 }

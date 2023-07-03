@@ -1,7 +1,7 @@
 package com.devoteam.accesscontrolservice.mapper;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserRequestDto;
-import com.devoteam.accesscontrolservice.dto.ApplicationUserResponseDto;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserRequest;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    ApplicationUser mapToApplicationUser(ApplicationUserRequestDto dto);
+    ApplicationUser mapToApplicationUser(ApplicationUserRequest dto);
 
-    ApplicationUserResponseDto mapToApplicationUserDto(ApplicationUser user);
+    ApplicationUserCreationResponse mapToApplicationUserDto(ApplicationUser user);
 }
