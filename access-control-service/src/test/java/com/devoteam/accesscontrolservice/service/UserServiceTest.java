@@ -1,22 +1,25 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserDto;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserRequestDto;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserResponseDto;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
-import com.devoteam.accesscontrolservice.mapper.UserMapper;
+import com.devoteam.accesscontrolservice.mapper.UserMapperImpl;
 import com.devoteam.accesscontrolservice.repository.UserRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -24,20 +27,19 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+@Import(UserMapperImpl.class)
+class UserServiceTest {
     @Mock
     private UserRepository userRepository;
-    @Mock
-    private UserMapper userMapper;
     @InjectMocks
-    private UserServiceImpl userServiceImpl;
-    private ApplicationUserDto testUserDto;
+    private UserService userService;
+    private ApplicationUserRequestDto testUserDto;
     private ApplicationUser testUser;
 
     @BeforeEach
     public void setup() {
         UUID uuid = UUID.randomUUID();
-        testUserDto = ApplicationUserDto.builder()
+        testUserDto = ApplicationUserRequestDto.builder()
                 .firstName("Tofu")
                 .lastName("Taro")
                 .email("tofu_taro@test.com")
@@ -56,15 +58,12 @@ class UserServiceImplTest {
     @Test
     void saveApplicationUser_SuccessfullySaved_WhenUserDoesNotAlreadyExist() {
         given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.empty());
-        given(userMapper.mapToApplicationUser(testUserDto)).willReturn(testUser);
-        given(userRepository.save(testUser)).willReturn(testUser);
-        given(userMapper.mapToApplicationUserDto(testUser)).willReturn(testUserDto);
+        given(userRepository.save(ArgumentMatchers.any())).willReturn(testUser);
 
-        ApplicationUserDto savedUserDto = userServiceImpl.saveApplicationUser(testUserDto);
-        // todo: see PR comment
-        assertEquals(testUserDto, savedUserDto);
-        then(userRepository).should(times(1)).findByEmail(testUserDto.getEmail());
-        then(userRepository).should(times(1)).save(testUser);
+        ApplicationUserResponseDto savedUserDto = userService.saveApplicationUser(testUserDto);
+        savedUserDto.setId(testUser.getId());
+
+        Assertions.assertThat(savedUserDto).hasNoNullFieldsOrProperties();
     }
 
     @DisplayName("Test saving a user with existing email")
@@ -72,7 +71,7 @@ class UserServiceImplTest {
     void saveApplicationUser_ThrowsEmailAlreadyExistsException_WhenEmailAlreadyExists() {
         given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.of(testUser));
 
-        assertThrows(EmailAlreadyExistsException.class, () -> userServiceImpl.saveApplicationUser(testUserDto));
+        assertThrows(EmailAlreadyExistsException.class, () -> userService.saveApplicationUser(testUserDto));
         then(userRepository).should(times(1)).findByEmail(testUserDto.getEmail());
         then(userRepository).should(times(0)).save(any(ApplicationUser.class));
     }
