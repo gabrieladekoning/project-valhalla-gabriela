@@ -20,7 +20,7 @@ public class UserService {
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
     public ApplicationUserResponseDto saveApplicationUser(ApplicationUserRequestDto userDto) {
-        findByEmailOrThrowException(userDto);
+        assertEmailDoesNotExist(userDto);
         ApplicationUser user = userMapper.mapToApplicationUser(userDto);
         UUID id = UUID.randomUUID();
         user.setId(id);
@@ -29,9 +29,9 @@ public class UserService {
         return userMapper.mapToApplicationUserDto(savedUser);
     }
 
-    private void findByEmailOrThrowException(ApplicationUserRequestDto userDto) {
-        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistsException("Email is already registered: " + userDto.getEmail());
-        }
+    private void assertEmailDoesNotExist(ApplicationUserRequestDto userDto) {
+        userRepository.findByEmail(userDto.getEmail()).ifPresent(user -> {
+            throw new EmailAlreadyExistsException("Email is already registered: '%s'".formatted(user.getEmail()));
+        });
     }
 }
