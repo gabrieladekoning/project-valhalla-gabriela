@@ -1,12 +1,16 @@
 package com.devoteam.accesscontrolservice.mapper;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserDto;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserRequestDto;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserResponseDto;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "Spring")
 public interface UserMapper {
-    ApplicationUser mapToApplicationUser(ApplicationUserDto dto);
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    ApplicationUserDto mapToApplicationUserDto(ApplicationUser user);
+    ApplicationUser mapToApplicationUser(ApplicationUserRequestDto dto);
+
+    ApplicationUserResponseDto mapToApplicationUserDto(ApplicationUser user);
 }

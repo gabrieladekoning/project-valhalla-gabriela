@@ -1,7 +1,8 @@
 package com.devoteam.accesscontrolservice.controller;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserDto;
-import com.devoteam.accesscontrolservice.service.UserServiceImpl;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserRequestDto;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserResponseDto;
+import com.devoteam.accesscontrolservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/v1/users")
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApplicationUserDto> save(@Valid @RequestBody ApplicationUserDto applicationUser) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userServiceImpl.saveApplicationUser(applicationUser));
+    public ResponseEntity<ApplicationUserResponseDto> save(@Valid @RequestBody ApplicationUserRequestDto applicationUser) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveApplicationUser(applicationUser));
     }
 }

@@ -11,6 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EqualsAndHashCode
 @Table(name = "application_user")
 public class ApplicationUser {
     @Id
@@ -23,3 +24,4 @@ public class ApplicationUser {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 }
+

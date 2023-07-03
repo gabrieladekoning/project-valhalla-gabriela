@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ApplicationUserDto {
+public class ApplicationUserRequestDto {
     @NotBlank(message = "First name is required")
     private String firstName;
     @NotBlank(message = "Last name is required")
