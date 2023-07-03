@@ -21,8 +21,8 @@ public class UserService {
 
     public ApplicationUserResponseDto saveApplicationUser(ApplicationUserRequestDto userDto) {
         assertEmailDoesNotExist(userDto);
-        ApplicationUser user = userMapper.mapToApplicationUser(userDto);
-        UUID id = UUID.randomUUID();
+        var user = userMapper.mapToApplicationUser(userDto);
+        var id = UUID.randomUUID();
         user.setId(id);
         ApplicationUser savedUser = userRepository.save(user);
         log.debug("Saved user with ID: {}", savedUser.getId());
