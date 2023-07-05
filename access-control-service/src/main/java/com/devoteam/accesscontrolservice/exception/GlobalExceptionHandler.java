@@ -30,6 +30,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
+    @ExceptionHandler(UserCreationException.class)
+    public ResponseEntity<String> handleUserCreationException(UserCreationException exception) {
+        log.info("Exception caught in handleEmailAlreadyExists: {}", exception.getMessage(), exception);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception exception) {
         log.info("General exception occurred: {}", exception.getMessage(), exception);
