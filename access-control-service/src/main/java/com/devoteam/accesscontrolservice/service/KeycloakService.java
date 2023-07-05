@@ -42,29 +42,30 @@ public class KeycloakService {
 
     public String createUser(ApplicationUserCreationRequest userDto) {
         log.debug("Creating user in Keycloak: {}", userDto.getEmail());
-        UserRepresentation user = new UserRepresentation();
+        var user = new UserRepresentation();
         user.setEnabled(true);
         user.setUsername(userDto.getEmail());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
 
+        // not sure if I can use var here
         RealmResource realmResource = keycloak.realm("application-users");
         UsersResource usersResource = realmResource.users();
-
+        // and here
         Response response = usersResource.create(user);
         if (response.getStatus() != HttpStatus.CREATED.value()) {
             throw new UserCreationException("Failed to create user in Keycloak, HTTP status: " + response.getStatus());
         }
 
-        String userId = String.valueOf(UUID.fromString(CreatedResponseUtil.getCreatedId(response)));
+        var userId = String.valueOf(UUID.fromString(CreatedResponseUtil.getCreatedId(response)));
 
-        CredentialRepresentation passwordCred = new CredentialRepresentation();
+        var passwordCred = new CredentialRepresentation();
         passwordCred.setTemporary(false);
         passwordCred.setType(CredentialRepresentation.PASSWORD);
         passwordCred.setValue(userDto.getPassword());
 
-        UserResource userResource = usersResource.get(userId);
+        var userResource = usersResource.get(userId);
 
         userResource.resetPassword(passwordCred);
         log.debug("User created in Keycloak with ID: {}", userId);
