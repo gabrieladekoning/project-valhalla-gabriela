@@ -1,7 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
+import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
-import com.devoteam.accesscontrolservice.dto.ApplicationUserRequest;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
 import com.devoteam.accesscontrolservice.mapper.UserMapper;
@@ -17,19 +17,22 @@ import java.util.UUID;
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
+    private final KeycloakService keycloakService;
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
-    public ApplicationUserCreationResponse saveApplicationUser(ApplicationUserRequest userDto) {
+    public ApplicationUserCreationResponse saveApplicationUser(ApplicationUserCreationRequest userDto) {
         assertEmailDoesNotExist(userDto);
         var user = userMapper.mapToApplicationUser(userDto);
-        var id = UUID.randomUUID();
-        user.setId(id);
+
+        log.info("Saving user");
+        String keycloakUserId = keycloakService.createUser(userDto);
+        user.setId(UUID.fromString(keycloakUserId));
         ApplicationUser savedUser = userRepository.save(user);
         log.debug("Saved user with ID: {}", savedUser.getId());
         return userMapper.mapToApplicationUserDto(savedUser);
     }
 
-    private void assertEmailDoesNotExist(ApplicationUserRequest userDto) {
+    private void assertEmailDoesNotExist(ApplicationUserCreationRequest userDto) {
         userRepository.findByEmail(userDto.getEmail()).ifPresent(user -> {
             throw new EmailAlreadyExistsException("Email is already registered: '%s'".formatted(user.getEmail()));
         });
