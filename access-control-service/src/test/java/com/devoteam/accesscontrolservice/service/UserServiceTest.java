@@ -1,6 +1,6 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserRequest;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
@@ -33,13 +33,13 @@ class UserServiceTest {
     private UserRepository userRepository;
     @InjectMocks
     private UserService userService;
-    private ApplicationUserRequest testUserDto;
+    private ApplicationUserCreationRequest testUserDto;
     private ApplicationUser testUser;
 
     @BeforeEach
     public void setup() {
         UUID uuid = UUID.randomUUID();
-        testUserDto = ApplicationUserRequest.builder()
+        testUserDto = ApplicationUserCreationRequest.builder()
                 .firstName("Tofu")
                 .lastName("Taro")
                 .email("tofu_taro@test.com")
