@@ -4,7 +4,7 @@ import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
-import com.devoteam.accesscontrolservice.exception.UserCreationException;
+import com.devoteam.accesscontrolservice.exception.UserCreationFailedException;
 import com.devoteam.accesscontrolservice.mapper.UserMapperImpl;
 import com.devoteam.accesscontrolservice.repository.UserRepository;
 import org.assertj.core.api.Assertions;
@@ -85,9 +85,9 @@ class UserServiceTest {
     @Test
     void saveApplicationUser_ThrowsUserCreationException_WhenKeycloakRegistrationFails() {
         given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.empty());
-        given(keycloakService.createUser(testUserDto)).willThrow(new UserCreationException("Failed to create user in Keycloak"));
+        given(keycloakService.createUser(testUserDto)).willThrow(new UserCreationFailedException("Failed to create user in Keycloak"));
 
-        assertThrows(UserCreationException.class, () -> userService.saveApplicationUser(testUserDto));
+        assertThrows(UserCreationFailedException.class, () -> userService.saveApplicationUser(testUserDto));
         then(userRepository).should(times(1)).findByEmail(testUserDto.getEmail());
         then(userRepository).should(times(0)).save(any(ApplicationUser.class));
     }

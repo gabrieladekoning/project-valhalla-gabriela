@@ -1,7 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
-import com.devoteam.accesscontrolservice.exception.UserCreationException;
+import com.devoteam.accesscontrolservice.exception.UserCreationFailedException;
 import com.devoteam.accesscontrolservice.mapper.KeycloakUserMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +58,7 @@ public class KeycloakService {
         var response = usersResource.create(user);
 
         if (response.getStatus() != HttpStatus.CREATED.value()) {
-            throw new UserCreationException("Failed to create user in Keycloak, HTTP status: " + response.getStatus());
+            throw new UserCreationFailedException("Failed to create user in Keycloak, HTTP status: " + response.getStatus());
         }
 
         var userId = String.valueOf(UUID.fromString(CreatedResponseUtil.getCreatedId(response)));
