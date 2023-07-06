@@ -18,10 +18,11 @@ import java.util.UUID;
 @Slf4j
 public class KeycloakService {
     private final Keycloak keycloak;
+    private final String realm;
 
     public KeycloakService() {
         String serverUrl = "http://localhost:8180/auth/";
-        String realm = "application-users";
+        realm = "application-users";
         String clientId = "access-control-client";
         String clientSecret = "";
 
@@ -40,7 +41,7 @@ public class KeycloakService {
         log.debug("Creating user in Keycloak: {}", userDto.getEmail());
         UserRepresentation user = createUserRepresentation(userDto);
 
-        var realmResource = keycloak.realm("application-users");
+        var realmResource = keycloak.realm(realm);
         var usersResource = realmResource.users();
         var response = usersResource.create(user);
 
