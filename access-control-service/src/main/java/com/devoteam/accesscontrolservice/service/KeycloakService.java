@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.exception.UserCreationException;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -9,6 +10,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +19,30 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class KeycloakService {
-    private final Keycloak keycloak;
-    private final String realm;
+    private Keycloak keycloak;
+    @Value("${keycloak.server-url}")
+    private String serverUrl;
+    @Value("${keycloak.realm}")
+    private String realm;
+    @Value("${keycloak.client-id}")
+    private String clientId;
+    @Value("${keycloak.client-secret}")
+    private String clientSecret;
+    @Value("${keycloak.username}")
+    private String username;
+    @Value("${keycloak.password}")
+    private String password;
 
-    public KeycloakService() {
-        String serverUrl = "http://localhost:8180/auth/";
-        realm = "application-users";
-        String clientId = "access-control-client";
-        String clientSecret = "";
-
+    @PostConstruct
+    public void init() {
         keycloak = KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
                 .realm(realm)
                 .grantType(OAuth2Constants.PASSWORD)
                 .clientId(clientId)
                 .clientSecret(clientSecret)
-                .username("")
-                .password("")
+                .username(username)
+                .password(password)
                 .build();
     }
 
