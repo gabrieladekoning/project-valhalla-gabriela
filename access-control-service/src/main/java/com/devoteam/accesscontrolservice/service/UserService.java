@@ -2,7 +2,6 @@ package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
-import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
 import com.devoteam.accesscontrolservice.mapper.UserMapper;
 import com.devoteam.accesscontrolservice.repository.UserRepository;
@@ -18,7 +17,7 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final KeycloakService keycloakService;
-    private final UserMapper userMapper = UserMapper.INSTANCE;
+    private static final UserMapper userMapper = UserMapper.INSTANCE;
 
     public ApplicationUserCreationResponse saveApplicationUser(ApplicationUserCreationRequest userDto) {
         assertEmailDoesNotExist(userDto);
