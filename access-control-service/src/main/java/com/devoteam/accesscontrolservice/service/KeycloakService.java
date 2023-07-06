@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.exception.UserCreationException;
+import com.devoteam.accesscontrolservice.mapper.KeycloakUserMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Slf4j
 public class KeycloakService {
     private Keycloak keycloak;
+    private static final KeycloakUserMapper keycloakUserMapper = KeycloakUserMapper.INSTANCE;
     @Value("${keycloak.server-url}")
     private String serverUrl;
     @Value("${keycloak.realm}")
@@ -48,7 +50,8 @@ public class KeycloakService {
 
     public String createUser(ApplicationUserCreationRequest userDto) {
         log.debug("Creating user in Keycloak: {}", userDto.getEmail());
-        UserRepresentation user = createUserRepresentation(userDto);
+        UserRepresentation user = keycloakUserMapper.mapToUserRepresentation(userDto);
+        user.setEnabled(true);
 
         var realmResource = keycloak.realm(realm);
         var usersResource = realmResource.users();
@@ -65,16 +68,6 @@ public class KeycloakService {
         userResource.resetPassword(passwordCred);
         log.debug("User created in Keycloak with ID: {}", userId);
         return userId;
-    }
-
-    private UserRepresentation createUserRepresentation(ApplicationUserCreationRequest userDto) {
-        var user = new UserRepresentation();
-        user.setEnabled(true);
-        user.setUsername(userDto.getEmail());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        return user;
     }
 
     private CredentialRepresentation createCredentialRepresentation(String password) {
