@@ -24,9 +24,9 @@ public class UserService {
         assertEmailDoesNotExist(userDto);
         var user = userMapper.mapToApplicationUser(userDto);
         log.info("Creating user");
-        String keycloakUserId = keycloakService.createUser(userDto);
+        var keycloakUserId = keycloakService.createUser(userDto);
         user.setId(UUID.fromString(keycloakUserId));
-        ApplicationUser savedUser = userRepository.save(user);
+        var savedUser = userRepository.save(user);
         log.debug("Saved user with ID: {}", savedUser.getId());
         return userMapper.mapToApplicationUserDto(savedUser);
     }

@@ -38,11 +38,11 @@ class UserServiceTest {
     private UserService userService;
     private ApplicationUserCreationRequest testUserDto;
     private ApplicationUser testUser;
-    private String id;
+    private String uuid;
 
     @BeforeEach
     public void setup() {
-        id = UUID.randomUUID().toString();
+        uuid = UUID.randomUUID().toString();
         testUserDto = ApplicationUserCreationRequest.builder()
                 .firstName("Tofu")
                 .lastName("Taro")
@@ -51,7 +51,7 @@ class UserServiceTest {
                 .build();
 
         testUser = ApplicationUser.builder()
-                .id(UUID.fromString(id))
+                .id(UUID.fromString(uuid))
                 .firstName(testUserDto.getFirstName())
                 .lastName(testUserDto.getLastName())
                 .email(testUserDto.getEmail())
@@ -62,7 +62,7 @@ class UserServiceTest {
     @Test
     void saveApplicationUser_SuccessfullySaved_WhenUserDoesNotAlreadyExist() {
         given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.empty());
-        given(keycloakService.createUser(testUserDto)).willReturn(id);
+        given(keycloakService.createUser(testUserDto)).willReturn(uuid);
         given(userRepository.save(ArgumentMatchers.any())).willReturn(testUser);
 
         ApplicationUserCreationResponse savedUserDto = userService.saveApplicationUser(testUserDto);
