@@ -30,22 +30,15 @@ public class KeycloakService {
     private String clientId;
     @Value("${keycloak.client-secret}")
     private String clientSecret;
-    @Value("${keycloak.username}")
-    private String username;
-    @Value("${keycloak.password}")
-    private String password;
 
     @PostConstruct
     public void init() {
         keycloak = KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
                 .realm(realm)
-                .grantType(OAuth2Constants.PASSWORD)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .clientId(clientId)
-                .clientSecret(clientSecret)
-                .username(username)
-                .password(password)
-                .build();
+                .clientSecret(clientSecret).build();
     }
 
     public String createUser(ApplicationUserCreationRequest userDto) {
