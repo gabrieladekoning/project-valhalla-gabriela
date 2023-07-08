@@ -18,15 +18,18 @@ public class BusinessFunctionService {
     private final BusinessFunctionRepository businessFunctionRepository;
     private static final BusinessFunctionMapper businessFunctionMapper = BusinessFunctionMapper.INSTANCE;
 
-    public BusinessFunctionCreationResponse saveBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
-        log.debug("Received request to create new business function with applicationName: {} and functionName: {}",
+    public BusinessFunctionCreationResponse createOrRetrieveBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
+        log.info("Received a request to create a new business function with applicationName: {} and functionName: {}",
                 creationRequest.getApplicationName(), creationRequest.getFunctionName());
 
-        var existingBusinessFunction = findExistingBusinessFunction(creationRequest);
-        if (existingBusinessFunction.isPresent()) {
-            return businessFunctionMapper.mapToBusinessFunctionResponse(existingBusinessFunction.get());
-        }
+        Optional<BusinessFunction> existingBusinessFunction = findExistingBusinessFunction(creationRequest);
 
+        return existingBusinessFunction
+                .map(businessFunctionMapper::mapToBusinessFunctionResponse)
+                .orElseGet(() -> createNewBusinessFunction(creationRequest));
+    }
+
+    private BusinessFunctionCreationResponse createNewBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
         var businessFunction = businessFunctionMapper.mapToBusinessFunction(creationRequest);
         var savedBusinessFunction = businessFunctionRepository.save(businessFunction);
 

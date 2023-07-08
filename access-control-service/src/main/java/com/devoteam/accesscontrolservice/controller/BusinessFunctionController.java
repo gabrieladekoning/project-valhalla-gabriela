@@ -22,6 +22,6 @@ public class BusinessFunctionController {
 
     @PostMapping
     public ResponseEntity<BusinessFunctionCreationResponse> save(@Valid @RequestBody BusinessFunctionCreationRequest businessFunction) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(businessFunctionService.saveBusinessFunction(businessFunction));
+        return ResponseEntity.status(HttpStatus.CREATED).body(businessFunctionService.createOrRetrieveBusinessFunction(businessFunction));
     }
 }
