@@ -4,6 +4,7 @@ import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.exception.UserCreationFailedException;
 import com.devoteam.accesscontrolservice.mapper.KeycloakUserMapper;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -18,10 +19,11 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class KeycloakService {
     private Keycloak keycloak;
-    private static final KeycloakUserMapper keycloakUserMapper = KeycloakUserMapper.INSTANCE;
+    private final KeycloakUserMapper keycloakUserMapper;
     @Value("${keycloak.server-url}")
     private String serverUrl;
     @Value("${keycloak.realm}")

@@ -17,7 +17,7 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final KeycloakService keycloakService;
-    private static final UserMapper userMapper = UserMapper.INSTANCE;
+    private final UserMapper userMapper;
 
     public ApplicationUserCreationResponse saveApplicationUser(ApplicationUserCreationRequest userDto) {
         assertEmailDoesNotExist(userDto);
