@@ -5,7 +5,6 @@ import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
 import com.devoteam.accesscontrolservice.exception.UserCreationFailedException;
-import com.devoteam.accesscontrolservice.mapper.UserMapperImpl;
 import com.devoteam.accesscontrolservice.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -28,7 +26,6 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-@Import(UserMapperImpl.class)
 class UserServiceTest {
     @Mock
     private UserRepository userRepository;
