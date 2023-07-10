@@ -1,10 +1,10 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserRequest;
+import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
-import com.devoteam.accesscontrolservice.mapper.UserMapperImpl;
+import com.devoteam.accesscontrolservice.exception.UserCreationFailedException;
 import com.devoteam.accesscontrolservice.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -27,19 +26,21 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-@Import(UserMapperImpl.class)
 class UserServiceTest {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private KeycloakService keycloakService;
     @InjectMocks
     private UserService userService;
-    private ApplicationUserRequest testUserDto;
+    private ApplicationUserCreationRequest testUserDto;
     private ApplicationUser testUser;
+    private String uuid;
 
     @BeforeEach
     public void setup() {
-        UUID uuid = UUID.randomUUID();
-        testUserDto = ApplicationUserRequest.builder()
+        uuid = UUID.randomUUID().toString();
+        testUserDto = ApplicationUserCreationRequest.builder()
                 .firstName("Tofu")
                 .lastName("Taro")
                 .email("tofu_taro@test.com")
@@ -47,7 +48,7 @@ class UserServiceTest {
                 .build();
 
         testUser = ApplicationUser.builder()
-                .id(uuid)
+                .id(UUID.fromString(uuid))
                 .firstName(testUserDto.getFirstName())
                 .lastName(testUserDto.getLastName())
                 .email(testUserDto.getEmail())
@@ -58,6 +59,7 @@ class UserServiceTest {
     @Test
     void saveApplicationUser_SuccessfullySaved_WhenUserDoesNotAlreadyExist() {
         given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.empty());
+        given(keycloakService.createUser(testUserDto)).willReturn(uuid);
         given(userRepository.save(ArgumentMatchers.any())).willReturn(testUser);
 
         ApplicationUserCreationResponse savedUserDto = userService.saveApplicationUser(testUserDto);
@@ -72,6 +74,17 @@ class UserServiceTest {
         given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.of(testUser));
 
         assertThrows(EmailAlreadyExistsException.class, () -> userService.saveApplicationUser(testUserDto));
+        then(userRepository).should(times(1)).findByEmail(testUserDto.getEmail());
+        then(userRepository).should(times(0)).save(any(ApplicationUser.class));
+    }
+
+    @DisplayName("Test saving a user when Keycloak registration fails")
+    @Test
+    void saveApplicationUser_ThrowsUserCreationException_WhenKeycloakRegistrationFails() {
+        given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.empty());
+        given(keycloakService.createUser(testUserDto)).willThrow(new UserCreationFailedException("Failed to create user in Keycloak"));
+
+        assertThrows(UserCreationFailedException.class, () -> userService.saveApplicationUser(testUserDto));
         then(userRepository).should(times(1)).findByEmail(testUserDto.getEmail());
         then(userRepository).should(times(0)).save(any(ApplicationUser.class));
     }
