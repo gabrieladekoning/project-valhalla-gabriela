@@ -3,7 +3,6 @@ package com.devoteam.accesscontrolservice.service;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationResponse;
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
-import com.devoteam.accesscontrolservice.mapper.BusinessFunctionMapperImpl;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -22,7 +20,6 @@ import java.util.UUID;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-@Import(BusinessFunctionMapperImpl.class)
 class BusinessFunctionServiceTest {
     @Mock
     BusinessFunctionRepository businessFunctionRepository;

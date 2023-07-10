@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 public class BusinessFunctionService {
     private final BusinessFunctionRepository businessFunctionRepository;
-    private static final BusinessFunctionMapper businessFunctionMapper = BusinessFunctionMapper.INSTANCE;
+    private final BusinessFunctionMapper businessFunctionMapper;
 
     public BusinessFunctionCreationResponse createOrRetrieveBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
         log.info("Received a request to create a new business function with applicationName: {} and functionName: {}",
