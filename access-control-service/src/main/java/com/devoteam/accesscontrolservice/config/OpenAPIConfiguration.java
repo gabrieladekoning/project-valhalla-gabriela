@@ -9,19 +9,19 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-    info = @Info(
-        title = "Access Control Service",
-        description = "This is the API documentation for the Access Control Service",
-        contact = @Contact(
-            name = "Gabriela",
-            url = "https://github.com/gabrieladekoning"
+        info = @Info(
+                title = "Access Control Service",
+                description = "This is the API documentation for the Access Control Service",
+                contact = @Contact(
+                        name = "Gabriela",
+                        url = "https://github.com/gabrieladekoning"
+                )
         )
-    )
 )
 @SecurityScheme(
-    name = "basicAuth",
-    type = SecuritySchemeType.HTTP,
-    scheme = "basic"
+        name = "basicAuth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer"
 )
 public class OpenAPIConfiguration {
 
