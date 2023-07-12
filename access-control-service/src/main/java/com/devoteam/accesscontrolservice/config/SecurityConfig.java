@@ -1,6 +1,5 @@
 package com.devoteam.accesscontrolservice.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -11,10 +10,8 @@ import org.springframework.security.config.annotation.web.configurers.oauth2.ser
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
-
     private static final String[] AUTH_WHITELIST = {
             "/swagger-ui.html",
             "/v3/api-docs/**",
@@ -30,7 +27,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
         return http.build();
     }

@@ -25,7 +25,8 @@ public class BusinessFunctionController {
     @PostMapping
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
             summary = "Create a business function")
-    public ResponseEntity<BusinessFunctionCreationResponse> save(@Valid @RequestBody BusinessFunctionCreationRequest businessFunction) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(businessFunctionService.createOrRetrieveBusinessFunction(businessFunction));
+    public ResponseEntity<BusinessFunctionCreationResponse> save(@Valid @RequestBody BusinessFunctionCreationRequest creationRequest) {
+        var businessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(businessFunction);
     }
 }
