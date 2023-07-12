@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
         )
 )
 @SecurityScheme(
-        name = "basicAuth",
+        name = "bearerAuth",
         type = SecuritySchemeType.HTTP,
         scheme = "bearer"
 )

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1")
 public class DummyController {
   @GetMapping(path = "/names")
-  @Operation(security = {@SecurityRequirement(name = "basicAuth")},
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
       summary = "Dummy endpoint which returns names")
   public ResponseEntity<List<String>> getNames() {
     return ResponseEntity.ok(List.of("Tofu", "Taro", "Sprout"));
