@@ -3,6 +3,8 @@ package com.devoteam.accesscontrolservice.controller;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationResponse;
 import com.devoteam.accesscontrolservice.service.BusinessFunctionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,10 @@ public class BusinessFunctionController {
     private final BusinessFunctionService businessFunctionService;
 
     @PostMapping
-    public ResponseEntity<BusinessFunctionCreationResponse> save(@Valid @RequestBody BusinessFunctionCreationRequest businessFunction) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(businessFunctionService.createOrRetrieveBusinessFunction(businessFunction));
+    @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+            summary = "Create a business function")
+    public ResponseEntity<BusinessFunctionCreationResponse> save(@Valid @RequestBody BusinessFunctionCreationRequest creationRequest) {
+        var businessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(businessFunction);
     }
 }
