@@ -23,7 +23,7 @@ import java.util.UUID;
 @Slf4j
 public class KeycloakService {
     private Keycloak keycloak;
-    private final KeycloakUserMapper keycloakUserMapper;
+    private final KeycloakUserMapper keycloakUserMapper = KeycloakUserMapper.INSTANCE;
     @Value("${keycloak.server-url}")
     private String serverUrl;
     @Value("${keycloak.realm}")
