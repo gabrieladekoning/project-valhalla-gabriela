@@ -9,6 +9,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface BusinessFunctionMapper {
     BusinessFunctionMapper INSTANCE = Mappers.getMapper(BusinessFunctionMapper.class);
+
     BusinessFunction mapToBusinessFunction(BusinessFunctionCreationRequest request);
 
     BusinessFunctionCreationResponse mapToBusinessFunctionResponse(BusinessFunction businessFunction);
