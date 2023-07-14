@@ -16,7 +16,6 @@ import java.util.Optional;
 @Slf4j
 public class BusinessFunctionService {
     private final BusinessFunctionRepository businessFunctionRepository;
-    private final BusinessFunctionMapper businessFunctionMapper = BusinessFunctionMapper.INSTANCE;
 
     public BusinessFunctionCreationResponse createOrRetrieveBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
         log.info("Received a request to create a new business function with applicationName: {} and functionName: {}",
@@ -25,7 +24,7 @@ public class BusinessFunctionService {
         var existingBusinessFunction = findExistingBusinessFunction(creationRequest);
 
         return existingBusinessFunction
-                .map(businessFunctionMapper::mapToBusinessFunctionResponse)
+                .map(BusinessFunctionMapper.INSTANCE::mapToBusinessFunctionResponse)
                 .orElseGet(() -> createNewBusinessFunction(creationRequest));
     }
 
@@ -40,10 +39,10 @@ public class BusinessFunctionService {
     }
 
     private BusinessFunctionCreationResponse createNewBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
-        var businessFunction = businessFunctionMapper.mapToBusinessFunction(creationRequest);
+        var businessFunction = BusinessFunctionMapper.INSTANCE.mapToBusinessFunction(creationRequest);
         var savedBusinessFunction = businessFunctionRepository.save(businessFunction);
 
         log.debug("Created a new business function with ID: {}", savedBusinessFunction.getId());
-        return businessFunctionMapper.mapToBusinessFunctionResponse(savedBusinessFunction);
+        return BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionResponse(savedBusinessFunction);
     }
 }

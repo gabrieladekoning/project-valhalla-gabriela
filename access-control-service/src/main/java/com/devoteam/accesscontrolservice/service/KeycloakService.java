@@ -19,11 +19,9 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class KeycloakService {
     private Keycloak keycloak;
-    private final KeycloakUserMapper keycloakUserMapper = KeycloakUserMapper.INSTANCE;
     @Value("${keycloak.server-url}")
     private String serverUrl;
     @Value("${keycloak.realm}")
@@ -43,9 +41,9 @@ public class KeycloakService {
                 .clientSecret(clientSecret).build();
     }
 
-    public String createUser(ApplicationUserCreationRequest userDto) {
-        log.debug("Creating user in Keycloak: {}", userDto.getEmail());
-        UserRepresentation user = keycloakUserMapper.mapToUserRepresentation(userDto);
+    public String createUser(ApplicationUserCreationRequest creationRequest) {
+        log.debug("Creating user in Keycloak: {}", creationRequest.getEmail());
+        UserRepresentation user = KeycloakUserMapper.INSTANCE.mapToUserRepresentation(creationRequest);
         user.setEnabled(true);
 
         var realmResource = keycloak.realm(realm);
@@ -57,7 +55,7 @@ public class KeycloakService {
         }
 
         var userId = String.valueOf(UUID.fromString(CreatedResponseUtil.getCreatedId(response)));
-        var passwordCred = createCredentialRepresentation(userDto.getPassword());
+        var passwordCred = createCredentialRepresentation(creationRequest.getPassword());
         var userResource = usersResource.get(userId);
 
         userResource.resetPassword(passwordCred);

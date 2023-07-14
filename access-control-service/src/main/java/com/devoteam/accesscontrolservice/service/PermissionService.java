@@ -16,7 +16,6 @@ import java.util.Optional;
 @Slf4j
 public class PermissionService {
     private final PermissionRepository permissionRepository;
-    private final PermissionMapper permissionMapper = PermissionMapper.INSTANCE;
 
     public PermissionCreationResponse createOrRetrievePermission(PermissionCreationRequest creationRequest) {
         log.info("Received a request to create a new permission with name: {}", creationRequest.getName());
@@ -24,7 +23,7 @@ public class PermissionService {
         var existingPermission = findExistingPermission(creationRequest);
 
         return existingPermission
-                .map(permissionMapper::mapToPermissionResponse)
+                .map(PermissionMapper.INSTANCE::mapToPermissionResponse)
                 .orElseGet(() -> createNewPermission(creationRequest));
     }
 
@@ -38,10 +37,10 @@ public class PermissionService {
     }
 
     private PermissionCreationResponse createNewPermission(PermissionCreationRequest creationRequest) {
-        var permission = permissionMapper.mapToPermission(creationRequest);
+        var permission = PermissionMapper.INSTANCE.mapToPermission(creationRequest);
         var savedPermission = permissionRepository.save(permission);
 
         log.debug("Created a new permission with ID: {}", savedPermission.getId());
-        return permissionMapper.mapToPermissionResponse(savedPermission);
+        return PermissionMapper.INSTANCE.mapToPermissionResponse(savedPermission);
     }
 }

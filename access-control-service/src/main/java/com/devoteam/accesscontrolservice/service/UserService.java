@@ -17,21 +17,20 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final KeycloakService keycloakService;
-    private final UserMapper userMapper = UserMapper.INSTANCE;
 
-    public ApplicationUserCreationResponse saveApplicationUser(ApplicationUserCreationRequest userDto) {
-        assertEmailDoesNotExist(userDto);
-        var user = userMapper.mapToApplicationUser(userDto);
+    public ApplicationUserCreationResponse saveApplicationUser(ApplicationUserCreationRequest creationRequest) {
+        assertEmailDoesNotExist(creationRequest);
+        var user = UserMapper.INSTANCE.mapToApplicationUser(creationRequest);
         log.info("Creating user");
-        var keycloakUserId = keycloakService.createUser(userDto);
+        var keycloakUserId = keycloakService.createUser(creationRequest);
         user.setId(UUID.fromString(keycloakUserId));
         var savedUser = userRepository.save(user);
         log.debug("Saved user with ID: {}", savedUser.getId());
-        return userMapper.mapToApplicationUserDto(savedUser);
+        return UserMapper.INSTANCE.mapToApplicationUserDto(savedUser);
     }
 
-    private void assertEmailDoesNotExist(ApplicationUserCreationRequest userDto) {
-        userRepository.findByEmail(userDto.getEmail()).ifPresent(user -> {
+    private void assertEmailDoesNotExist(ApplicationUserCreationRequest creationRequest) {
+        userRepository.findByEmail(creationRequest.getEmail()).ifPresent(user -> {
             throw new EmailAlreadyExistsException("Email is already registered: '%s'".formatted(user.getEmail()));
         });
     }
