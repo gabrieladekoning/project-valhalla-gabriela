@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,4 +22,6 @@ public class Permission {
     private UUID id;
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+    @OneToMany(mappedBy = "permission")
+    private List<BusinessFunctionPermission> businessFunctions;
 }
