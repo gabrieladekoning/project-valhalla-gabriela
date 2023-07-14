@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 public interface PermissionMapper {
     PermissionMapper INSTANCE = Mappers.getMapper(PermissionMapper.class);
 
-    Permission mapToPermission(PermissionCreationRequest request);
+    Permission mapToPermission(PermissionCreationRequest creationRequest);
 
     PermissionCreationResponse mapToPermissionResponse(Permission permission);
 }

@@ -11,5 +11,5 @@ public interface KeycloakUserMapper {
     KeycloakUserMapper INSTANCE = Mappers.getMapper(KeycloakUserMapper.class);
 
     @Mapping(source = "email", target = "username")
-    UserRepresentation mapToUserRepresentation(ApplicationUserCreationRequest dto);
+    UserRepresentation mapToUserRepresentation(ApplicationUserCreationRequest creationRequest);
 }
