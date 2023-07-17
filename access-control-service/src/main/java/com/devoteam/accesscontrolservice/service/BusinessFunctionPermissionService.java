@@ -24,7 +24,7 @@ public class BusinessFunctionPermissionService {
     private final BusinessFunctionPermissionRepository businessFunctionPermissionRepository;
 
     public BusinessFunctionPermissionCreationResponse createOrRetrieveBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest) {
-        log.info("Received a request to create an association between BusinessFunction ID: {} and Permission ID: {}",
+        log.debug("Received a request to create an association between BusinessFunction ID: {} and Permission ID: {}",
                 creationRequest.getBusinessFunctionId(), creationRequest.getPermissionId());
 
         var existingAssociation = findByExistingBusinessFunctionPermission(creationRequest);
@@ -55,7 +55,7 @@ public class BusinessFunctionPermissionService {
         var businessFunctionPermission = BusinessFunctionPermissionMapper.INSTANCE.mapToBusinessFunctionPermission(creationRequest);
         var savedBusinessFunctionPermission = businessFunctionPermissionRepository.save(businessFunctionPermission);
 
-        log.info("Created a new permission with ID: {}", savedBusinessFunctionPermission.getId());
+        log.debug("Created a new permission with ID: {}", savedBusinessFunctionPermission.getId());
         return BusinessFunctionPermissionMapper.INSTANCE.mapToBusinessFunctionPermissionResponse(savedBusinessFunctionPermission);
     }
 }

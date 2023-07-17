@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Data
-@Table(name = "business_function_permission")
+@Table(name = "business_function_permissions")
 public class BusinessFunctionPermission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

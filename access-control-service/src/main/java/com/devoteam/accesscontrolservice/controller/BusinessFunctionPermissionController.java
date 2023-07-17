@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("/v1/business-function-permission")
+@RequestMapping("/v1/business-function-permissions")
 public class BusinessFunctionPermissionController {
     private final BusinessFunctionPermissionService businessFunctionPermissionService;
 

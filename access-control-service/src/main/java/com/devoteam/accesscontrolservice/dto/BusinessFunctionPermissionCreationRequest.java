@@ -1,6 +1,6 @@
 package com.devoteam.accesscontrolservice.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class BusinessFunctionPermissionCreationRequest {
-    @NotNull(message = "BusinessFunction ID is required")
+    @NotBlank(message = "BusinessFunction ID is required")
     private String businessFunctionId;
-    @NotNull(message = "Permission ID is required")
+    @NotBlank(message = "Permission ID is required")
     private String permissionId;
 }
