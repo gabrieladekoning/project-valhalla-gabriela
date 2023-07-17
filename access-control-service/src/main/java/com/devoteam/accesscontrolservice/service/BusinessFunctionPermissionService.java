@@ -34,7 +34,6 @@ public class BusinessFunctionPermissionService {
                 .orElseGet(() -> createNewBusinessFunctionPermission(creationRequest));
     }
 
-
     private Optional<BusinessFunctionPermission> findByExistingBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest) {
         var businessFunctionId = UUID.fromString(creationRequest.getBusinessFunctionId());
         var permissionId = UUID.fromString(creationRequest.getPermissionId());

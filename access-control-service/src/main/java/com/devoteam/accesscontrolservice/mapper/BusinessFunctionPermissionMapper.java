@@ -17,5 +17,4 @@ public interface BusinessFunctionPermissionMapper {
     BusinessFunctionPermission mapToBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest);
 
     BusinessFunctionPermissionCreationResponse mapToBusinessFunctionPermissionResponse(BusinessFunctionPermission businessFunctionPermission);
-
 }
