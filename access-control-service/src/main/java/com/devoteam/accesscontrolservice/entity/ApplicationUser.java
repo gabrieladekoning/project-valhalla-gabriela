@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode
-@Table(name = "application_user")
+@Table(name = "application_users")
 public class ApplicationUser {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
