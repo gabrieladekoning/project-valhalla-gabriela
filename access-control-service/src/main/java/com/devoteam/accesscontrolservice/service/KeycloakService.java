@@ -4,7 +4,6 @@ import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.exception.UserCreationFailedException;
 import com.devoteam.accesscontrolservice.mapper.KeycloakUserMapper;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -15,8 +14,6 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -54,7 +51,7 @@ public class KeycloakService {
             throw new UserCreationFailedException("Failed to create user in Keycloak, HTTP status: " + response.getStatus());
         }
 
-        var userId = String.valueOf(UUID.fromString(CreatedResponseUtil.getCreatedId(response)));
+        var userId = CreatedResponseUtil.getCreatedId(response);
         var passwordCred = createCredentialRepresentation(creationRequest.getPassword());
         var userResource = usersResource.get(userId);
 

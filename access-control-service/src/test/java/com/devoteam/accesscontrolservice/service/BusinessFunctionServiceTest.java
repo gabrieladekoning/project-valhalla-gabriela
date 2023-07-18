@@ -51,7 +51,7 @@ class BusinessFunctionServiceTest {
         BusinessFunctionCreationResponse savedBusinessFunctionResponse = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
 
         Assertions.assertThat(savedBusinessFunctionResponse).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(savedBusinessFunctionResponse.getId()).isEqualTo(businessFunction.getId());
+        Assertions.assertThat(savedBusinessFunctionResponse.getId()).isEqualTo(businessFunction.getId().toString());
     }
 
     @DisplayName("Test retrieving an existing business function successfully")
@@ -62,6 +62,6 @@ class BusinessFunctionServiceTest {
         BusinessFunctionCreationResponse savedBusinessFunctionResponse = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
 
         Assertions.assertThat(savedBusinessFunctionResponse).isNotNull();
-        Assertions.assertThat(savedBusinessFunctionResponse.getId()).isEqualTo(businessFunction.getId());
+        Assertions.assertThat(savedBusinessFunctionResponse.getId()).isEqualTo(businessFunction.getId().toString());
     }
 }
