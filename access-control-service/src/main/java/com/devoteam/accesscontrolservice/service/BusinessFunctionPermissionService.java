@@ -36,14 +36,14 @@ public class BusinessFunctionPermissionService {
 
     private Optional<BusinessFunctionPermission> findByExistingBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest) {
         var businessFunctionId = UUID.fromString(creationRequest.getBusinessFunctionId());
-        var permissionId = UUID.fromString(creationRequest.getPermissionId());
+        var permissionId = creationRequest.getPermissionId();
 
         var businessFunction = businessFunctionRepository.findById(businessFunctionId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "BusinessFunction with ID: %s not found.".formatted(businessFunctionId)
                 ));
 
-        var permission = permissionRepository.findById(permissionId)
+        var permission = permissionRepository.findById(UUID.fromString(permissionId))
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Permission with ID: %s not found.".formatted(permissionId)
                 ));

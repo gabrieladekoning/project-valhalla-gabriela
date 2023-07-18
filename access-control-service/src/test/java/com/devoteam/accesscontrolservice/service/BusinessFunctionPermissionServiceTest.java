@@ -13,9 +13,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -23,6 +25,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
+@ExtendWith(MockitoExtension.class)
 class BusinessFunctionPermissionServiceTest {
     @Mock
     private BusinessFunctionRepository businessFunctionRepository;
@@ -47,8 +50,8 @@ class BusinessFunctionPermissionServiceTest {
         UUID permissionId = UUID.randomUUID();
 
         creationRequest = BusinessFunctionPermissionCreationRequest.builder()
-                .businessFunctionId(businessFunctionId.toString())
-                .permissionId(permissionId.toString())
+                .businessFunctionId(String.valueOf(businessFunctionId))
+                .permissionId(String.valueOf(permissionId))
                 .build();
 
         businessFunction = BusinessFunction.builder()
@@ -80,7 +83,7 @@ class BusinessFunctionPermissionServiceTest {
         BusinessFunctionPermissionCreationResponse savedBusinessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(creationRequest);
 
         Assertions.assertThat(savedBusinessFunctionPermission).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(savedBusinessFunctionPermission.getId()).isEqualTo(businessFunctionPermission.getId());
+        Assertions.assertThat(savedBusinessFunctionPermission.getId()).isEqualTo(businessFunctionPermission.getId().toString());
     }
 
     @DisplayName("Test retrieving an existing BusinessFunctionPermission successfully")
@@ -93,7 +96,7 @@ class BusinessFunctionPermissionServiceTest {
         BusinessFunctionPermissionCreationResponse savedBusinessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(creationRequest);
 
         Assertions.assertThat(savedBusinessFunctionPermission).isNotNull();
-        Assertions.assertThat(savedBusinessFunctionPermission.getId()).isEqualTo(businessFunctionPermission.getId());
+        Assertions.assertThat(savedBusinessFunctionPermission.getId()).isEqualTo(businessFunctionPermission.getId().toString());
     }
 
     @DisplayName("Test handling when BusinessFunction is not found")
