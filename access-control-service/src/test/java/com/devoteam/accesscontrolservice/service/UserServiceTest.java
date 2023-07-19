@@ -35,11 +35,11 @@ class UserServiceTest {
     private UserService userService;
     private ApplicationUserCreationRequest testUserDto;
     private ApplicationUser testUser;
-    private String uuid;
+    private UUID uuid;
 
     @BeforeEach
     public void setup() {
-        uuid = UUID.randomUUID().toString();
+        uuid = UUID.randomUUID();
         testUserDto = ApplicationUserCreationRequest.builder()
                 .firstName("Tofu")
                 .lastName("Taro")
@@ -48,7 +48,7 @@ class UserServiceTest {
                 .build();
 
         testUser = ApplicationUser.builder()
-                .id(UUID.fromString(uuid))
+                .id(uuid)
                 .firstName(testUserDto.getFirstName())
                 .lastName(testUserDto.getLastName())
                 .email(testUserDto.getEmail())
@@ -59,11 +59,11 @@ class UserServiceTest {
     @Test
     void saveApplicationUser_SuccessfullySaved_WhenUserDoesNotAlreadyExist() {
         given(userRepository.findByEmail(testUserDto.getEmail())).willReturn(Optional.empty());
-        given(keycloakService.createUser(testUserDto)).willReturn(uuid);
+        given(keycloakService.createUser(testUserDto)).willReturn(String.valueOf(uuid));
         given(userRepository.save(ArgumentMatchers.any())).willReturn(testUser);
 
         ApplicationUserCreationResponse savedUserDto = userService.saveApplicationUser(testUserDto);
-        savedUserDto.setId(testUser.getId());
+        savedUserDto.setId(testUser.getId().toString());
 
         Assertions.assertThat(savedUserDto).hasNoNullFieldsOrProperties();
     }
