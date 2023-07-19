@@ -3,6 +3,7 @@ package com.devoteam.accesscontrolservice.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -23,5 +24,6 @@ public class ApplicationUser {
     private String lastName;
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+    @OneToMany(mappedBy = "applicationUser")
+    private List<UserProfile> profiles;
 }
-
