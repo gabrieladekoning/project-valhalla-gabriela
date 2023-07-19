@@ -6,7 +6,7 @@ import com.devoteam.accesscontrolservice.entity.BusinessFunction;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface BusinessFunctionMapper {
     BusinessFunctionMapper INSTANCE = Mappers.getMapper(BusinessFunctionMapper.class);
 
