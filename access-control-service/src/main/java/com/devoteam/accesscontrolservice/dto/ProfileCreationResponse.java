@@ -5,12 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
 public class ProfileCreationResponse {
-    private UUID id;
+    private String id;
 }
