@@ -27,4 +27,3 @@ public class ApplicationUser {
     @OneToMany(mappedBy = "applicationUser")
     private List<UserProfile> profiles;
 }
-
