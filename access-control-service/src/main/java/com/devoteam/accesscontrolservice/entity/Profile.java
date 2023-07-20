@@ -24,4 +24,6 @@ public class Profile {
     private String name;
     @OneToMany(mappedBy = "profile")
     private List<UserProfile> applicationUsers;
+    @OneToMany(mappedBy = "profile")
+    private List<ProfileBusinessFunctionPermission> businessFunctionPermissions;
 }
