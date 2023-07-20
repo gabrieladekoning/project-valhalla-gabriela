@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EqualsAndHashCode
+@Data
 @Table(name = "application_users")
 public class ApplicationUser {
     @Id
