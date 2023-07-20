@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -25,4 +26,6 @@ public class BusinessFunctionPermission {
     @ManyToOne
     @JoinColumn(name = "permission_id", nullable = false)
     private Permission permission;
+    @OneToMany(mappedBy = "businessFunctionPermission")
+    private List<ProfileBusinessFunctionPermission> profiles;
 }
