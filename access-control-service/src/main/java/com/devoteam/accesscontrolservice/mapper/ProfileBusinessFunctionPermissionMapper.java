@@ -12,8 +12,8 @@ import org.mapstruct.factory.Mappers;
 public interface ProfileBusinessFunctionPermissionMapper {
     ProfileBusinessFunctionPermissionMapper INSTANCE = Mappers.getMapper(ProfileBusinessFunctionPermissionMapper.class);
 
-    @Mapping(source = "businessFunctionPermissionId", target = "businessFunctionPermission.id")
-    @Mapping(source = "profileId", target = "profile.id")
+    @Mapping(source = "businessFunctionPermissionId", target = "businessFunctionPermission.businessFunctionPermissionId")
+    @Mapping(source = "profileId", target = "profile.profileId")
     ProfileBusinessFunctionPermission mapToProfileBusinessFunctionPermission(ProfileBusinessFunctionPermissionCreationRequest creationRequest);
 
     ProfileBusinessFunctionPermissionCreationResponse mapToProfileBusinessFunctionPermissionResponse(ProfileBusinessFunctionPermission profileBusinessFunctionPermission);

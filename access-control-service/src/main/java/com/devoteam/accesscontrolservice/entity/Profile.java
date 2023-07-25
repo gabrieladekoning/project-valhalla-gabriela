@@ -19,7 +19,7 @@ public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    private UUID profileId;
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     @OneToMany(mappedBy = "profile")

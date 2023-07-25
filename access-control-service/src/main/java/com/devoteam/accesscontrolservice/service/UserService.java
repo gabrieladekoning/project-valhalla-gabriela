@@ -23,9 +23,9 @@ public class UserService {
         var user = UserMapper.INSTANCE.mapToApplicationUser(creationRequest);
         log.info("Creating user");
         var keycloakUserId = keycloakService.createUser(creationRequest);
-        user.setId(UUID.fromString(keycloakUserId));
+        user.setApplicationUserId(UUID.fromString(keycloakUserId));
         var savedUser = userRepository.save(user);
-        log.debug("Saved user with ID: {}", savedUser.getId());
+        log.debug("Saved user with ID: {}", savedUser.getApplicationUserId());
         return UserMapper.INSTANCE.mapToApplicationUserDto(savedUser);
     }
 

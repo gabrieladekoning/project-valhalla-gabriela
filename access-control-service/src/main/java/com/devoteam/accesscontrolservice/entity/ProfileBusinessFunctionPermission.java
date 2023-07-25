@@ -18,7 +18,7 @@ public class ProfileBusinessFunctionPermission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    private UUID profileBusinessFunctionPermissionId;
     @ManyToOne
     @JoinColumn(name = "business_function_permission_id", nullable = false)
     private BusinessFunctionPermission businessFunctionPermission;

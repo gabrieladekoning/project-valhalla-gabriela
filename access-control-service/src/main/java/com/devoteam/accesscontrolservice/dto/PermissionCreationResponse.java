@@ -10,5 +10,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class PermissionCreationResponse {
-    private String id;
+    private String permissionId;
 }

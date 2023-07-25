@@ -48,7 +48,7 @@ class UserServiceTest {
                 .build();
 
         testUser = ApplicationUser.builder()
-                .id(uuid)
+                .applicationUserId(uuid)
                 .firstName(testUserDto.getFirstName())
                 .lastName(testUserDto.getLastName())
                 .email(testUserDto.getEmail())
@@ -63,7 +63,7 @@ class UserServiceTest {
         given(userRepository.save(ArgumentMatchers.any())).willReturn(testUser);
 
         ApplicationUserCreationResponse savedUserDto = userService.saveApplicationUser(testUserDto);
-        savedUserDto.setId(testUser.getId().toString());
+        savedUserDto.setApplicationUserId(testUser.getApplicationUserId().toString());
 
         Assertions.assertThat(savedUserDto).hasNoNullFieldsOrProperties();
     }

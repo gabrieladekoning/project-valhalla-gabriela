@@ -15,7 +15,7 @@ import java.util.UUID;
 public class ApplicationUser {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    private UUID applicationUserId;
     @Column(name = "first_name", nullable = false)
     private String firstName;
     @Column(name = "last_name", nullable = false)

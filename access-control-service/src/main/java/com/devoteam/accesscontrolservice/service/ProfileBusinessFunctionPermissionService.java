@@ -52,7 +52,7 @@ public class ProfileBusinessFunctionPermissionService {
         var businessFunctionPermission = ProfileBusinessFunctionPermissionMapper.INSTANCE.mapToProfileBusinessFunctionPermission(creationRequest);
         var savedProfileBusinessFunctionPermission = profileBusinessFunctionPermissionRepository.save(businessFunctionPermission);
 
-        log.debug("Created a new association between BusinessFunctionPermission and Profile with ID: {}", savedProfileBusinessFunctionPermission.getId());
+        log.debug("Created a new association between BusinessFunctionPermission and Profile with ID: {}", savedProfileBusinessFunctionPermission.getProfileBusinessFunctionPermissionId());
         return ProfileBusinessFunctionPermissionMapper.INSTANCE.mapToProfileBusinessFunctionPermissionResponse(savedProfileBusinessFunctionPermission);
     }
 }

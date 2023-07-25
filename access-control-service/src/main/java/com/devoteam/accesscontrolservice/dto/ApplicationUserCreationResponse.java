@@ -10,5 +10,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ApplicationUserCreationResponse {
-private String id;
+private String applicationUserId;
 }

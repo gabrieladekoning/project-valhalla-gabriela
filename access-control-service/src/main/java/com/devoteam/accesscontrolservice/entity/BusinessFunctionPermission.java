@@ -19,7 +19,7 @@ public class BusinessFunctionPermission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    private UUID businessFunctionPermissionId;
     @ManyToOne
     @JoinColumn(name = "business_function_id", nullable = false)
     private BusinessFunction businessFunction;

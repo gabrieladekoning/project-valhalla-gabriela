@@ -40,7 +40,7 @@ public class ProfileService {
         var profile = ProfileMapper.INSTANCE.mapToProfile(creationRequest);
         var savedProfile = profileRepository.save(profile);
 
-        log.debug("Created a new profile with ID: {}", savedProfile.getId());
+        log.debug("Created a new profile with ID: {}", savedProfile.getProfileId());
         return ProfileMapper.INSTANCE.mapToProfileResponse(savedProfile);
     }
 }

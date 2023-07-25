@@ -11,8 +11,8 @@ import org.mapstruct.factory.Mappers;
 public interface UserProfileMapper {
     UserProfileMapper INSTANCE = Mappers.getMapper(UserProfileMapper.class);
 
-    @Mapping(source = "applicationUserId", target = "applicationUser.id")
-    @Mapping(source = "profileId", target = "profile.id")
+    @Mapping(source = "applicationUserId", target = "applicationUser.applicationUserId")
+    @Mapping(source = "profileId", target = "profile.profileId")
     UserProfile mapToUserProfile(UserProfileCreationRequest creationRequest);
 
     UserProfileCreationResponse mapToUserProfileResponse(UserProfile userProfile);
