@@ -10,4 +10,5 @@ import java.util.UUID;
 
 public interface ProfileBusinessFunctionPermissionRepository extends JpaRepository<ProfileBusinessFunctionPermission, UUID> {
     Optional<ProfileBusinessFunctionPermission> findByBusinessFunctionPermissionAndProfile(BusinessFunctionPermission businessFunctionPermission, Profile profile);
+    boolean existsByBusinessFunctionPermissionAndProfile(BusinessFunctionPermission businessFunctionPermission, Profile profile);
 }
