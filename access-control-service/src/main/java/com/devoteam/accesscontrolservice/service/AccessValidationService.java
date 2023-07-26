@@ -1,13 +1,15 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.entity.*;
+import com.devoteam.accesscontrolservice.entity.ApplicationUser;
+import com.devoteam.accesscontrolservice.entity.BusinessFunctionPermission;
+import com.devoteam.accesscontrolservice.entity.Profile;
+import com.devoteam.accesscontrolservice.entity.UserProfile;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,10 +24,10 @@ public class AccessValidationService {
     private final ProfileBusinessFunctionPermissionRepository profileBusinessFunctionPermissionRepository;
 
     public boolean checkAccess(String applicationName, String functionName, String permissionName, UUID userUuid) {
-        ApplicationUser applicationUser = findApplicationUser(userUuid);
-        UserProfile userProfile = findUserProfile(applicationUser);
-        Profile profile = userProfile.getProfile();
-        BusinessFunctionPermission businessFunctionPermission = findBusinessFunctionPermission(applicationName, functionName, permissionName);
+        var applicationUser = findApplicationUser(userUuid);
+        var userProfile = findUserProfile(applicationUser);
+        var profile = userProfile.getProfile();
+        var businessFunctionPermission = findBusinessFunctionPermission(applicationName, functionName, permissionName);
         return checkProfilePermission(businessFunctionPermission, profile);
     }
 
@@ -40,20 +42,16 @@ public class AccessValidationService {
     }
 
     private BusinessFunctionPermission findBusinessFunctionPermission(String applicationName, String functionName, String permissionName) {
-        // todo: write neater
-        Optional<BusinessFunction> optionalBusinessFunction = businessFunctionRepository.findByApplicationNameAndFunctionName(applicationName, functionName);
-        if (optionalBusinessFunction.isEmpty()) {
-            throw new ResourceNotFoundException("BusinessFunction not found with applicationName: " + applicationName + " and functionName: " + functionName);
-        }
-        BusinessFunction businessFunction = optionalBusinessFunction.get();
+        var businessFunction = businessFunctionRepository.findByApplicationNameAndFunctionName(applicationName, functionName)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        ("Business function with application name: '%s' and function name: '%s' not found".formatted(applicationName, functionName))));
 
-        Optional<Permission> optionalPermission = permissionRepository.findByName(permissionName);
-        if (optionalPermission.isEmpty()) {
-            throw new ResourceNotFoundException("Permission not found with applicationName: " + permissionName);
-        }
-        Permission permission = optionalPermission.get();
+        var permission = permissionRepository.findByName(permissionName)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        ("Permission with name: '%s' not found".formatted(permissionName))));
+
         return businessFunctionPermissionRepository.findByBusinessFunctionAndPermission(businessFunction, permission)
-                .orElseThrow(() -> new ResourceNotFoundException("Business function association with permission not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Association between business function: '%s' and permission: '%s' not found".formatted(businessFunction.getFunctionName(), permission.getName())));
     }
 
     private boolean checkProfilePermission(BusinessFunctionPermission businessFunctionPermission, Profile profile) {
