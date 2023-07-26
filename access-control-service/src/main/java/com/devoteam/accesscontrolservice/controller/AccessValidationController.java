@@ -3,7 +3,7 @@ package com.devoteam.accesscontrolservice.controller;
 import com.devoteam.accesscontrolservice.service.AccessValidationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,9 +30,9 @@ public class AccessValidationController {
     @GetMapping("/validate")
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
             summary = "Check if user has permission to access a specific resource")
-    public ResponseEntity<Void> checkAccess(@Valid @RequestParam String applicationName,
-                                            @Valid @RequestParam String functionName,
-                                            @Valid @RequestParam String permission) {
+    public ResponseEntity<Void> checkAccess(@NotBlank @RequestParam String applicationName,
+                                            @NotBlank @RequestParam String functionName,
+                                            @NotBlank @RequestParam String permission) {
         var userUuid = extractUserUuid();
         var isAllowed = accessValidationService.checkAccess(applicationName, functionName, permission, userUuid);
 
