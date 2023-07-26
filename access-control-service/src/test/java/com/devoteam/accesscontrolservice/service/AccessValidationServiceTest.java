@@ -1,6 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.entity.*;
+import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,10 +41,11 @@ class AccessValidationServiceTest {
     private String applicationName;
     private String functionName;
     private String permissionName;
+    private UUID userUuid;
 
     @BeforeEach
     void setup() {
-        UUID userId = UUID.randomUUID();
+        userUuid = UUID.randomUUID();
         UUID profileId = UUID.randomUUID();
 
         applicationName = "Application name";
@@ -51,7 +53,7 @@ class AccessValidationServiceTest {
         permissionName = "Permission name";
 
         applicationUser = ApplicationUser.builder()
-                .applicationUserId(userId)
+                .applicationUserId(userUuid)
                 .build();
 
         profile = Profile.builder()
@@ -77,7 +79,7 @@ class AccessValidationServiceTest {
         given(businessFunctionPermissionRepository.findByBusinessFunctionAndPermission(any(), any())).willReturn(Optional.of(businessFunctionPermission));
         given(profileBusinessFunctionPermissionRepository.existsByBusinessFunctionPermissionAndProfile(businessFunctionPermission, profile)).willReturn(true);
 
-        boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName, applicationUser.getApplicationUserId());
+        boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName, userUuid);
 
         assertTrue(accessResult);
     }
@@ -92,8 +94,37 @@ class AccessValidationServiceTest {
         given(businessFunctionPermissionRepository.findByBusinessFunctionAndPermission(any(), any())).willReturn(Optional.of(businessFunctionPermission));
         given(profileBusinessFunctionPermissionRepository.existsByBusinessFunctionPermissionAndProfile(businessFunctionPermission, profile)).willReturn(false);
 
-        boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName, applicationUser.getApplicationUserId());
+        boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName, userUuid);
 
         assertFalse(accessResult);
+    }
+
+    @DisplayName("Test access validation when user cannot be found")
+    @Test
+    void testAccessValidation_Fail_WhenUserCannotBeFound() {
+        given(userRepository.findById(applicationUser.getApplicationUserId())).willReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> accessValidationService.checkAccess(applicationName, functionName, permissionName, userUuid));
+    }
+
+    @DisplayName("Test access validation when user exists but does not have a profile")
+    @Test
+    void testAccessValidation_Fail_WhenUserHasNoProfile() {
+        given(userRepository.findById(applicationUser.getApplicationUserId())).willReturn(Optional.of(applicationUser));
+        given(userProfileRepository.findByApplicationUser(applicationUser)).willReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> accessValidationService.checkAccess(applicationName, functionName, permissionName, userUuid));
+    }
+
+    @DisplayName("Test access validation when business function permission does not exist")
+    @Test
+    void testAccessValidation_Fail_WhenBusinessFunctionPermissionDoesNotExist() {
+        given(userRepository.findById(applicationUser.getApplicationUserId())).willReturn(Optional.of(applicationUser));
+        given(userProfileRepository.findByApplicationUser(applicationUser)).willReturn(Optional.of(userProfile));
+        given(businessFunctionRepository.findByApplicationNameAndFunctionName(applicationName, functionName)).willReturn(Optional.of(new BusinessFunction()));
+        given(permissionRepository.findByName(permissionName)).willReturn(Optional.of(new Permission()));
+        given(businessFunctionPermissionRepository.findByBusinessFunctionAndPermission(any(), any())).willReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> accessValidationService.checkAccess(applicationName, functionName, permissionName, userUuid));
     }
 }
