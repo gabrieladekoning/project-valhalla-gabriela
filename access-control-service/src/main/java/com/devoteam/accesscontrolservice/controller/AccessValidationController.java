@@ -33,20 +33,16 @@ public class AccessValidationController {
     public ResponseEntity<Void> checkAccess(@Valid @RequestParam String applicationName,
                                             @Valid @RequestParam String functionName,
                                             @Valid @RequestParam String permission) {
-        // todo: move this to separate method?
+        var userUuid = extractUserUuid();
+        boolean isAllowed = accessValidationService.checkAccess(applicationName, functionName, permission, userUuid);
+        //todo: add log
+        return isAllowed ? ResponseEntity.status(HttpStatus.OK).build() : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    private UUID extractUserUuid() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String userId = jwt.getClaim("sub");
-        UUID userUuid = UUID.fromString(userId);
-
-        boolean isAllowed = accessValidationService.checkAccess(applicationName, functionName, permission, userUuid);
-
-        if (isAllowed) {
-            log.info("User has access to application: {}, function: {} with permission: {}", applicationName, functionName, permission);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            log.info("User");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        return UUID.fromString(userId);
     }
 }
