@@ -34,8 +34,12 @@ public class AccessValidationController {
                                             @Valid @RequestParam String functionName,
                                             @Valid @RequestParam String permission) {
         var userUuid = extractUserUuid();
-        boolean isAllowed = accessValidationService.checkAccess(applicationName, functionName, permission, userUuid);
-        //todo: add log
+        var isAllowed = accessValidationService.checkAccess(applicationName, functionName, permission, userUuid);
+
+        var message = "User has " + (isAllowed ? "access" : "no access") + " to application: " + applicationName
+                + ", function: " + functionName + " with permission: " + permission;
+        log.info(message);
+
         return isAllowed ? ResponseEntity.status(HttpStatus.OK).build() : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
