@@ -55,18 +55,18 @@ class BusinessFunctionPermissionServiceTest {
                 .build();
 
         businessFunction = BusinessFunction.builder()
-                .businessFunctionId(businessFunctionId)
+                .id(businessFunctionId)
                 .applicationName("Application name")
                 .functionName("Function name")
                 .build();
 
         permission = Permission.builder()
-                .permissionId(permissionId)
+                .id(permissionId)
                 .name("Permission name")
                 .build();
 
         businessFunctionPermission = BusinessFunctionPermission.builder()
-                .businessFunctionPermissionId(UUID.randomUUID())
+                .id(UUID.randomUUID())
                 .businessFunction(businessFunction)
                 .permission(permission)
                 .build();
@@ -75,34 +75,34 @@ class BusinessFunctionPermissionServiceTest {
     @DisplayName("Test saving a new BusinessFunctionPermission successfully")
     @Test
     void createOrRetrieveBusinessFunctionPermission_SuccessfullySaved_WhenAssociationDoesNotAlreadyExist() {
-        given(businessFunctionRepository.findById(businessFunction.getBusinessFunctionId())).willReturn(Optional.of(businessFunction));
-        given(permissionRepository.findById(permission.getPermissionId())).willReturn(Optional.of(permission));
+        given(businessFunctionRepository.findById(businessFunction.getId())).willReturn(Optional.of(businessFunction));
+        given(permissionRepository.findById(permission.getId())).willReturn(Optional.of(permission));
         given(businessFunctionPermissionRepository.findByBusinessFunctionAndPermission(businessFunction, permission)).willReturn(Optional.empty());
         given(businessFunctionPermissionRepository.save(ArgumentMatchers.any())).willReturn(businessFunctionPermission);
 
         BusinessFunctionPermissionCreationResponse savedBusinessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(creationRequest);
 
         Assertions.assertThat(savedBusinessFunctionPermission).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(savedBusinessFunctionPermission.getBusinessFunctionPermissionId()).isEqualTo(businessFunctionPermission.getBusinessFunctionPermissionId().toString());
+        Assertions.assertThat(savedBusinessFunctionPermission.getId()).isEqualTo(businessFunctionPermission.getId().toString());
     }
 
     @DisplayName("Test retrieving an existing BusinessFunctionPermission successfully")
     @Test
     void createOrRetrieveBusinessFunctionPermission_SuccessfullyRetrieved_WhenAssociationAlreadyExists() {
-        given(businessFunctionRepository.findById(businessFunction.getBusinessFunctionId())).willReturn(Optional.of(businessFunction));
-        given(permissionRepository.findById(permission.getPermissionId())).willReturn(Optional.of(permission));
+        given(businessFunctionRepository.findById(businessFunction.getId())).willReturn(Optional.of(businessFunction));
+        given(permissionRepository.findById(permission.getId())).willReturn(Optional.of(permission));
         given(businessFunctionPermissionRepository.findByBusinessFunctionAndPermission(businessFunction, permission)).willReturn(Optional.of(businessFunctionPermission));
 
         BusinessFunctionPermissionCreationResponse savedBusinessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(creationRequest);
 
         Assertions.assertThat(savedBusinessFunctionPermission).isNotNull();
-        Assertions.assertThat(savedBusinessFunctionPermission.getBusinessFunctionPermissionId()).isEqualTo(businessFunctionPermission.getBusinessFunctionPermissionId().toString());
+        Assertions.assertThat(savedBusinessFunctionPermission.getId()).isEqualTo(businessFunctionPermission.getId().toString());
     }
 
     @DisplayName("Test handling when BusinessFunction is not found")
     @Test
     void createOrRetrieveBusinessFunctionPermission_ThrowsResourceNotFoundException_WhenBusinessFunctionNotFound() {
-        given(businessFunctionRepository.findById(businessFunction.getBusinessFunctionId())).willReturn(Optional.empty());
+        given(businessFunctionRepository.findById(businessFunction.getId())).willReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(creationRequest));
     }
@@ -110,8 +110,8 @@ class BusinessFunctionPermissionServiceTest {
     @DisplayName("Test handling when Permission is not found")
     @Test
     void createOrRetrieveBusinessFunctionPermission_ThrowsResourceNotFoundException_WhenPermissionNotFound() {
-        given(businessFunctionRepository.findById(businessFunction.getBusinessFunctionId())).willReturn(Optional.of(businessFunction));
-        given(permissionRepository.findById(permission.getPermissionId())).willReturn(Optional.empty());
+        given(businessFunctionRepository.findById(businessFunction.getId())).willReturn(Optional.of(businessFunction));
+        given(permissionRepository.findById(permission.getId())).willReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(creationRequest));
     }

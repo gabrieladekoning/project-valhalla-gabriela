@@ -42,7 +42,7 @@ public class BusinessFunctionService {
         var businessFunction = BusinessFunctionMapper.INSTANCE.mapToBusinessFunction(creationRequest);
         var savedBusinessFunction = businessFunctionRepository.save(businessFunction);
 
-        log.debug("Created a new business function with ID: {}", savedBusinessFunction.getBusinessFunctionId());
+        log.debug("Created a new business function with ID: {}", savedBusinessFunction.getId());
         return BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionResponse(savedBusinessFunction);
     }
 }

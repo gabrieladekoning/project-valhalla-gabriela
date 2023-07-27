@@ -40,7 +40,7 @@ public class PermissionService {
         var permission = PermissionMapper.INSTANCE.mapToPermission(creationRequest);
         var savedPermission = permissionRepository.save(permission);
 
-        log.debug("Created a new permission with ID: {}", savedPermission.getPermissionId());
+        log.debug("Created a new permission with ID: {}", savedPermission.getId());
         return PermissionMapper.INSTANCE.mapToPermissionResponse(savedPermission);
     }
 }

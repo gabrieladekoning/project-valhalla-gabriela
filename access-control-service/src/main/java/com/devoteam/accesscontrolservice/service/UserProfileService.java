@@ -54,7 +54,7 @@ public class UserProfileService {
         var userProfile = UserProfileMapper.INSTANCE.mapToUserProfile(creationRequest);
         var savedUserProfile = userProfileRepository.save(userProfile);
 
-        log.debug("Created a new association between user and profile with ID: {}", savedUserProfile.getUserProfileId());
+        log.debug("Created a new association between user and profile with ID: {}", savedUserProfile.getId());
         return UserProfileMapper.INSTANCE.mapToUserProfileResponse(savedUserProfile);
     }
 }

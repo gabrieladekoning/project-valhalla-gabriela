@@ -35,7 +35,7 @@ class ProfileServiceTest {
                 .name("Profile name")
                 .build();
         profile = Profile.builder()
-                .profileId(uuid)
+                .id(uuid)
                 .name(creationRequest.getName())
                 .build();
     }
@@ -49,7 +49,7 @@ class ProfileServiceTest {
         ProfileCreationResponse savedProfileResponse = profileService.createOrRetrieveProfile(creationRequest);
 
         Assertions.assertThat(savedProfileResponse).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(savedProfileResponse.getProfileId()).isEqualTo(profile.getProfileId().toString());
+        Assertions.assertThat(savedProfileResponse.getId()).isEqualTo(profile.getId().toString());
     }
 
     @DisplayName("Test retrieving an existing profile successfully")
@@ -60,6 +60,6 @@ class ProfileServiceTest {
         ProfileCreationResponse savedProfileResponse = profileService.createOrRetrieveProfile(creationRequest);
 
         Assertions.assertThat(savedProfileResponse).isNotNull();
-        Assertions.assertThat(savedProfileResponse.getProfileId()).isEqualTo(profile.getProfileId().toString());
+        Assertions.assertThat(savedProfileResponse.getId()).isEqualTo(profile.getId().toString());
     }
 }

@@ -10,5 +10,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class BusinessFunctionPermissionCreationResponse {
-    private String businessFunctionPermissionId;
+    private String id;
 }

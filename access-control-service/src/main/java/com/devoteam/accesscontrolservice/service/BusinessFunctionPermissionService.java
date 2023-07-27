@@ -54,7 +54,7 @@ public class BusinessFunctionPermissionService {
         var businessFunctionPermission = BusinessFunctionPermissionMapper.INSTANCE.mapToBusinessFunctionPermission(creationRequest);
         var savedBusinessFunctionPermission = businessFunctionPermissionRepository.save(businessFunctionPermission);
 
-        log.debug("Created a new association between business function and permission with ID: {}", savedBusinessFunctionPermission.getBusinessFunctionPermissionId());
+        log.debug("Created a new association between business function and permission with ID: {}", savedBusinessFunctionPermission.getId());
         return BusinessFunctionPermissionMapper.INSTANCE.mapToBusinessFunctionPermissionResponse(savedBusinessFunctionPermission);
     }
 }

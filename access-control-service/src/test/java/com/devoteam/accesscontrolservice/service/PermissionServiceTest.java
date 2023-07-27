@@ -35,7 +35,7 @@ class PermissionServiceTest {
                 .name("Permission name")
                 .build();
         permission = Permission.builder()
-                .permissionId(uuid)
+                .id(uuid)
                 .name(creationRequest.getName())
                 .build();
     }
@@ -49,7 +49,7 @@ class PermissionServiceTest {
         PermissionCreationResponse savedPermissionResponse = permissionService.createOrRetrievePermission(creationRequest);
 
         Assertions.assertThat(savedPermissionResponse).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(savedPermissionResponse.getPermissionId()).isEqualTo(permission.getPermissionId().toString());
+        Assertions.assertThat(savedPermissionResponse.getId()).isEqualTo(permission.getId().toString());
     }
 
     @DisplayName("Test retrieving an existing permission successfully")
@@ -60,6 +60,6 @@ class PermissionServiceTest {
         PermissionCreationResponse savedPermissionResponse = permissionService.createOrRetrievePermission(creationRequest);
 
         Assertions.assertThat(savedPermissionResponse).isNotNull();
-        Assertions.assertThat(savedPermissionResponse.getPermissionId()).isEqualTo(permission.getPermissionId().toString());
+        Assertions.assertThat(savedPermissionResponse.getId()).isEqualTo(permission.getId().toString());
     }
 }
