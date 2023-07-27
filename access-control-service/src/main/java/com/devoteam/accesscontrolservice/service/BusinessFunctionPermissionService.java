@@ -24,7 +24,7 @@ public class BusinessFunctionPermissionService {
     private final BusinessFunctionPermissionRepository businessFunctionPermissionRepository;
 
     public BusinessFunctionPermissionCreationResponse createOrRetrieveBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest) {
-        log.debug("Received a request to create an association between BusinessFunction ID: {} and Permission ID: {}",
+        log.debug("Received a request to create an association between business function ID: {} and permission ID: {}",
                 creationRequest.getBusinessFunctionId(), creationRequest.getPermissionId());
 
         var existingAssociation = findByExistingBusinessFunctionPermission(creationRequest);
@@ -40,7 +40,7 @@ public class BusinessFunctionPermissionService {
 
         var businessFunction = businessFunctionRepository.findById(businessFunctionId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "BusinessFunction with ID: %s not found.".formatted(businessFunctionId)
+                        "Business function with ID: %s not found.".formatted(businessFunctionId)
                 ));
 
         var permission = permissionRepository.findById(UUID.fromString(permissionId))
@@ -54,7 +54,7 @@ public class BusinessFunctionPermissionService {
         var businessFunctionPermission = BusinessFunctionPermissionMapper.INSTANCE.mapToBusinessFunctionPermission(creationRequest);
         var savedBusinessFunctionPermission = businessFunctionPermissionRepository.save(businessFunctionPermission);
 
-        log.debug("Created a new association between businessFunction and Permission with ID: {}", savedBusinessFunctionPermission.getBusinessFunctionPermissionId());
+        log.debug("Created a new association between business function and permission with ID: {}", savedBusinessFunctionPermission.getBusinessFunctionPermissionId());
         return BusinessFunctionPermissionMapper.INSTANCE.mapToBusinessFunctionPermissionResponse(savedBusinessFunctionPermission);
     }
 }

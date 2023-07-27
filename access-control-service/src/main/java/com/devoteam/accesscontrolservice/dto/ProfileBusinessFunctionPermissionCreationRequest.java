@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ProfileBusinessFunctionPermissionCreationRequest {
-    @NotBlank(message = "BusinessFunctionPermission ID is required")
+    @NotBlank(message = "Business function permission ID is required")
     private String businessFunctionPermissionId;
     @NotBlank(message = "Profile ID is required")
     private String profileId;

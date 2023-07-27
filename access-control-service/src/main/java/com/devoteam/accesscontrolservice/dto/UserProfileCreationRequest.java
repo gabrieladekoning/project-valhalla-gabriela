@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UserProfileCreationRequest {
-    @NotBlank(message = "ApplicationUser ID is required")
+    @NotBlank(message = "User ID is required")
     private String applicationUserId;
     @NotBlank(message = "Profile ID is required")
     private String profileId;
