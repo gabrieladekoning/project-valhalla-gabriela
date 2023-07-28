@@ -8,6 +8,9 @@ import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -23,12 +26,20 @@ public class AccessValidationService {
     private final BusinessFunctionPermissionRepository businessFunctionPermissionRepository;
     private final ProfileBusinessFunctionPermissionRepository profileBusinessFunctionPermissionRepository;
 
-    public boolean checkAccess(String applicationName, String functionName, String permissionName, UUID userUuid) {
+    public boolean checkAccess(String applicationName, String functionName, String permissionName) {
+        var userUuid = extractUserUuid();
         var applicationUser = findApplicationUser(userUuid);
         var userProfile = findUserProfile(applicationUser);
         var profile = userProfile.getProfile();
         var businessFunctionPermission = findBusinessFunctionPermission(applicationName, functionName, permissionName);
         return checkProfilePermission(businessFunctionPermission, profile);
+    }
+
+    public UUID extractUserUuid() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String userId = jwt.getClaim("sub");
+        return UUID.fromString(userId);
     }
 
     private ApplicationUser findApplicationUser(UUID userUuid) {
@@ -38,7 +49,7 @@ public class AccessValidationService {
 
     private UserProfile findUserProfile(ApplicationUser applicationUser) {
         return userProfileRepository.findByApplicationUser(applicationUser)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile associated with user ID: %s not found.".formatted(applicationUser.getApplicationUserId())));
+                .orElseThrow(() -> new ResourceNotFoundException("Profile associated with user ID: %s not found.".formatted(applicationUser.getId())));
     }
 
     private BusinessFunctionPermission findBusinessFunctionPermission(String applicationName, String functionName, String permissionName) {
