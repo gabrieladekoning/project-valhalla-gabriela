@@ -26,7 +26,7 @@ public class BusinessFunctionController {
     @PostMapping
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
             summary = "Create a business function")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('business-function-service', 'create.business-function', 'create')")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('business-function-service', 'business-function', 'create')")
     public ResponseEntity<BusinessFunctionCreationResponse> save(@Valid @RequestBody BusinessFunctionCreationRequest creationRequest) {
         var businessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(businessFunction);

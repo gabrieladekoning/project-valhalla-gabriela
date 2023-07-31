@@ -26,7 +26,7 @@ public class ProfileBusinessFunctionPermissionController {
     @PostMapping
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
             summary = "Create an association between business function permission and profile")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('profile-business-function-permission-service', 'create.profile-business-function-permission', 'create')")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('profile-business-function-permission-service', 'profile-business-function-permission', 'create')")
     public ResponseEntity<ProfileBusinessFunctionPermissionCreationResponse> save(@Valid @RequestBody ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
         var profileBusinessFunctionPermission = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(creationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(profileBusinessFunctionPermission);

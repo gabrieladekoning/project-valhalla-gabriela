@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Create a user")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('user-service', 'create.user', 'create')")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('user-service', 'user', 'create')")
     public ResponseEntity<ApplicationUserCreationResponse> save(@Valid @RequestBody ApplicationUserCreationRequest applicationUser) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveApplicationUser(applicationUser));
     }
