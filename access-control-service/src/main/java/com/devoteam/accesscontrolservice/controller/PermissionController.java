@@ -26,7 +26,7 @@ public class PermissionController {
     @PostMapping
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
             summary = "Create a permission")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('permission-service', 'permission', 'create')")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'create')")
     public ResponseEntity<PermissionCreationResponse> save(@Valid @RequestBody PermissionCreationRequest creationRequest) {
         var permission = permissionService.createOrRetrievePermission(creationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(permission);

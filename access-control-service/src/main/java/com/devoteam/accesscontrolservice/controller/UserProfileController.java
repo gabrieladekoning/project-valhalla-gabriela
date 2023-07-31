@@ -26,7 +26,7 @@ public class UserProfileController {
     @PostMapping
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
             summary = "Create an association between application user and profile")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('user-profile-service', 'create.user-profile', 'create')")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'user-profile', 'create')")
     public ResponseEntity<UserProfileCreationResponse> save(@Valid @RequestBody UserProfileCreationRequest creationRequest) {
         var userProfile = userProfileService.createOrRetrieveUserProfile(creationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(userProfile);
