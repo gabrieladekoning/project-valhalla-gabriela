@@ -24,7 +24,7 @@ public class UserProfileService {
     private final UserProfileRepository userProfileRepository;
 
     public UserProfileCreationResponse createOrRetrieveUserProfile(UserProfileCreationRequest creationRequest) {
-        log.debug("Received a request to create an association between User ID: {} and Profile ID: {}",
+        log.debug("Received a request to create an association between user ID: {} and profile ID: {}",
                 creationRequest.getApplicationUserId(), creationRequest.getProfileId());
 
         var existingAssociation = findByExistingUserProfile(creationRequest);
@@ -54,7 +54,7 @@ public class UserProfileService {
         var userProfile = UserProfileMapper.INSTANCE.mapToUserProfile(creationRequest);
         var savedUserProfile = userProfileRepository.save(userProfile);
 
-        log.debug("Created a new association between User and Profile with ID: {}", savedUserProfile.getId());
+        log.debug("Created a new association between user and profile with ID: {}", savedUserProfile.getId());
         return UserProfileMapper.INSTANCE.mapToUserProfileResponse(savedUserProfile);
     }
 }

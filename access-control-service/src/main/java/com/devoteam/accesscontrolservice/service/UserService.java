@@ -21,7 +21,7 @@ public class UserService {
     public ApplicationUserCreationResponse saveApplicationUser(ApplicationUserCreationRequest creationRequest) {
         assertEmailDoesNotExist(creationRequest);
         var user = UserMapper.INSTANCE.mapToApplicationUser(creationRequest);
-        log.info("Creating user");
+        log.info("Creating user with email: {}", creationRequest.getEmail());
         var keycloakUserId = keycloakService.createUser(creationRequest);
         user.setId(UUID.fromString(keycloakUserId));
         var savedUser = userRepository.save(user);

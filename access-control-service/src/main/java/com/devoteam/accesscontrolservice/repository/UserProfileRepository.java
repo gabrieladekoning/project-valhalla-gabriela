@@ -10,4 +10,5 @@ import java.util.UUID;
 
 public interface UserProfileRepository extends JpaRepository<UserProfile, UUID> {
     Optional<UserProfile> findByApplicationUserAndProfile(ApplicationUser applicationUser, Profile profile);
+    Optional<UserProfile> findByApplicationUser(ApplicationUser applicationUser);
 }

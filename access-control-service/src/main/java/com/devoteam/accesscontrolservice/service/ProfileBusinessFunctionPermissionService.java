@@ -22,7 +22,7 @@ public class ProfileBusinessFunctionPermissionService {
     private final ProfileBusinessFunctionPermissionRepository profileBusinessFunctionPermissionRepository;
 
     public ProfileBusinessFunctionPermissionCreationResponse createOrRetrieveProfileBusinessFunctionPermission(ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
-        log.debug("Received a request to create an association between BusinessFunction ID: {} and Permission ID: {}",
+        log.debug("Received a request to create an association between business function ID: {} and permission ID: {}",
                 creationRequest.getBusinessFunctionPermissionId(), creationRequest.getProfileId());
 
         var existingAssociation = findByExistingProfileBusinessFunctionPermission(creationRequest);
@@ -38,7 +38,7 @@ public class ProfileBusinessFunctionPermissionService {
 
         var businessFunctionPermission = businessFunctionPermissionRepository.findById(businessFunctionPermissionId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "BusinessFunction with ID: %s not found.".formatted(businessFunctionPermissionId)
+                        "Business function with ID: %s not found.".formatted(businessFunctionPermissionId)
                 ));
 
         var profile = profileRepository.findById(UUID.fromString(profileId))
@@ -52,7 +52,7 @@ public class ProfileBusinessFunctionPermissionService {
         var businessFunctionPermission = ProfileBusinessFunctionPermissionMapper.INSTANCE.mapToProfileBusinessFunctionPermission(creationRequest);
         var savedProfileBusinessFunctionPermission = profileBusinessFunctionPermissionRepository.save(businessFunctionPermission);
 
-        log.debug("Created a new association between BusinessFunctionPermission and Profile with ID: {}", savedProfileBusinessFunctionPermission.getId());
+        log.debug("Created a new association between business function permission and profile with ID: {}", savedProfileBusinessFunctionPermission.getId());
         return ProfileBusinessFunctionPermissionMapper.INSTANCE.mapToProfileBusinessFunctionPermissionResponse(savedProfileBusinessFunctionPermission);
     }
 }
