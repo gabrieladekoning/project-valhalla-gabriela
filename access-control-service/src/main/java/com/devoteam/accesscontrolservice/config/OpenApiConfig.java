@@ -23,6 +23,6 @@ import org.springframework.context.annotation.Configuration;
         type = SecuritySchemeType.HTTP,
         scheme = "bearer"
 )
-public class OpenAPIConfiguration {
+public class OpenApiConfig {
 
 }
