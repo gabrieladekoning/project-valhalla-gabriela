@@ -19,6 +19,7 @@
     <module>eureka-service</module>
     <module>gateway-service</module>
     <module>access-control-service</module>
+    <module>library</module>
   </modules>
 
   <properties>
@@ -48,6 +49,11 @@
         <version>${spring-cloud.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.devoteam</groupId>
+        <artifactId>library</artifactId>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
