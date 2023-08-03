@@ -3,7 +3,7 @@ package com.devoteam.accesscontrolservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication (scanBasePackages = {"com.devoteam.library", "com.devoteam.accesscontrolservice"})
+@SpringBootApplication (scanBasePackages = {"com.devoteam"})
 public class AccessControlServiceApplication {
 
 	public static void main(String[] args) {
