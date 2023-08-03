@@ -76,6 +76,7 @@
         <dependency>
             <groupId>com.devoteam</groupId>
             <artifactId>library</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

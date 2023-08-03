@@ -28,7 +28,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -50,11 +49,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>com.devoteam</groupId>
-        <artifactId>library</artifactId>
-        <version>${project.version}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -66,6 +60,5 @@
       </plugin>
     </plugins>
   </build>
-
 
 </project>
