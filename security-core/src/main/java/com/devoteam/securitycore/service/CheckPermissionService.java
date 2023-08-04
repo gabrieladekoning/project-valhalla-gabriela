@@ -1,8 +1,6 @@
 package com.devoteam.securitycore.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,8 +14,8 @@ import reactor.core.publisher.Mono;
 public class CheckPermissionService {
     private final WebClient webClient;
 
-    public CheckPermissionService(@Value("${access.control.service.url}") String accessControlServiceUrl) {
-        this.webClient = WebClient.builder().baseUrl(accessControlServiceUrl).build();
+    public CheckPermissionService(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.build();
     }
 
 
@@ -30,7 +28,7 @@ public class CheckPermissionService {
 
         try {
             return Boolean.TRUE.equals(webClient.get()
-                    .uri(uriBuilder -> uriBuilder.path("/v1/access-validation/validate")
+                    .uri("http://access-control-service/v1/access-validation/validate", uriBuilder -> uriBuilder
                             .queryParam("applicationName", applicationName)
                             .queryParam("functionName", functionName)
                             .queryParam("permission", permissionName)
