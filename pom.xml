@@ -20,6 +20,7 @@
     <module>gateway-service</module>
     <module>access-control-service</module>
     <module>security-core</module>
+    <module>demo</module>
   </modules>
 
   <properties>
@@ -35,6 +36,10 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-commons</artifactId>
     </dependency>
 
     <dependency>
