@@ -30,7 +30,7 @@ public class AccessValidationController {
                                             @NotBlank @RequestParam String permission) {
         var isAllowed = accessValidationService.checkAccess(applicationName, functionName, permission);
 
-        log.info("User has {} to application: {}, function: {} with permission: {}",
+        log.info("User has '{}' to application: '{}', function: '{}' with permission: '{}'",
                 isAllowed ? "access" : "no access", applicationName, functionName, permission);
 
         return isAllowed ? ResponseEntity.status(HttpStatus.OK).build() : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
