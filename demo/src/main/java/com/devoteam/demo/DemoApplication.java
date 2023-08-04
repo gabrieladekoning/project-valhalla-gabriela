@@ -1,9 +1,9 @@
-package com.example.demo;
+package com.devoteam.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication (scanBasePackages = {"com.devoteam.securitycore", "com.example.demo"})
+@SpringBootApplication (scanBasePackages = {"com.devoteam"})
 public class DemoApplication {
 
 	public static void main(String[] args) {
