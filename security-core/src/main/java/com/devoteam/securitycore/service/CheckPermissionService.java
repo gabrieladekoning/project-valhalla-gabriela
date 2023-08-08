@@ -2,6 +2,7 @@ package com.devoteam.securitycore.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -35,8 +36,8 @@ public class CheckPermissionService {
                             .build())
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
-                    .onStatus(httpStatus -> httpStatus.is4xxClientError(), clientResponse -> Mono.error(new AccessDeniedException("Access Denied")))
-                    .onStatus(httpStatus -> httpStatus.is5xxServerError(), clientResponse -> Mono.error(new RuntimeException("Server Error")))
+                    .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new AccessDeniedException("Access Denied")))
+                    .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Server Error")))
                     .toEntity(Void.class)
                     .map(responseEntity -> responseEntity.getStatusCode() == HttpStatus.OK)
                     .block());
