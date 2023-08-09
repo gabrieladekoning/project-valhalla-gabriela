@@ -34,7 +34,7 @@ public class ProfileController {
         var profile = profileService.createOrRetrieveProfile(creationRequest);
         var creationResponse = ProfileMapper.INSTANCE.mapToProfileResponse(profile);
 
-        log.debug("Created a new profile with ID: {}", creationResponse.getId());
+        log.info("Created new / returned existing profile '{}", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
     }
 }

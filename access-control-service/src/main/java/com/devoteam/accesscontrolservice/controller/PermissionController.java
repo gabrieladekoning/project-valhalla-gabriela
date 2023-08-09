@@ -34,7 +34,7 @@ public class PermissionController {
         var permission = permissionService.createOrRetrievePermission(creationRequest);
         var creationResponse = PermissionMapper.INSTANCE.mapToPermissionResponse(permission);
 
-        log.debug("Created a new permission with ID: {}", creationResponse.getId());
+        log.info("Created new / returned existing permission '{}'", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
     }
 }

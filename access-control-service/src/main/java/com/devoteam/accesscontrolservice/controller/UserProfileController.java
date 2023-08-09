@@ -34,7 +34,7 @@ public class UserProfileController {
         var userProfile = userProfileService.createOrRetrieveUserProfile(creationRequest);
         var creationResponse = UserProfileMapper.INSTANCE.mapToUserProfileResponse(userProfile);
 
-        log.debug("Created a new association between user and profile with ID: {}", creationResponse.getId());
+        log.info("Created new / returned existing association between user and profile '{}'", creationResponse.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
     }
 }

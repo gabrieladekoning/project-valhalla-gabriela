@@ -19,27 +19,29 @@ public class PermissionService {
     private final PermissionRepository permissionRepository;
 
     public Permission createOrRetrievePermission(PermissionCreationRequest creationRequest) {
-        log.info("Received a request to create a new permission with name: {}", creationRequest.getName());
+        log.info("Received a request to create a new permission with name: '{}'", creationRequest.getName());
 
         return findExistingPermission(creationRequest)
                 .orElseGet(() -> createNewPermission(creationRequest));
     }
 
     private Optional<Permission> findExistingPermission(PermissionCreationRequest creationRequest) {
-        var existingPermission = permissionRepository.findByName(creationRequest.getName());
-        existingPermission.ifPresent(permission ->
-                log.info("A permission with name: '{}' already exists, returning the existing permission",
-                        creationRequest.getName())
-        );
-        return existingPermission;
+        log.info("Checking if permission exists '{}'", creationRequest);
+
+        return permissionRepository.findByName(creationRequest.getName());
     }
 
     private Permission createNewPermission(PermissionCreationRequest creationRequest) {
+        log.info("Creating new permission '{}'", creationRequest);
+
         var permission = PermissionMapper.INSTANCE.mapToPermission(creationRequest);
+
         return permissionRepository.save(permission);
     }
 
     public Permission findByIdOrThrowNotFound(String permissionId) {
+        log.info("Finding permission by ID: '{}'", permissionId);
+
         return permissionRepository.findById(UUID.fromString(permissionId))
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Permission with ID: %s not found.".formatted(permissionId)

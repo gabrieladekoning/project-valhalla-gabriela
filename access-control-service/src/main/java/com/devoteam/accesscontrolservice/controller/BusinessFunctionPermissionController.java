@@ -34,7 +34,7 @@ public class BusinessFunctionPermissionController {
         var businessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(creationRequest);
         var creationResponse = BusinessFunctionPermissionMapper.INSTANCE.mapToBusinessFunctionPermissionResponse(businessFunctionPermission);
 
-        log.debug("Created a new association between business function and permission with ID: '{}'", creationResponse.getId());
+        log.info("Created new / returned existing association between business function and permission '{}'", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
     }
 }

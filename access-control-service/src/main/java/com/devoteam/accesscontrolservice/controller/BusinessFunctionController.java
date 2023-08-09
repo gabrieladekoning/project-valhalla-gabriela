@@ -34,7 +34,7 @@ public class BusinessFunctionController {
         var businessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
         var creationResponse = BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionResponse(businessFunction);
 
-        log.debug("Created a new business function with ID: {}", creationResponse.getId());
+        log.info("Created new / returned existing business function '{}'", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
     }
 }
