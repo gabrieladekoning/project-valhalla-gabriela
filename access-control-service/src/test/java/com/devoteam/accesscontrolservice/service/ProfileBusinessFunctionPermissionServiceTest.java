@@ -81,7 +81,7 @@ class ProfileBusinessFunctionPermissionServiceTest {
                 .build();
     }
 
-    @DisplayName("Test saving a new ProfileBusinessFunctionPermission successfully")
+    @DisplayName("Saving a new ProfileBusinessFunctionPermission successfully")
     @Test
     void createOrRetrieveProfileBusinessFunctionPermission_SuccessfullySaved_WhenAssociationDoesNotAlreadyExist() {
         given(businessFunctionPermissionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionPermissionId())).willReturn(businessFunctionPermission);
@@ -89,13 +89,13 @@ class ProfileBusinessFunctionPermissionServiceTest {
         given(profileBusinessFunctionPermissionRepository.findByBusinessFunctionPermissionAndProfile(businessFunctionPermission, profile)).willReturn(Optional.empty());
         given(profileBusinessFunctionPermissionRepository.save(ArgumentMatchers.any())).willReturn(profileBusinessFunctionPermission);
 
-        ProfileBusinessFunctionPermission response = serviceUnderTest.createOrRetrieveProfileBusinessFunctionPermission(creationRequest);
+        var response = serviceUnderTest.createOrRetrieveProfileBusinessFunctionPermission(creationRequest);
 
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getId()).isEqualTo(profileBusinessFunctionPermission.getId());
     }
 
-    @DisplayName("Test retrieving an existing ProfileBusinessFunctionPermission successfully")
+    @DisplayName("Retrieving an existing ProfileBusinessFunctionPermission successfully")
     @Test
     void createOrRetrieveProfileBusinessFunctionPermission_SuccessfullyRetrieved_WhenAssociationAlreadyExists() {
         given(businessFunctionPermissionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionPermissionId())).willReturn(businessFunctionPermission);
@@ -108,7 +108,7 @@ class ProfileBusinessFunctionPermissionServiceTest {
         Assertions.assertThat(response.getId()).isEqualTo(profileBusinessFunctionPermission.getId());
     }
 
-    @DisplayName("Test handling when BusinessFunctionPermission is not found")
+    @DisplayName("Handling when BusinessFunctionPermission is not found")
     @Test
     void createOrRetrieveProfileBusinessFunctionPermission_ThrowsResourceNotFoundException_WhenBusinessFunctionPermissionNotFound() {
         given(businessFunctionPermissionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionPermissionId())).willThrow(ResourceNotFoundException.class);
@@ -116,7 +116,7 @@ class ProfileBusinessFunctionPermissionServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> serviceUnderTest.createOrRetrieveProfileBusinessFunctionPermission(creationRequest));
     }
 
-    @DisplayName("Test handling when Profile is not found")
+    @DisplayName("Handling when Profile is not found")
     @Test
     void createOrRetrieveProfileBusinessFunctionPermission_ThrowsResourceNotFoundException_WhenProfileNotFound() {
         given(businessFunctionPermissionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionPermissionId())).willReturn(businessFunctionPermission);

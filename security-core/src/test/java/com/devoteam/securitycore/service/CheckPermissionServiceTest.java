@@ -79,7 +79,7 @@ class CheckPermissionServiceTest {
         checkPermissionService = new CheckPermissionService(webClientBuilder);
     }
 
-    @DisplayName("Test if access is allowed when user has required permissions")
+    @DisplayName("Access should be allowed when user has the required permissions")
     @Test
     void shouldAllowAccess_WhenUserHasPermission() {
         boolean result = checkPermissionService.isAccessAllowed(applicationName, functionName, permissionName);
@@ -87,7 +87,7 @@ class CheckPermissionServiceTest {
         assertTrue(result);
     }
 
-    @DisplayName("Test if access is denied when user lacks permissions")
+    @DisplayName("Access should be denied when user lacks the required permissions")
     @Test
     void shouldDenyAccess_WhenUserLacksPermission() {
         when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
@@ -98,9 +98,9 @@ class CheckPermissionServiceTest {
         assertFalse(result);
     }
 
-    @DisplayName("Test service behavior when service encounters a 5xx error")
+    @DisplayName("Service should deny access when encountering a 5xx error from external service")
     @Test
-    void shouldHandleServiceError_FromExternalService() {
+    void shouldDenyAccess_OnExternalServiceError() {
         when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
         when(responseSpec.toEntity(Void.class)).thenReturn(Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()));
 
