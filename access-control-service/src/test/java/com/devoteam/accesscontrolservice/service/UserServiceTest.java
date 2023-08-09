@@ -57,7 +57,7 @@ class UserServiceTest {
                 .build();
     }
 
-    @DisplayName("Test saving a new user successfully")
+    @DisplayName("Saving a new user successfully")
     @Test
     void saveApplicationUser_SuccessfullySaved_WhenUserDoesNotAlreadyExist() {
         given(userRepository.findByEmail(userCreationRequest.getEmail())).willReturn(Optional.empty());
@@ -70,7 +70,7 @@ class UserServiceTest {
         Assertions.assertThat(savedUser).hasNoNullFieldsOrProperties();
     }
 
-    @DisplayName("Test saving a user with existing email")
+    @DisplayName("Saving a user with existing email")
     @Test
     void saveApplicationUser_ThrowsEmailAlreadyExistsException_WhenEmailAlreadyExists() {
         given(userRepository.findByEmail(userCreationRequest.getEmail())).willReturn(Optional.of(user));
@@ -80,7 +80,7 @@ class UserServiceTest {
         then(userRepository).should(times(0)).save(any(ApplicationUser.class));
     }
 
-    @DisplayName("Test saving a user when Keycloak registration fails")
+    @DisplayName("Saving a user when Keycloak registration fails")
     @Test
     void saveApplicationUser_ThrowsUserCreationException_WhenKeycloakRegistrationFails() {
         given(userRepository.findByEmail(userCreationRequest.getEmail())).willReturn(Optional.empty());
@@ -91,7 +91,7 @@ class UserServiceTest {
         then(userRepository).should(times(0)).save(any(ApplicationUser.class));
     }
 
-    @DisplayName("Test handling when user is not found")
+    @DisplayName("Handling when user is not found")
     @Test
     void findByIdOrThrowNotFound_ThrowsResourceNotFoundException_WhenUserNotFound() {
         given(userRepository.findById(user.getId())).willReturn(Optional.empty());
