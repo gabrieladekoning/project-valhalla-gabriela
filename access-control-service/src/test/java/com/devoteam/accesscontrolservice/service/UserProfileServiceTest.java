@@ -69,7 +69,7 @@ class UserProfileServiceTest {
                 .build();
     }
 
-    @DisplayName("Test saving a new UserProfile successfully")
+    @DisplayName("Saving a new UserProfile successfully")
     @Test
     void createOrRetrieveUserProfile_SuccessfullySaved_WhenAssociationDoesNotAlreadyExist() {
         given(userService.findByIdOrThrowNotFound(String.valueOf(applicationUser.getId()))).willReturn(applicationUser);
@@ -77,26 +77,26 @@ class UserProfileServiceTest {
         given(userProfileRepository.findByApplicationUserAndProfile(applicationUser, profile)).willReturn(Optional.empty());
         given(userProfileRepository.save(ArgumentMatchers.any())).willReturn(userProfile);
 
-        UserProfile savedUserProfile = userProfileService.createOrRetrieveUserProfile(creationRequest);
+        var savedUserProfile = userProfileService.createOrRetrieveUserProfile(creationRequest);
 
         Assertions.assertThat(savedUserProfile).hasNoNullFieldsOrProperties();
         Assertions.assertThat(savedUserProfile.getId()).isEqualTo(userProfile.getId());
     }
 
-    @DisplayName("Test retrieving an existing UserProfile successfully")
+    @DisplayName("Retrieving an existing UserProfile successfully")
     @Test
     void createOrRetrieveUserProfile_SuccessfullyRetrieved_WhenAssociationAlreadyExists() {
         given(userService.findByIdOrThrowNotFound(String.valueOf(applicationUser.getId()))).willReturn(applicationUser);
         given(profileService.findByIdOrThrowNotFound(String.valueOf(profile.getId()))).willReturn(profile);
         given(userProfileRepository.findByApplicationUserAndProfile(applicationUser, profile)).willReturn(Optional.of(userProfile));
 
-        UserProfile savedUserProfile = userProfileService.createOrRetrieveUserProfile(creationRequest);
+        var savedUserProfile = userProfileService.createOrRetrieveUserProfile(creationRequest);
 
         Assertions.assertThat(savedUserProfile).isNotNull();
         Assertions.assertThat(savedUserProfile.getId()).isEqualTo(userProfile.getId());
     }
 
-    @DisplayName("Test handling when User is not found")
+    @DisplayName("Handling when User is not found")
     @Test
     void createOrRetrieveUserProfile_ThrowsResourceNotFoundException_WhenUserNotFound() {
         given(userService.findByIdOrThrowNotFound(String.valueOf(applicationUser.getId()))).willThrow(new ResourceNotFoundException("User not found"));
@@ -104,7 +104,7 @@ class UserProfileServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> userProfileService.createOrRetrieveUserProfile(creationRequest));
     }
 
-    @DisplayName("Test handling when Profile is not found")
+    @DisplayName("Handling when Profile is not found")
     @Test
     void createOrRetrieveUserProfile_ThrowsResourceNotFoundException_WhenProfileNotFound() {
         given(userService.findByIdOrThrowNotFound(String.valueOf(applicationUser.getId()))).willReturn(applicationUser);

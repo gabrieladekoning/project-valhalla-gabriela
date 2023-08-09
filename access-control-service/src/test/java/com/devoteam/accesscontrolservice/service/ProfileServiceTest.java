@@ -41,30 +41,30 @@ class ProfileServiceTest {
                 .build();
     }
 
-    @DisplayName("Test saving a new profile successfully")
+    @DisplayName("Saving a new profile successfully")
     @Test
     void createOrRetrieveProfile_SuccessfullySaved_WhenFunctionDoesNotAlreadyExist() {
         given(profileRepository.findByName(creationRequest.getName())).willReturn(Optional.empty());
         given(profileRepository.save(ArgumentMatchers.any())).willReturn(profile);
 
-        Profile returnedProfile = profileService.createOrRetrieveProfile(creationRequest);
+        var returnedProfile = profileService.createOrRetrieveProfile(creationRequest);
 
         Assertions.assertThat(returnedProfile).hasNoNullFieldsOrProperties();
         Assertions.assertThat(returnedProfile.getId()).isEqualTo(profile.getId());
     }
 
-    @DisplayName("Test retrieving an existing profile successfully")
+    @DisplayName("Retrieving an existing profile successfully")
     @Test
     void createOrRetrieveProfile_SuccessfullyRetrieved_WhenFunctionAlreadyExists() {
         given(profileRepository.findByName(creationRequest.getName())).willReturn(Optional.of(profile));
 
-        Profile returnedProfile = profileService.createOrRetrieveProfile(creationRequest);
+        var returnedProfile = profileService.createOrRetrieveProfile(creationRequest);
 
         Assertions.assertThat(returnedProfile).isNotNull();
         Assertions.assertThat(returnedProfile.getId()).isEqualTo(profile.getId());
     }
 
-    @DisplayName("Test handling when profile is not found")
+    @DisplayName("Handling when profile is not found")
     @Test
     void findByIdOrThrowNotFound_ThrowsResourceNotFoundException_WhenProfileNotFound() {
         given(profileRepository.findById(profile.getId())).willReturn(Optional.empty());
