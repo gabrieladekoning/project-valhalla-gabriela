@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -77,12 +79,34 @@ class CheckPermissionServiceTest {
         checkPermissionService = new CheckPermissionService(webClientBuilder);
     }
 
-    @DisplayName("Test if access is allowed when user has permission")
+    @DisplayName("Test if access is allowed when user has required permissions")
     @Test
     void shouldAllowAccess_WhenUserHasPermission() {
         boolean result = checkPermissionService.isAccessAllowed(applicationName, functionName, permissionName);
 
         assertTrue(result);
+    }
+
+    @DisplayName("Test if access is denied when user lacks permissions")
+    @Test
+    void shouldDenyAccess_WhenUserLacksPermission() {
+        when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
+        when(responseSpec.toEntity(Void.class)).thenReturn(Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).build()));
+
+        boolean result = checkPermissionService.isAccessAllowed(applicationName, functionName, permissionName);
+
+        assertFalse(result);
+    }
+
+    @DisplayName("Test service behavior when service encounters a 5xx error")
+    @Test
+    void shouldHandleServiceError_FromExternalService() {
+        when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
+        when(responseSpec.toEntity(Void.class)).thenReturn(Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()));
+
+        boolean result = checkPermissionService.isAccessAllowed(applicationName, functionName, permissionName);
+
+        assertFalse(result);
     }
 }
 
