@@ -3,7 +3,6 @@ package com.devoteam.accesscontrolservice.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +24,4 @@ public class BusinessFunction {
     private String applicationName;
     @Column(name = "function_name", nullable = false)
     private String functionName;
-    @OneToMany(mappedBy = "businessFunction")
-    private List<BusinessFunctionPermission> permissions;
 }

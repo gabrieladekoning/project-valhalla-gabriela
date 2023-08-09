@@ -1,9 +1,14 @@
 package com.devoteam.accesscontrolservice.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -22,6 +27,4 @@ public class ApplicationUser {
     private String lastName;
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-    @OneToMany(mappedBy = "applicationUser")
-    private List<UserProfile> profiles;
 }

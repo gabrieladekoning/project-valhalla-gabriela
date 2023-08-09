@@ -1,19 +1,16 @@
 package com.devoteam.accesscontrolservice.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 @Table(name = "permissions")
 public class Permission {
     @Id
@@ -22,6 +19,4 @@ public class Permission {
     private UUID id;
     @Column(name = "name", nullable = false, unique = true)
     private String name;
-    @OneToMany(mappedBy = "permission")
-    private List<BusinessFunctionPermission> businessFunctions;
 }
