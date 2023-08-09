@@ -22,28 +22,18 @@ public class UserProfileService {
         log.debug("Received a request to create an association between user ID: {} and profile ID: {}",
                 creationRequest.getApplicationUserId(), creationRequest.getProfileId());
 
-        return findExistingUserProfile(creationRequest)
+        return findByExistingUserProfile(creationRequest)
                 .orElseGet(() -> createNewUserProfile(creationRequest));
     }
 
-    private Optional<UserProfile> findExistingUserProfile(UserProfileCreationRequest creationRequest) {
+    private Optional<UserProfile> findByExistingUserProfile(UserProfileCreationRequest creationRequest) {
         var user = userService.findByIdOrThrowNotFound(creationRequest.getApplicationUserId());
         var profile = profileService.findByIdOrThrowNotFound(creationRequest.getProfileId());
-
-        var existingUserProfile = userProfileRepository.findByApplicationUserAndProfile(user, profile);
-        existingUserProfile.ifPresent(userProfile ->
-                log.info("An association between user ID: {} and profile ID: {} already exists. Returning the existing association.",
-                        creationRequest.getApplicationUserId(), creationRequest.getProfileId())
-        );
-
-        return existingUserProfile;
+        return userProfileRepository.findByApplicationUserAndProfile(user, profile);
     }
 
     private UserProfile createNewUserProfile(UserProfileCreationRequest creationRequest) {
         var userProfile = UserProfileMapper.INSTANCE.mapToUserProfile(creationRequest);
-        var savedUserProfile = userProfileRepository.save(userProfile);
-
-        log.debug("Created a new association between user and profile with ID: {}", savedUserProfile.getId());
-        return savedUserProfile;
+        return userProfileRepository.save(userProfile);
     }
 }

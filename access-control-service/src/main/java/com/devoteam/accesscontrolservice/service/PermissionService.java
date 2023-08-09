@@ -36,10 +36,7 @@ public class PermissionService {
 
     private Permission createNewPermission(PermissionCreationRequest creationRequest) {
         var permission = PermissionMapper.INSTANCE.mapToPermission(creationRequest);
-        var savedPermission = permissionRepository.save(permission);
-
-        log.debug("Created a new permission with ID: {}", savedPermission.getId());
-        return savedPermission;
+        return permissionRepository.save(permission);
     }
 
     public Permission findByIdOrThrowNotFound(String permissionId) {

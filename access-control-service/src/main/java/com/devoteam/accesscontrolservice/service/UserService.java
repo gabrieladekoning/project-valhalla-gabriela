@@ -23,11 +23,10 @@ public class UserService {
         assertEmailDoesNotExist(creationRequest);
         var user = UserMapper.INSTANCE.mapToApplicationUser(creationRequest);
         log.info("Creating user with email: {}", creationRequest.getEmail());
+
         var keycloakUserId = keycloakService.createUser(creationRequest);
         user.setId(UUID.fromString(keycloakUserId));
-        var savedUser = userRepository.save(user);
-        log.debug("Saved user with ID: {}", savedUser.getId());
-        return savedUser;
+        return userRepository.save(user);
     }
 
     private void assertEmailDoesNotExist(ApplicationUserCreationRequest creationRequest) {

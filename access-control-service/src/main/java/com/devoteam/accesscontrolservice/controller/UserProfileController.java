@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/v1/user-profiles")
 public class UserProfileController {
     private final UserProfileService userProfileService;
@@ -30,6 +32,9 @@ public class UserProfileController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'user-profile', 'create')")
     public ResponseEntity<UserProfileCreationResponse> save(@Valid @RequestBody UserProfileCreationRequest creationRequest) {
         var userProfile = userProfileService.createOrRetrieveUserProfile(creationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(UserProfileMapper.INSTANCE.mapToUserProfileResponse(userProfile));
+        var creationResponse = UserProfileMapper.INSTANCE.mapToUserProfileResponse(userProfile);
+
+        log.debug("Created a new association between user and profile with ID: {}", creationResponse.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
     }
 }

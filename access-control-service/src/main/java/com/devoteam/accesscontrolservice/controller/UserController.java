@@ -7,6 +7,7 @@ import com.devoteam.accesscontrolservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Validated
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/v1/users")
 public class UserController {
     private final UserService userService;
@@ -26,6 +28,9 @@ public class UserController {
     @Operation(summary = "Create a user")
     public ResponseEntity<ApplicationUserCreationResponse> save(@Valid @RequestBody ApplicationUserCreationRequest creationRequest) {
         var savedUser = userService.saveApplicationUser(creationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.INSTANCE.mapToApplicationUserDto(savedUser));
+        var creationResponse = UserMapper.INSTANCE.mapToApplicationUserDto(savedUser);
+
+        log.debug("Saved user with ID: {}", creationResponse.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
     }
 }

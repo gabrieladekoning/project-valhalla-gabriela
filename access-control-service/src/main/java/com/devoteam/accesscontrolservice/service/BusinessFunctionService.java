@@ -38,10 +38,7 @@ public class BusinessFunctionService {
 
     private BusinessFunction createNewBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
         var businessFunction = BusinessFunctionMapper.INSTANCE.mapToBusinessFunction(creationRequest);
-        var savedBusinessFunction = businessFunctionRepository.save(businessFunction);
-
-        log.debug("Created a new business function with ID: {}", savedBusinessFunction.getId());
-        return savedBusinessFunction;
+        return businessFunctionRepository.save(businessFunction);
     }
 
     public BusinessFunction findByIdOrThrowNotFound(String businessFunctionId) {
