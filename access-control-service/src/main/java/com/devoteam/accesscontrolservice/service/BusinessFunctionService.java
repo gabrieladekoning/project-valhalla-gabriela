@@ -30,7 +30,7 @@ public class BusinessFunctionService {
         var existingBusinessFunction = businessFunctionRepository.findByApplicationNameAndFunctionName(
                 creationRequest.getApplicationName(), creationRequest.getFunctionName());
         existingBusinessFunction.ifPresent(businessFunction ->
-                log.info("A business function with application name: {} and function name: {} already exists, returning the existing business function",
+                log.info("A business function with application name: '{}' and function name: '{}' already exists, returning the existing business function",
                         creationRequest.getApplicationName(), creationRequest.getFunctionName())
         );
         return existingBusinessFunction;

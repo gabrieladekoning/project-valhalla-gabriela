@@ -28,7 +28,7 @@ public class PermissionService {
     private Optional<Permission> findExistingPermission(PermissionCreationRequest creationRequest) {
         var existingPermission = permissionRepository.findByName(creationRequest.getName());
         existingPermission.ifPresent(permission ->
-                log.info("A permission with name: {} already exists, returning the existing permission",
+                log.info("A permission with name: '{}' already exists, returning the existing permission",
                         creationRequest.getName())
         );
         return existingPermission;

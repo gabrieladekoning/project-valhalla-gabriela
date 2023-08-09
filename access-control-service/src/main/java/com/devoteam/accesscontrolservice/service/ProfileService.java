@@ -28,7 +28,7 @@ public class ProfileService {
     private Optional<Profile> findExistingProfile(ProfileCreationRequest creationRequest) {
         var existingProfile = profileRepository.findByName(creationRequest.getName());
         existingProfile.ifPresent(profile ->
-                log.info("A profile with name: {} already exists, returning the existing profile",
+                log.info("A profile with name: '{}' already exists, returning the existing profile",
                         creationRequest.getName())
         );
         return existingProfile;
