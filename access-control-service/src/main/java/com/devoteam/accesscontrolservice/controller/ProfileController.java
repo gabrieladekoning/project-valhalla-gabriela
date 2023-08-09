@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.controller;
 
 import com.devoteam.accesscontrolservice.dto.ProfileCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ProfileCreationResponse;
+import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
 import com.devoteam.accesscontrolservice.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,6 +30,6 @@ public class ProfileController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'create')")
     public ResponseEntity<ProfileCreationResponse> save(@Valid @RequestBody ProfileCreationRequest creationRequest) {
         var profile = profileService.createOrRetrieveProfile(creationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(profile);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ProfileMapper.INSTANCE.mapToProfileResponse(profile));
     }
 }

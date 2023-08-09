@@ -1,8 +1,8 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.PermissionCreationRequest;
-import com.devoteam.accesscontrolservice.dto.PermissionCreationResponse;
 import com.devoteam.accesscontrolservice.entity.Permission;
+import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.PermissionRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,10 +47,10 @@ class PermissionServiceTest {
         given(permissionRepository.findByName(creationRequest.getName())).willReturn(Optional.empty());
         given(permissionRepository.save(ArgumentMatchers.any())).willReturn(permission);
 
-        PermissionCreationResponse savedPermissionResponse = permissionService.createOrRetrievePermission(creationRequest);
+        Permission returnedPermission = permissionService.createOrRetrievePermission(creationRequest);
 
-        Assertions.assertThat(savedPermissionResponse).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(savedPermissionResponse.getId()).isEqualTo(permission.getId().toString());
+        Assertions.assertThat(returnedPermission).hasNoNullFieldsOrProperties();
+        Assertions.assertThat(returnedPermission.getId()).isEqualTo(permission.getId());
     }
 
     @DisplayName("Test retrieving an existing permission successfully")
@@ -57,9 +58,17 @@ class PermissionServiceTest {
     void createOrRetrievePermission_SuccessfullyRetrieved_WhenFunctionAlreadyExists() {
         given(permissionRepository.findByName(creationRequest.getName())).willReturn(Optional.of(permission));
 
-        PermissionCreationResponse savedPermissionResponse = permissionService.createOrRetrievePermission(creationRequest);
+        Permission returnedPermission = permissionService.createOrRetrievePermission(creationRequest);
 
-        Assertions.assertThat(savedPermissionResponse).isNotNull();
-        Assertions.assertThat(savedPermissionResponse.getId()).isEqualTo(permission.getId().toString());
+        Assertions.assertThat(returnedPermission).isNotNull();
+        Assertions.assertThat(returnedPermission.getId()).isEqualTo(permission.getId());
+    }
+
+    @DisplayName("Test handling when permission is not found")
+    @Test
+    void findByIdOrThrowNotFound_ThrowsResourceNotFoundException_WhenPermissionNotFound() {
+        given(permissionRepository.findById(permission.getId())).willReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> permissionService.findByIdOrThrowNotFound(String.valueOf(permission.getId())));
     }
 }

@@ -1,8 +1,8 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationRequest;
-import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationResponse;
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
+import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,10 +49,10 @@ class BusinessFunctionServiceTest {
         given(businessFunctionRepository.findByApplicationNameAndFunctionName(creationRequest.getApplicationName(), creationRequest.getFunctionName())).willReturn(Optional.empty());
         given(businessFunctionRepository.save(ArgumentMatchers.any())).willReturn(businessFunction);
 
-        BusinessFunctionCreationResponse savedBusinessFunctionResponse = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
+        BusinessFunction returnedBusinessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
 
-        Assertions.assertThat(savedBusinessFunctionResponse).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(savedBusinessFunctionResponse.getId()).isEqualTo(businessFunction.getId().toString());
+        Assertions.assertThat(returnedBusinessFunction).hasNoNullFieldsOrProperties();
+        Assertions.assertThat(returnedBusinessFunction.getId()).isEqualTo(businessFunction.getId());
     }
 
     @DisplayName("Test retrieving an existing business function successfully")
@@ -59,9 +60,17 @@ class BusinessFunctionServiceTest {
     void createOrRetrieveBusinessFunction_SuccessfullyRetrieved_WhenFunctionAlreadyExists() {
         given(businessFunctionRepository.findByApplicationNameAndFunctionName(creationRequest.getApplicationName(), creationRequest.getFunctionName())).willReturn(Optional.of(businessFunction));
 
-        BusinessFunctionCreationResponse savedBusinessFunctionResponse = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
+        BusinessFunction returnedBusinessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
 
-        Assertions.assertThat(savedBusinessFunctionResponse).isNotNull();
-        Assertions.assertThat(savedBusinessFunctionResponse.getId()).isEqualTo(businessFunction.getId().toString());
+        Assertions.assertThat(returnedBusinessFunction).isNotNull();
+        Assertions.assertThat(returnedBusinessFunction.getId()).isEqualTo(businessFunction.getId());
+    }
+
+    @DisplayName("Test handling when business function is not found")
+    @Test
+    void findByIdOrThrowNotFound_ThrowsResourceNotFoundException_WhenBusinessFunctionNotFound() {
+        given(businessFunctionRepository.findById(businessFunction.getId())).willReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> businessFunctionService.findByIdOrThrowNotFound(String.valueOf(businessFunction.getId())));
     }
 }

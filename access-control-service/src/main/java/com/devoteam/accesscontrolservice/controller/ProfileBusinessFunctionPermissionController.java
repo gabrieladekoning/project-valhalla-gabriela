@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.controller;
 
 import com.devoteam.accesscontrolservice.dto.ProfileBusinessFunctionPermissionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ProfileBusinessFunctionPermissionCreationResponse;
+import com.devoteam.accesscontrolservice.mapper.ProfileBusinessFunctionPermissionMapper;
 import com.devoteam.accesscontrolservice.service.ProfileBusinessFunctionPermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,6 +30,6 @@ public class ProfileBusinessFunctionPermissionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile-business-function-permission', 'create')")
     public ResponseEntity<ProfileBusinessFunctionPermissionCreationResponse> save(@Valid @RequestBody ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
         var profileBusinessFunctionPermission = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(creationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(profileBusinessFunctionPermission);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ProfileBusinessFunctionPermissionMapper.INSTANCE.mapToProfileBusinessFunctionPermissionResponse(profileBusinessFunctionPermission));
     }
 }

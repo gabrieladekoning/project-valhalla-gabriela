@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.controller;
 
 import com.devoteam.accesscontrolservice.dto.PermissionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.PermissionCreationResponse;
+import com.devoteam.accesscontrolservice.mapper.PermissionMapper;
 import com.devoteam.accesscontrolservice.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,6 +30,6 @@ public class PermissionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'create')")
     public ResponseEntity<PermissionCreationResponse> save(@Valid @RequestBody PermissionCreationRequest creationRequest) {
         var permission = permissionService.createOrRetrievePermission(creationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(permission);
+        return ResponseEntity.status(HttpStatus.CREATED).body(PermissionMapper.INSTANCE.mapToPermissionResponse(permission));
     }
 }

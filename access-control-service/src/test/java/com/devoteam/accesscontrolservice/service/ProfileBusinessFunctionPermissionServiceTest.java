@@ -1,12 +1,9 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ProfileBusinessFunctionPermissionCreationRequest;
-import com.devoteam.accesscontrolservice.dto.ProfileBusinessFunctionPermissionCreationResponse;
 import com.devoteam.accesscontrolservice.entity.*;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
-import com.devoteam.accesscontrolservice.repository.BusinessFunctionPermissionRepository;
 import com.devoteam.accesscontrolservice.repository.ProfileBusinessFunctionPermissionRepository;
-import com.devoteam.accesscontrolservice.repository.ProfileRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,16 +23,16 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class ProfileBusinessFunctionPermissionServiceTest {
     @Mock
-    private BusinessFunctionPermissionRepository businessFunctionPermissionRepository;
+    private BusinessFunctionPermissionService businessFunctionPermissionService;
 
     @Mock
-    private ProfileRepository profileRepository;
+    private ProfileService profileService;
 
     @Mock
     private ProfileBusinessFunctionPermissionRepository profileBusinessFunctionPermissionRepository;
 
     @InjectMocks
-    private ProfileBusinessFunctionPermissionService profileBusinessFunctionPermissionService;
+    private ProfileBusinessFunctionPermissionService serviceUnderTest;
 
     private ProfileBusinessFunctionPermissionCreationRequest creationRequest;
     private BusinessFunctionPermission businessFunctionPermission;
@@ -87,44 +84,44 @@ class ProfileBusinessFunctionPermissionServiceTest {
     @DisplayName("Test saving a new ProfileBusinessFunctionPermission successfully")
     @Test
     void createOrRetrieveProfileBusinessFunctionPermission_SuccessfullySaved_WhenAssociationDoesNotAlreadyExist() {
-        given(businessFunctionPermissionRepository.findById(businessFunctionPermission.getId())).willReturn(Optional.of(businessFunctionPermission));
-        given(profileRepository.findById(profile.getId())).willReturn(Optional.of(profile));
+        given(businessFunctionPermissionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionPermissionId())).willReturn(businessFunctionPermission);
+        given(profileService.findByIdOrThrowNotFound(creationRequest.getProfileId())).willReturn(profile);
         given(profileBusinessFunctionPermissionRepository.findByBusinessFunctionPermissionAndProfile(businessFunctionPermission, profile)).willReturn(Optional.empty());
         given(profileBusinessFunctionPermissionRepository.save(ArgumentMatchers.any())).willReturn(profileBusinessFunctionPermission);
 
-        ProfileBusinessFunctionPermissionCreationResponse savedProfileBusinessFunctionPermission = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(creationRequest);
+        ProfileBusinessFunctionPermission response = serviceUnderTest.createOrRetrieveProfileBusinessFunctionPermission(creationRequest);
 
-        Assertions.assertThat(savedProfileBusinessFunctionPermission).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(savedProfileBusinessFunctionPermission.getId()).isEqualTo(profileBusinessFunctionPermission.getId().toString());
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getId()).isEqualTo(profileBusinessFunctionPermission.getId());
     }
 
     @DisplayName("Test retrieving an existing ProfileBusinessFunctionPermission successfully")
     @Test
     void createOrRetrieveProfileBusinessFunctionPermission_SuccessfullyRetrieved_WhenAssociationAlreadyExists() {
-        given(businessFunctionPermissionRepository.findById(businessFunctionPermission.getId())).willReturn(Optional.of(businessFunctionPermission));
-        given(profileRepository.findById(profile.getId())).willReturn(Optional.of(profile));
+        given(businessFunctionPermissionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionPermissionId())).willReturn(businessFunctionPermission);
+        given(profileService.findByIdOrThrowNotFound(creationRequest.getProfileId())).willReturn(profile);
         given(profileBusinessFunctionPermissionRepository.findByBusinessFunctionPermissionAndProfile(businessFunctionPermission, profile)).willReturn(Optional.of(profileBusinessFunctionPermission));
 
-        ProfileBusinessFunctionPermissionCreationResponse savedProfileBusinessFunctionPermission = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(creationRequest);
+        var response = serviceUnderTest.createOrRetrieveProfileBusinessFunctionPermission(creationRequest);
 
-        Assertions.assertThat(savedProfileBusinessFunctionPermission).isNotNull();
-        Assertions.assertThat(savedProfileBusinessFunctionPermission.getId()).isEqualTo(profileBusinessFunctionPermission.getId().toString());
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getId()).isEqualTo(profileBusinessFunctionPermission.getId());
     }
 
     @DisplayName("Test handling when BusinessFunctionPermission is not found")
     @Test
     void createOrRetrieveProfileBusinessFunctionPermission_ThrowsResourceNotFoundException_WhenBusinessFunctionPermissionNotFound() {
-        given(businessFunctionPermissionRepository.findById(businessFunctionPermission.getId())).willReturn(Optional.empty());
+        given(businessFunctionPermissionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionPermissionId())).willThrow(ResourceNotFoundException.class);
 
-        assertThrows(ResourceNotFoundException.class, () -> profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(creationRequest));
+        assertThrows(ResourceNotFoundException.class, () -> serviceUnderTest.createOrRetrieveProfileBusinessFunctionPermission(creationRequest));
     }
 
     @DisplayName("Test handling when Profile is not found")
     @Test
     void createOrRetrieveProfileBusinessFunctionPermission_ThrowsResourceNotFoundException_WhenProfileNotFound() {
-        given(businessFunctionPermissionRepository.findById(businessFunctionPermission.getId())).willReturn(Optional.of(businessFunctionPermission));
-        given(profileRepository.findById(profile.getId())).willReturn(Optional.empty());
+        given(businessFunctionPermissionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionPermissionId())).willReturn(businessFunctionPermission);
+        given(profileService.findByIdOrThrowNotFound(creationRequest.getProfileId())).willThrow(ResourceNotFoundException.class);
 
-        assertThrows(ResourceNotFoundException.class, () -> profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(creationRequest));
+        assertThrows(ResourceNotFoundException.class, () -> serviceUnderTest.createOrRetrieveProfileBusinessFunctionPermission(creationRequest));
     }
 }

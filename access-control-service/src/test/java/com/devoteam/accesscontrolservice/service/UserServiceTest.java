@@ -1,9 +1,9 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
-import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
+import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.exception.UserCreationFailedException;
 import com.devoteam.accesscontrolservice.repository.UserRepository;
 import org.assertj.core.api.Assertions;
@@ -62,8 +62,8 @@ class UserServiceTest {
         given(keycloakService.createUser(testUserDto)).willReturn(String.valueOf(uuid));
         given(userRepository.save(ArgumentMatchers.any())).willReturn(testUser);
 
-        ApplicationUserCreationResponse savedUserDto = userService.saveApplicationUser(testUserDto);
-        savedUserDto.setId(testUser.getId().toString());
+        ApplicationUser savedUserDto = userService.saveApplicationUser(testUserDto);
+        savedUserDto.setId(testUser.getId());
 
         Assertions.assertThat(savedUserDto).hasNoNullFieldsOrProperties();
     }
@@ -87,5 +87,13 @@ class UserServiceTest {
         assertThrows(UserCreationFailedException.class, () -> userService.saveApplicationUser(testUserDto));
         then(userRepository).should(times(1)).findByEmail(testUserDto.getEmail());
         then(userRepository).should(times(0)).save(any(ApplicationUser.class));
+    }
+
+    @DisplayName("Test handling when user is not found")
+    @Test
+    void findByIdOrThrowNotFound_ThrowsResourceNotFoundException_WhenUserNotFound() {
+        given(userRepository.findById(testUser.getId())).willReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> userService.findByIdOrThrowNotFound(String.valueOf(testUser.getId())));
     }
 }

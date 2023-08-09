@@ -1,8 +1,8 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ProfileCreationRequest;
-import com.devoteam.accesscontrolservice.dto.ProfileCreationResponse;
 import com.devoteam.accesscontrolservice.entity.Profile;
+import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
 import com.devoteam.accesscontrolservice.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,13 +18,10 @@ import java.util.Optional;
 public class ProfileService {
     private final ProfileRepository profileRepository;
 
-    public ProfileCreationResponse createOrRetrieveProfile(ProfileCreationRequest creationRequest) {
+    public Profile createOrRetrieveProfile(ProfileCreationRequest creationRequest) {
         log.info("Received a request to create a new profile with name: {}", creationRequest.getName());
 
-        var existingProfile = findExistingProfile(creationRequest);
-
-        return existingProfile
-                .map(ProfileMapper.INSTANCE::mapToProfileResponse)
+        return findExistingProfile(creationRequest)
                 .orElseGet(() -> createNewProfile(creationRequest));
     }
 
@@ -36,11 +34,18 @@ public class ProfileService {
         return existingProfile;
     }
 
-    private ProfileCreationResponse createNewProfile(ProfileCreationRequest creationRequest) {
+    private Profile createNewProfile(ProfileCreationRequest creationRequest) {
         var profile = ProfileMapper.INSTANCE.mapToProfile(creationRequest);
         var savedProfile = profileRepository.save(profile);
 
         log.debug("Created a new profile with ID: {}", savedProfile.getId());
-        return ProfileMapper.INSTANCE.mapToProfileResponse(savedProfile);
+        return savedProfile;
+    }
+
+    public Profile findByIdOrThrowNotFound(String profileId) {
+        return profileRepository.findById(UUID.fromString(profileId))
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Business function with ID: %s not found.".formatted(profileId)
+                ));
     }
 }

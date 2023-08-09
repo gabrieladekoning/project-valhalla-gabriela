@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.controller;
 
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationResponse;
+import com.devoteam.accesscontrolservice.mapper.BusinessFunctionMapper;
 import com.devoteam.accesscontrolservice.service.BusinessFunctionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,6 +30,6 @@ public class BusinessFunctionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'create')")
     public ResponseEntity<BusinessFunctionCreationResponse> save(@Valid @RequestBody BusinessFunctionCreationRequest creationRequest) {
         var businessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(businessFunction);
+        return ResponseEntity.status(HttpStatus.CREATED).body(BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionResponse(businessFunction));
     }
 }

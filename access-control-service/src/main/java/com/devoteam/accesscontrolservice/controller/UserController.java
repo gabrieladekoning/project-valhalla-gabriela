@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.controller;
 
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
+import com.devoteam.accesscontrolservice.mapper.UserMapper;
 import com.devoteam.accesscontrolservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -23,7 +24,8 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Create a user")
-    public ResponseEntity<ApplicationUserCreationResponse> save(@Valid @RequestBody ApplicationUserCreationRequest applicationUser) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveApplicationUser(applicationUser));
+    public ResponseEntity<ApplicationUserCreationResponse> save(@Valid @RequestBody ApplicationUserCreationRequest creationRequest) {
+        var savedUser = userService.saveApplicationUser(creationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.INSTANCE.mapToApplicationUserDto(savedUser));
     }
 }
