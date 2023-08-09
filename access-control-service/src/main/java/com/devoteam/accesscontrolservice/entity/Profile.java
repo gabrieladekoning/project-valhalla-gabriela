@@ -3,6 +3,7 @@ package com.devoteam.accesscontrolservice.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,4 +20,6 @@ public class Profile {
     private UUID id;
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+    @OneToMany(mappedBy = "profile")
+    private List<ProfileBusinessFunctionPermission> businessFunctionPermissions;
 }
