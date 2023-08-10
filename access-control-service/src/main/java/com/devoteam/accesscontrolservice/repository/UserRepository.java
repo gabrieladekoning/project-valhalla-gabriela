@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<ApplicationUser, UUID> {
                     "AND bf.function_name = :functionName " +
                     "AND perm.name = :permissionName",
             nativeQuery = true)
-    boolean checkUserAccess(@Param("userUUid") UUID userUUid,
+    Long checkUserAccess(@Param("userUUid") UUID userUUid,
                             @Param("applicationName") String applicationName,
                             @Param("functionName") String functionName,
                             @Param("permissionName") String permissionName);
