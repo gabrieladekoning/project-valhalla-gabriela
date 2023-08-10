@@ -39,7 +39,6 @@ class ProfileServiceTest {
         profile = Profile.builder()
                 .id(uuid)
                 .name(creationRequest.getName())
-                .businessFunctionPermissions(new ArrayList<>())
                 .build();
     }
 

@@ -53,7 +53,6 @@ class UserServiceTest {
                 .firstName(userCreationRequest.getFirstName())
                 .lastName(userCreationRequest.getLastName())
                 .email(userCreationRequest.getEmail())
-                .profiles(new ArrayList<>())
                 .build();
     }
 
