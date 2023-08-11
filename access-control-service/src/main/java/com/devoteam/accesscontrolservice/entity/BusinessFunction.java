@@ -1,20 +1,20 @@
 package com.devoteam.accesscontrolservice.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
-@Table(name = "business_functions")
+@Getter
+@Setter
+@Table(
+        name = "business_functions",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"application_name", "function_name"})
+)
 public class BusinessFunction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,6 +24,4 @@ public class BusinessFunction {
     private String applicationName;
     @Column(name = "function_name", nullable = false)
     private String functionName;
-    @OneToMany(mappedBy = "businessFunction")
-    private List<BusinessFunctionPermission> permissions;
 }

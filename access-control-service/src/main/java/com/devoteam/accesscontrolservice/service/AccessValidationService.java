@@ -18,7 +18,7 @@ public class AccessValidationService {
 
     public boolean checkAccess(String applicationName, String functionName, String permissionName) {
         var userUuid = extractUserUuid();
-        return userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName);
+        return userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName) == 1L;
     }
 
     public UUID extractUserUuid() {

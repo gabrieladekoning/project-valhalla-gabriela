@@ -19,6 +19,8 @@
     <module>eureka-service</module>
     <module>gateway-service</module>
     <module>access-control-service</module>
+    <module>security-core</module>
+    <module>demo</module>
   </modules>
 
   <properties>
@@ -27,10 +29,22 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver-dns-native-macos</artifactId>
+      <version>4.1.96.Final</version>
     </dependency>
 
     <dependency>
@@ -60,6 +74,5 @@
       </plugin>
     </plugins>
   </build>
-
 
 </project>

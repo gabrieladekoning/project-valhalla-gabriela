@@ -2,14 +2,12 @@ package com.devoteam.accesscontrolservice.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 public class ApplicationUserCreationRequest {
     @NotBlank(message = "First name is required")

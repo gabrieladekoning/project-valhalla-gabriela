@@ -1,4 +1,4 @@
-package com.devoteam.accesscontrolservice.config;
+package com.devoteam.securitycore.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -23,6 +23,6 @@ import org.springframework.context.annotation.Configuration;
         type = SecuritySchemeType.HTTP,
         scheme = "bearer"
 )
-public class OpenAPIConfiguration {
+public class OpenApiConfig {
 
 }

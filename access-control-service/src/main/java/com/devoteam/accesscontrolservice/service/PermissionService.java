@@ -1,8 +1,8 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.PermissionCreationRequest;
-import com.devoteam.accesscontrolservice.dto.PermissionCreationResponse;
 import com.devoteam.accesscontrolservice.entity.Permission;
+import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.mapper.PermissionMapper;
 import com.devoteam.accesscontrolservice.repository.PermissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,30 +18,33 @@ import java.util.Optional;
 public class PermissionService {
     private final PermissionRepository permissionRepository;
 
-    public PermissionCreationResponse createOrRetrievePermission(PermissionCreationRequest creationRequest) {
-        log.info("Received a request to create a new permission with name: {}", creationRequest.getName());
+    public Permission createOrRetrievePermission(PermissionCreationRequest creationRequest) {
+        log.info("Received a request to create a new permission with name: '{}'", creationRequest.getName());
 
-        var existingPermission = findExistingPermission(creationRequest);
-
-        return existingPermission
-                .map(PermissionMapper.INSTANCE::mapToPermissionResponse)
+        return findExistingPermission(creationRequest)
                 .orElseGet(() -> createNewPermission(creationRequest));
     }
 
     private Optional<Permission> findExistingPermission(PermissionCreationRequest creationRequest) {
-        var existingPermission = permissionRepository.findByName(creationRequest.getName());
-        existingPermission.ifPresent(permission ->
-                log.info("A permission with name: {} already exists, returning the existing permission",
-                        creationRequest.getName())
-        );
-        return existingPermission;
+        log.info("Checking if permission exists '{}'", creationRequest);
+
+        return permissionRepository.findByName(creationRequest.getName());
     }
 
-    private PermissionCreationResponse createNewPermission(PermissionCreationRequest creationRequest) {
-        var permission = PermissionMapper.INSTANCE.mapToPermission(creationRequest);
-        var savedPermission = permissionRepository.save(permission);
+    private Permission createNewPermission(PermissionCreationRequest creationRequest) {
+        log.info("Creating new permission '{}'", creationRequest);
 
-        log.debug("Created a new permission with ID: {}", savedPermission.getId());
-        return PermissionMapper.INSTANCE.mapToPermissionResponse(savedPermission);
+        var permission = PermissionMapper.INSTANCE.mapToPermission(creationRequest);
+
+        return permissionRepository.save(permission);
+    }
+
+    public Permission findByIdOrThrowNotFound(String permissionId) {
+        log.info("Finding permission by ID: '{}'", permissionId);
+
+        return permissionRepository.findById(UUID.fromString(permissionId))
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Permission with ID: %s not found.".formatted(permissionId)
+                ));
     }
 }

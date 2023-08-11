@@ -1,8 +1,9 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
-import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
+import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
+import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.mapper.UserMapper;
 import com.devoteam.accesscontrolservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,20 +19,26 @@ public class UserService {
     private final UserRepository userRepository;
     private final KeycloakService keycloakService;
 
-    public ApplicationUserCreationResponse saveApplicationUser(ApplicationUserCreationRequest creationRequest) {
+    public ApplicationUser saveApplicationUser(ApplicationUserCreationRequest creationRequest) {
         assertEmailDoesNotExist(creationRequest);
         var user = UserMapper.INSTANCE.mapToApplicationUser(creationRequest);
         log.info("Creating user with email: {}", creationRequest.getEmail());
+
         var keycloakUserId = keycloakService.createUser(creationRequest);
         user.setId(UUID.fromString(keycloakUserId));
-        var savedUser = userRepository.save(user);
-        log.debug("Saved user with ID: {}", savedUser.getId());
-        return UserMapper.INSTANCE.mapToApplicationUserDto(savedUser);
+        return userRepository.save(user);
     }
 
     private void assertEmailDoesNotExist(ApplicationUserCreationRequest creationRequest) {
         userRepository.findByEmail(creationRequest.getEmail()).ifPresent(user -> {
             throw new EmailAlreadyExistsException("Email is already registered: '%s'".formatted(user.getEmail()));
         });
+    }
+
+    public ApplicationUser findByIdOrThrowNotFound(String userId) {
+        return userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User with ID: %s not found.".formatted(userId)
+                ));
     }
 }

@@ -1,6 +1,11 @@
 server:
   port: 8090
 
+access:
+  control:
+    service:
+      url: http://localhost:8090
+
 eureka:
   client:
     serviceUrl:
@@ -34,3 +39,7 @@ keycloak:
   realm: ${KEYCLOAK_REALM:application-users}
   client-id: ${KEYCLOAK_CLIENT_ID:access-control-client}
   client-secret: ${KEYCLOAK_CLIENT_SECRET}
+
+logging:
+  level:
+    com.devoteam: DEBUG
