@@ -25,10 +25,12 @@ public class SetupController {
 
     @PostMapping("/setup-all")
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-            summary = "Endpoint to setup (...) according to upsert approach")
+            summary = "Endpoint to setup business function, permission, profile, association between business function and permission, " +
+                    "association between profile and business function permission according to upsert approach")
     public ResponseEntity<Void> setupAll(@Valid @RequestBody SetupAllRequest setupAllRequest) {
         setupService.setupAll(setupAllRequest);
-        //todo: decide what to return
-        return null;
+
+        log.info("Upsert performed with the following data: '{}'", setupAllRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
