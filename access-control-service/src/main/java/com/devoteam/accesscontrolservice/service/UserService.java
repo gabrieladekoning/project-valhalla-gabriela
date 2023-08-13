@@ -30,12 +30,14 @@ public class UserService {
     }
 
     private void assertEmailDoesNotExist(ApplicationUserCreationRequest creationRequest) {
+        log.info("Checking if email exists");
         userRepository.findByEmail(creationRequest.getEmail()).ifPresent(user -> {
             throw new EmailAlreadyExistsException("Email is already registered: '%s'".formatted(user.getEmail()));
         });
     }
 
     public ApplicationUser findByIdOrThrowNotFound(String userId) {
+        log.info("Finding user by ID");
         return userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User with ID: %s not found.".formatted(userId)
@@ -43,10 +45,10 @@ public class UserService {
     }
 
     public ApplicationUser findByEmailOrThrowNotFound(String email) {
+        log.info("Finding user by email");
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User with email: %s not found.".formatted(email)
                 ));
     }
-
 }
