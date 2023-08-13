@@ -5,6 +5,7 @@ import com.devoteam.accesscontrolservice.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class SetupService {
     private final ProfileBusinessFunctionPermissionService profileBusinessFunctionPermissionService;
     private final UserProfileService userProfileService;
 
+    @Transactional
     public void setupAll(SetupAllRequest setupAllRequest) {
         log.info("Received request to set up based on application name: '{}', function name: '{}', permission name: '{}', profile name: '{}', and email: '{}'",
                 setupAllRequest.getApplicationName(), setupAllRequest.getFunctionName(), setupAllRequest.getPermissionName(), setupAllRequest.getProfileName(), setupAllRequest.getEmail());
@@ -39,7 +41,6 @@ public class SetupService {
         log.info("Creating or retrieving association between user and profile");
         upsertUserProfile(applicationUser, profile);
     }
-
 
     private BusinessFunction upsertBusinessFunction(SetupAllRequest setupAllRequest) {
         var businessFunctionCreationRequest = new BusinessFunctionCreationRequest(
