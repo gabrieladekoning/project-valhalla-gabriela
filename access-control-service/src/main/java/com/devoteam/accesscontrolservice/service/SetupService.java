@@ -19,7 +19,7 @@ public class SetupService {
     private final UserProfileService userProfileService;
 
     public void setupAll(SetupAllRequest setupAllRequest) {
-        log.info("Setting up based on application name: '{}', function name: '{}', permission name: '{}', profile name: '{}', and email: '{}'",
+        log.info("Received request to set up based on application name: '{}', function name: '{}', permission name: '{}', profile name: '{}', and email: '{}'",
                 setupAllRequest.getApplicationName(), setupAllRequest.getFunctionName(), setupAllRequest.getPermissionName(), setupAllRequest.getProfileName(), setupAllRequest.getEmail());
 
         log.info("Finding user by email");
@@ -31,6 +31,13 @@ public class SetupService {
         var permission = upsertPermission(setupAllRequest);
         log.info("Creating or retrieving profile");
         var profile = upsertProfile(setupAllRequest);
+
+        log.info("Creating or retrieving association between business function and permission");
+        var businessFunctionPermission = upsertBusinessFunctionPermission(businessFunction, permission);
+        log.info("Creating or retrieving association between business function permission and profile'");
+        upsertProfileBusinessFunctionPermission(businessFunctionPermission, profile);
+        log.info("Creating or retrieving association between user and profile");
+        upsertUserProfile(applicationUser, profile);
     }
 
 
@@ -51,5 +58,20 @@ public class SetupService {
         var profileCreationRequest = new ProfileCreationRequest(
                 setupAllRequest.getProfileName());
         return profileService.createOrRetrieveProfile(profileCreationRequest);
+    }
+
+    private BusinessFunctionPermission upsertBusinessFunctionPermission(BusinessFunction businessFunction, Permission permission) {
+        var businessFunctionPermissionCreationRequest = new BusinessFunctionPermissionCreationRequest(String.valueOf(businessFunction.getId()), String.valueOf(permission.getId()));
+        return businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(businessFunctionPermissionCreationRequest);
+    }
+
+    private void upsertProfileBusinessFunctionPermission(BusinessFunctionPermission businessFunctionPermission, Profile profile) {
+        var profileBusinessFunctionPermissionCreationRequest = new ProfileBusinessFunctionPermissionCreationRequest(String.valueOf(businessFunctionPermission.getId()), String.valueOf(profile.getId()));
+        profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(profileBusinessFunctionPermissionCreationRequest);
+    }
+
+    private void upsertUserProfile(ApplicationUser applicationUser, Profile profile) {
+        var userProfileCreationRequest = new UserProfileCreationRequest(String.valueOf(applicationUser.getId()), String.valueOf(profile.getId()));
+        userProfileService.createOrRetrieveUserProfile(userProfileCreationRequest);
     }
 }
