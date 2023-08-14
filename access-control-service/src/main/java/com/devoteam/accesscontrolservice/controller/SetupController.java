@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SetupController {
     private final SetupService setupService;
 
-    @PostMapping("/setup-all")
+    @PostMapping
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
             summary = "Endpoint to setup business function, permission, profile, association between business function and permission, " +
                     "association between profile and business function permission according to upsert approach")
