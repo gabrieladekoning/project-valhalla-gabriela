@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,7 @@ public class SetupController {
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
             summary = "Endpoint to setup business function, permission, profile, association between business function and permission, " +
                     "association between profile and business function permission according to upsert approach")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'setup-all', 'create')")
     public ResponseEntity<Void> setupAll(@Valid @RequestBody SetupAllRequest setupAllRequest) {
         setupService.setupAll(setupAllRequest);
 
