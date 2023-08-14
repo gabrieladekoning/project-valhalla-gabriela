@@ -11,12 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,7 +59,7 @@ class UserServiceTest {
     void saveApplicationUser_SuccessfullySaved_WhenUserDoesNotAlreadyExist() {
         given(userRepository.findByEmail(userCreationRequest.getEmail())).willReturn(Optional.empty());
         given(keycloakService.createUser(userCreationRequest)).willReturn(String.valueOf(uuid));
-        given(userRepository.save(ArgumentMatchers.any())).willReturn(user);
+        given(userRepository.save(any())).willReturn(user);
 
         var savedUser = userService.saveApplicationUser(userCreationRequest);
         savedUser.setId(user.getId());
@@ -90,11 +88,19 @@ class UserServiceTest {
         then(userRepository).should(times(0)).save(any(ApplicationUser.class));
     }
 
-    @DisplayName("Handling when user is not found")
+    @DisplayName("Handling when user is not found by ID")
     @Test
     void findByIdOrThrowNotFound_ThrowsResourceNotFoundException_WhenUserNotFound() {
         given(userRepository.findById(user.getId())).willReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.findByIdOrThrowNotFound(String.valueOf(user.getId())));
+    }
+
+    @DisplayName("Handling when user is not found by email")
+    @Test
+    void  findByEmailOrThrowNotFound_ThrowsResourceNotFoundException_WhenUserNotFound() {
+        given(userRepository.findByEmail(userCreationRequest.getEmail())).willReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> userService.findByEmailOrThrowNotFound(userCreationRequest.getEmail()));
     }
 }

@@ -53,20 +53,20 @@ class AccessValidationServiceTest {
         SecurityContextHolder.setContext(securityContext);
     }
 
-    @DisplayName("Test access validation when user has access")
+    @DisplayName("Access validation when user has access")
     @Test
     void testAccessValidation_Success_WhenUserHasAccess() {
-        given(userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName)).willReturn(true);
+        given(userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName)).willReturn(1L);
 
         boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName);
 
         assertTrue(accessResult);
     }
 
-    @DisplayName("Test access validation when user does not have access")
+    @DisplayName("Access validation when user does not have access")
     @Test
     void testAccessValidation_Fail_WhenUserDoesNotHaveAccess() {
-        given(userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName)).willReturn(false);
+        given(userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName)).willReturn(0L);
 
         boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName);
 
