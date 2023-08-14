@@ -2,6 +2,8 @@ package com.devoteam.accesscontrolservice.controller;
 
 import com.devoteam.accesscontrolservice.dto.PermissionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.PermissionCreationResponse;
+import com.devoteam.accesscontrolservice.dto.PermissionDto;
+import com.devoteam.accesscontrolservice.entity.Permission;
 import com.devoteam.accesscontrolservice.mapper.PermissionMapper;
 import com.devoteam.accesscontrolservice.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,14 +11,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Validated
@@ -36,5 +37,16 @@ public class PermissionController {
 
         log.info("Created new / returned existing permission '{}'", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
+    }
+
+    @GetMapping
+    @Operation(summary = "Retrieve a paginated list of all permissions")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
+    public ResponseEntity<Page<PermissionDto>> listAll(Pageable pageable) {
+        var permissions = permissionService.listAll(pageable);
+        var permissionDtos = permissions.map(PermissionMapper.INSTANCE::mapToPermissionDto);
+
+        log.info("Listing all permissions");
+        return ResponseEntity.status(HttpStatus.OK).body(permissionDtos);
     }
 }

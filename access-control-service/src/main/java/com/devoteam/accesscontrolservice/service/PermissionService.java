@@ -7,6 +7,8 @@ import com.devoteam.accesscontrolservice.mapper.PermissionMapper;
 import com.devoteam.accesscontrolservice.repository.PermissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -46,5 +48,11 @@ public class PermissionService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Permission with ID: %s not found.".formatted(permissionId)
                 ));
+    }
+
+    public Page<Permission> listAll(Pageable pageable) {
+        log.info("Finding all permissions");
+
+        return permissionRepository.findAll(pageable);
     }
 }
