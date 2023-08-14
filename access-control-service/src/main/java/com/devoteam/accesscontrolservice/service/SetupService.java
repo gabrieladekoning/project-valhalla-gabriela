@@ -21,8 +21,7 @@ public class SetupService {
 
     @Transactional
     public void setupAll(SetupAllRequest setupAllRequest) {
-        log.info("Received request to set up based on application name: '{}', function name: '{}', permission name: '{}', profile name: '{}', and email: '{}'",
-                setupAllRequest.getApplicationName(), setupAllRequest.getFunctionName(), setupAllRequest.getPermissionName(), setupAllRequest.getProfileName(), setupAllRequest.getEmail());
+        log.info("Received request to set up based on the following: '{}'", setupAllRequest);
 
         var applicationUser = userService.findByEmailOrThrowNotFound(setupAllRequest.getEmail());
 
