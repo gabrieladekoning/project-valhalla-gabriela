@@ -48,4 +48,15 @@ public class BusinessFunctionController {
         log.info("Listing all businessFunctions");
         return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponses);
     }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Find businessFunction by ID")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'businessFunction', 'read')")
+    public ResponseEntity<BusinessFunctionReadResponse> findById(@PathVariable String id) {
+        var businessFunction = businessFunctionService.findByIdOrThrowNotFound(id);
+        var businessFunctionReadResponse = BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionReadResponse(businessFunction);
+
+        log.info("Returning businessFunction found by ID: '{}'", id);
+        return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponse);
+    }
 }
