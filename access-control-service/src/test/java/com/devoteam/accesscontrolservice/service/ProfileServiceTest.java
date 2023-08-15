@@ -13,13 +13,19 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileServiceTest {
@@ -29,16 +35,21 @@ class ProfileServiceTest {
     ProfileService profileService;
     private ProfileCreationRequest creationRequest;
     private Profile profile;
+    private Profile secondProfile;
 
     @BeforeEach
     public void setup() {
         UUID uuid = UUID.randomUUID();
         creationRequest = ProfileCreationRequest.builder()
-                .name("Profile name")
+                .name("Admin")
                 .build();
         profile = Profile.builder()
                 .id(uuid)
                 .name(creationRequest.getName())
+                .build();
+        secondProfile = Profile.builder()
+                .id(uuid)
+                .name("User")
                 .build();
     }
 
@@ -71,5 +82,27 @@ class ProfileServiceTest {
         given(profileRepository.findById(profile.getId())).willReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> profileService.findByIdOrThrowNotFound(String.valueOf(profile.getId())));
+    }
+
+    @Test
+    @DisplayName("Returning a pageable list of profiles when successful")
+    void listAll_ReturnListOfProfilesInsidePageObject_WhenSuccessful() {
+        List<Profile> expectedProfiles = new ArrayList<>();
+        expectedProfiles.add(profile);
+        expectedProfiles.add(secondProfile);
+
+        var pageable = PageRequest.of(0, 5);
+        var profilePage = new PageImpl<>(expectedProfiles, pageable, expectedProfiles.size());
+
+        when(profileRepository.findAll(pageable)).thenReturn(profilePage);
+
+        var resultProfilePage = profileService.listAll(pageable);
+
+        verify(profileRepository).findAll(pageable);
+
+        assertThat(resultProfilePage).isNotNull();
+        assertThat(resultProfilePage.toList()).isNotEmpty();
+        assertThat(resultProfilePage.toList().get(0).getName()).isEqualTo(profile.getName());
+        assertThat(resultProfilePage.toList().get(1).getName()).isEqualTo(secondProfile.getName());
     }
 }
