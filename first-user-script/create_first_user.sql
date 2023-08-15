@@ -23,17 +23,23 @@ SET @read_permission_id := (SELECT BIN_TO_UUID(id) FROM permissions WHERE name =
 
 SET @bf_id := (SELECT BIN_TO_UUID(id) FROM business_functions WHERE function_name = 'business-function');
 INSERT INTO business_function_permissions (id, business_function_id, permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id));
-SET @bf_permission_id := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@read_permission_id));
+SET @bf_permission_id_create := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@create_permission_id));
+SET @bf_permission_id_read := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@read_permission_id));
 INSERT INTO profile_business_function_permissions (id, profile_id, business_function_permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_create)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_read));
 
 SET @bf_id := (SELECT BIN_TO_UUID(id) FROM business_functions WHERE function_name = 'business-function-permission');
 INSERT INTO business_function_permissions (id, business_function_id, permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id));
-SET @bf_permission_id := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@read_permission_id));
+SET @bf_permission_id_create := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@create_permission_id));
+SET @bf_permission_id_read := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@read_permission_id));
 INSERT INTO profile_business_function_permissions (id, profile_id, business_function_permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_create)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_read));
 
 SET @bf_id := (SELECT BIN_TO_UUID(id) FROM business_functions WHERE function_name = 'permission');
 INSERT INTO business_function_permissions (id, business_function_id, permission_id)
@@ -47,17 +53,23 @@ VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permissio
 
 SET @bf_id := (SELECT BIN_TO_UUID(id) FROM business_functions WHERE function_name = 'profile-business-function-permission');
 INSERT INTO business_function_permissions (id, business_function_id, permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id));
-SET @bf_permission_id := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@read_permission_id));
+SET @bf_permission_id_create := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@create_permission_id));
+SET @bf_permission_id_read := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@read_permission_id));
 INSERT INTO profile_business_function_permissions (id, profile_id, business_function_permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_create)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_read));
 
 SET @bf_id := (SELECT BIN_TO_UUID(id) FROM business_functions WHERE function_name = 'profile');
 INSERT INTO business_function_permissions (id, business_function_id, permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id));
-SET @bf_permission_id := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@read_permission_id));
+SET @bf_permission_id_create := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@create_permission_id));
+SET @bf_permission_id_read := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@read_permission_id));
 INSERT INTO profile_business_function_permissions (id, profile_id, business_function_permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_create)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_read));
 
 SET @bf_id := (SELECT BIN_TO_UUID(id) FROM business_functions WHERE function_name = 'setup-all');
 INSERT INTO business_function_permissions (id, business_function_id, permission_id)
@@ -68,17 +80,20 @@ VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permissio
 
 SET @bf_id := (SELECT BIN_TO_UUID(id) FROM business_functions WHERE function_name = 'user');
 INSERT INTO business_function_permissions (id, business_function_id, permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id));
-SET @bf_permission_id := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@read_permission_id));
+SET @bf_permission_id_read := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@read_permission_id));
 INSERT INTO profile_business_function_permissions (id, profile_id, business_function_permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_read));
 
 SET @bf_id := (SELECT BIN_TO_UUID(id) FROM business_functions WHERE function_name = 'user-profile');
 INSERT INTO business_function_permissions (id, business_function_id, permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id));
-SET @bf_permission_id := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@create_permission_id)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@bf_id), UUID_TO_BIN(@read_permission_id));
+SET @bf_permission_id_create := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@create_permission_id));
+SET @bf_permission_id_read := (SELECT BIN_TO_UUID(id) FROM business_function_permissions WHERE business_function_id = UUID_TO_BIN(@bf_id) AND permission_id = UUID_TO_BIN(@read_permission_id));
 INSERT INTO profile_business_function_permissions (id, profile_id, business_function_permission_id)
-VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id));
+VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_create)),
+       (UUID_TO_BIN(UUID()), UUID_TO_BIN(@profile_id), UUID_TO_BIN(@bf_permission_id_read));
 
 -- insert UUID generated by Keycloak below
 INSERT INTO user_profiles (id, application_user_id, profile_id)
