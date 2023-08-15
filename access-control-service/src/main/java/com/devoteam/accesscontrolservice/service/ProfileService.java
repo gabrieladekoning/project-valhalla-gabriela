@@ -1,12 +1,15 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ProfileCreationRequest;
+import com.devoteam.accesscontrolservice.entity.Permission;
 import com.devoteam.accesscontrolservice.entity.Profile;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
 import com.devoteam.accesscontrolservice.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -46,5 +49,11 @@ public class ProfileService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Profile with ID: %s not found.".formatted(profileId)
                 ));
+    }
+
+    public Page<Profile> listAll(Pageable pageable) {
+        log.info("Finding all profiles");
+
+        return profileRepository.findAll(pageable);
     }
 }
