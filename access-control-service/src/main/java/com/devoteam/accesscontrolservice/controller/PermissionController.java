@@ -2,8 +2,7 @@ package com.devoteam.accesscontrolservice.controller;
 
 import com.devoteam.accesscontrolservice.dto.PermissionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.PermissionCreationResponse;
-import com.devoteam.accesscontrolservice.dto.PermissionDto;
-import com.devoteam.accesscontrolservice.entity.Permission;
+import com.devoteam.accesscontrolservice.dto.PermissionReadResponse;
 import com.devoteam.accesscontrolservice.mapper.PermissionMapper;
 import com.devoteam.accesscontrolservice.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +32,7 @@ public class PermissionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'create')")
     public ResponseEntity<PermissionCreationResponse> save(@Valid @RequestBody PermissionCreationRequest creationRequest) {
         var permission = permissionService.createOrRetrievePermission(creationRequest);
-        var creationResponse = PermissionMapper.INSTANCE.mapToPermissionResponse(permission);
+        var creationResponse = PermissionMapper.INSTANCE.mapToPermissionCreationResponse(permission);
 
         log.info("Created new / returned existing permission '{}'", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
@@ -42,22 +41,22 @@ public class PermissionController {
     @GetMapping
     @Operation(summary = "Retrieve a paginated list of all permissions")
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
-    public ResponseEntity<Page<PermissionDto>> listAll(Pageable pageable) {
+    public ResponseEntity<Page<PermissionReadResponse>> listAll(Pageable pageable) {
         var permissions = permissionService.listAll(pageable);
-        var permissionDtos = permissions.map(PermissionMapper.INSTANCE::mapToPermissionDto);
+        var permissionReadResponses = permissions.map(PermissionMapper.INSTANCE::mapToPermissionReadResponse);
 
         log.info("Listing all permissions");
-        return ResponseEntity.status(HttpStatus.OK).body(permissionDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(permissionReadResponses);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Find permission by ID")
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
-    public ResponseEntity<PermissionDto> findById(@PathVariable String id) {
+    public ResponseEntity<PermissionReadResponse> findById(@PathVariable String id) {
         var permission = permissionService.findByIdOrThrowNotFound(id);
-        var permissionDto = PermissionMapper.INSTANCE.mapToPermissionDto(permission);
+        var permissionReadResponse = PermissionMapper.INSTANCE.mapToPermissionReadResponse(permission);
 
         log.info("Returning permission found by ID: '{}'", id);
-        return ResponseEntity.status(HttpStatus.OK).body(permissionDto);
+        return ResponseEntity.status(HttpStatus.OK).body(permissionReadResponse);
     }
 }

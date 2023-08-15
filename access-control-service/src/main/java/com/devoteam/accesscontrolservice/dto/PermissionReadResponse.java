@@ -7,6 +7,6 @@ import lombok.*;
 @Setter
 @ToString
 @AllArgsConstructor
-public class PermissionDto {
+public class PermissionReadResponse {
     private String name;
 }
