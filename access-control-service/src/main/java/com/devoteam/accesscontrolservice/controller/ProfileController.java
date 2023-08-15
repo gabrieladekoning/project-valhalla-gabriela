@@ -48,4 +48,15 @@ public class ProfileController {
         log.info("Listing all profiles");
         return ResponseEntity.status(HttpStatus.OK).body(profileReadResponses);
     }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Find profile by ID")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
+    public ResponseEntity<ProfileReadResponse> findById(@PathVariable String id) {
+        var profile = profileService.findByIdOrThrowNotFound(id);
+        var profileReadResponse = ProfileMapper.INSTANCE.mapToProfileReadResponse(profile);
+
+        log.info("Returning profile found by ID: '{}'", id);
+        return ResponseEntity.status(HttpStatus.OK).body(profileReadResponse);
+    }
 }
