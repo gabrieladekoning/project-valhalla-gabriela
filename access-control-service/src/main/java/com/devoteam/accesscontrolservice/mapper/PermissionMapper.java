@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.mapper;
 
 import com.devoteam.accesscontrolservice.dto.PermissionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.PermissionCreationResponse;
+import com.devoteam.accesscontrolservice.dto.PermissionReadResponse;
 import com.devoteam.accesscontrolservice.entity.Permission;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -12,5 +13,7 @@ public interface PermissionMapper {
 
     Permission mapToPermission(PermissionCreationRequest creationRequest);
 
-    PermissionCreationResponse mapToPermissionResponse(Permission permission);
+    PermissionCreationResponse mapToPermissionCreationResponse(Permission permission);
+
+    PermissionReadResponse mapToPermissionReadResponse(Permission permission);
 }
