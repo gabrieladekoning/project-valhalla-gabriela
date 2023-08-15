@@ -49,4 +49,15 @@ public class PermissionController {
         log.info("Listing all permissions");
         return ResponseEntity.status(HttpStatus.OK).body(permissionDtos);
     }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Find permission by ID")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
+    public ResponseEntity<PermissionDto> findById(@PathVariable String id) {
+        var permission = permissionService.findByIdOrThrowNotFound(id);
+        var permissionDto = PermissionMapper.INSTANCE.mapToPermissionDto(permission);
+
+        log.info("Returning permission found by ID: '{}'", id);
+        return ResponseEntity.status(HttpStatus.OK).body(permissionDto);
+    }
 }
