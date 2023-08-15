@@ -40,7 +40,7 @@ public class BusinessFunctionController {
 
     @GetMapping
     @Operation(summary = "Retrieve a paginated list of all businessFunctions")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'businessFunction', 'read')")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'read')")
     public ResponseEntity<Page<BusinessFunctionReadResponse>> listAll(Pageable pageable) {
         var businessFunctions = businessFunctionService.listAll(pageable);
         var businessFunctionReadResponses = businessFunctions.map(BusinessFunctionMapper.INSTANCE::mapToBusinessFunctionReadResponse);
@@ -51,7 +51,7 @@ public class BusinessFunctionController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Find businessFunction by ID")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'businessFunction', 'read')")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'read')")
     public ResponseEntity<BusinessFunctionReadResponse> findById(@PathVariable String id) {
         var businessFunction = businessFunctionService.findByIdOrThrowNotFound(id);
         var businessFunctionReadResponse = BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionReadResponse(businessFunction);
