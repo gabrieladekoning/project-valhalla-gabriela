@@ -9,5 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 public class BusinessFunctionReadResponse {
     private String id;
-    private String name;
+    private String applicationName;
+    private String functionName;
 }
