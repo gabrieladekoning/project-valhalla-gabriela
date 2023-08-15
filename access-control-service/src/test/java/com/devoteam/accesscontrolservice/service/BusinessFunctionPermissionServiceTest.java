@@ -14,13 +14,19 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BusinessFunctionPermissionServiceTest {
@@ -119,5 +125,27 @@ class BusinessFunctionPermissionServiceTest {
         given(businessFunctionPermissionRepository.findById(permission.getId())).willReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> businessFunctionPermissionService.findByIdOrThrowNotFound(String.valueOf(permission.getId())));
+    }
+
+    @Test
+    @DisplayName("Returning a pageable list of business functions permissions by application name when successful")
+    void listAll_ReturnListOfBusinessFunctionPermissionsByApplicationNameInsidePageObject_WhenSuccessful() {
+        List<BusinessFunctionPermission> expectedBusinessFunctionPermissions = new ArrayList<>();
+        expectedBusinessFunctionPermissions.add(businessFunctionPermission);
+
+        var pageable = PageRequest.of(0, 5);
+        var businessFunctionPermissionPage = new PageImpl<>(expectedBusinessFunctionPermissions, pageable, expectedBusinessFunctionPermissions.size());
+
+        when(businessFunctionPermissionRepository.findByBusinessFunction_ApplicationName(businessFunction.getApplicationName(), pageable))
+                .thenReturn(businessFunctionPermissionPage);
+
+        var resultBusinessFunctionPage = businessFunctionPermissionService.listAllByApplicationName(businessFunction.getApplicationName(), pageable);
+
+        verify(businessFunctionPermissionRepository).findByBusinessFunction_ApplicationName(businessFunction.getApplicationName(), pageable);
+
+        assertThat(resultBusinessFunctionPage).isNotNull();
+        assertThat(resultBusinessFunctionPage.toList()).isNotEmpty();
+        assertThat(resultBusinessFunctionPage.toList().get(0).getBusinessFunction().getApplicationName())
+                .isEqualTo(businessFunctionPermission.getBusinessFunction().getApplicationName());
     }
 }
