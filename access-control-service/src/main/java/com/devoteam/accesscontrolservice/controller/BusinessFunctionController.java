@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.controller;
 
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationResponse;
+import com.devoteam.accesscontrolservice.dto.BusinessFunctionReadResponse;
 import com.devoteam.accesscontrolservice.mapper.BusinessFunctionMapper;
 import com.devoteam.accesscontrolservice.service.BusinessFunctionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,14 +10,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Validated
@@ -32,9 +32,20 @@ public class BusinessFunctionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'create')")
     public ResponseEntity<BusinessFunctionCreationResponse> save(@Valid @RequestBody BusinessFunctionCreationRequest creationRequest) {
         var businessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
-        var creationResponse = BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionResponse(businessFunction);
+        var creationResponse = BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionCreationResponse(businessFunction);
 
         log.info("Created new / returned existing business function '{}'", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
+    }
+
+    @GetMapping
+    @Operation(summary = "Retrieve a paginated list of all businessFunctions")
+    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'businessFunction', 'read')")
+    public ResponseEntity<Page<BusinessFunctionReadResponse>> listAll(Pageable pageable) {
+        var businessFunctions = businessFunctionService.listAll(pageable);
+        var businessFunctionReadResponses = businessFunctions.map(BusinessFunctionMapper.INSTANCE::mapToBusinessFunctionReadResponse);
+
+        log.info("Listing all businessFunctions");
+        return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponses);
     }
 }

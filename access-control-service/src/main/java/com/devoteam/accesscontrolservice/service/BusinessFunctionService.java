@@ -7,6 +7,8 @@ import com.devoteam.accesscontrolservice.mapper.BusinessFunctionMapper;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -48,5 +50,11 @@ public class BusinessFunctionService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Business function with ID: %s not found.".formatted(businessFunctionId)
                 ));
+    }
+
+    public Page<BusinessFunction> listAll(Pageable pageable) {
+        log.info("Finding all businessFunctions");
+
+        return businessFunctionRepository.findAll(pageable);
     }
 }
