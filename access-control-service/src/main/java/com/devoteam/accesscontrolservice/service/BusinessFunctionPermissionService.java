@@ -7,6 +7,8 @@ import com.devoteam.accesscontrolservice.mapper.BusinessFunctionPermissionMapper
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionPermissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -52,5 +54,11 @@ public class BusinessFunctionPermissionService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Business function permission with ID: %s not found.".formatted(businessFunctionPermissionId)
                 ));
+    }
+
+    public Page<BusinessFunctionPermission> listAllByApplicationName(String applicationName, Pageable pageable) {
+        log.info("Finding business function permissions by application name: '{}'", applicationName);
+
+        return businessFunctionPermissionRepository.findByBusinessFunction_ApplicationName(applicationName, pageable);
     }
 }

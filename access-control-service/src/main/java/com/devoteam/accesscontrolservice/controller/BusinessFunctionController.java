@@ -39,24 +39,24 @@ public class BusinessFunctionController {
     }
 
     @GetMapping
-    @Operation(summary = "Retrieve a paginated list of all businessFunctions")
+    @Operation(summary = "Retrieve a paginated list of all business functions")
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'read')")
     public ResponseEntity<Page<BusinessFunctionReadResponse>> listAll(Pageable pageable) {
         var businessFunctions = businessFunctionService.listAll(pageable);
         var businessFunctionReadResponses = businessFunctions.map(BusinessFunctionMapper.INSTANCE::mapToBusinessFunctionReadResponse);
 
-        log.info("Listing all businessFunctions");
+        log.info("Listing all business functions");
         return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponses);
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Find businessFunction by ID")
+    @Operation(summary = "Find business function by ID")
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'read')")
     public ResponseEntity<BusinessFunctionReadResponse> findById(@PathVariable String id) {
         var businessFunction = businessFunctionService.findByIdOrThrowNotFound(id);
         var businessFunctionReadResponse = BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionReadResponse(businessFunction);
 
-        log.info("Returning businessFunction found by ID: '{}'", id);
+        log.info("Returning business function found by ID: '{}'", id);
         return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponse);
     }
 }
