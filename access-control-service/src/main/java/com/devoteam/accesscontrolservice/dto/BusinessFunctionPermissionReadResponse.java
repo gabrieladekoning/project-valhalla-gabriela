@@ -1,6 +1,10 @@
 package com.devoteam.accesscontrolservice.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Builder
 @Getter
@@ -9,9 +13,6 @@ import lombok.*;
 @AllArgsConstructor
 public class BusinessFunctionPermissionReadResponse {
     private String id;
-    private String businessFunctionId;
-    private String applicationName;
-    private String functionName;
-    private String permissionId;
-    private String permissionName;
+    private BusinessFunctionReadResponse businessFunction;
+    private PermissionReadResponse permission;
 }
