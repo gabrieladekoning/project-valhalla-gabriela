@@ -16,7 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/profiles")
 public class ProfileController {
     private final ProfileService profileService;
+    private final ProfileMapper profileMapper;
 
     @PostMapping
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
@@ -32,7 +38,7 @@ public class ProfileController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'create')")
     public ResponseEntity<ProfileCreationResponse> save(@Valid @RequestBody ProfileCreationRequest creationRequest) {
         var profile = profileService.createOrRetrieveProfile(creationRequest);
-        var creationResponse = ProfileMapper.INSTANCE.mapToProfileCreationResponse(profile);
+        var creationResponse = profileMapper.mapToProfileCreationResponse(profile);
 
         log.info("Created new / returned existing profile '{}", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
@@ -43,7 +49,7 @@ public class ProfileController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
     public ResponseEntity<Page<ProfileReadResponse>> listAll(Pageable pageable) {
         var profiles = profileService.listAll(pageable);
-        var profileReadResponses = profiles.map(ProfileMapper.INSTANCE::mapToProfileReadResponse);
+        var profileReadResponses = profiles.map(profileMapper::toProfileReadResponse);
 
         log.info("Listing all profiles");
         return ResponseEntity.status(HttpStatus.OK).body(profileReadResponses);
@@ -54,7 +60,7 @@ public class ProfileController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
     public ResponseEntity<ProfileReadResponse> findById(@PathVariable String id) {
         var profile = profileService.findByIdOrThrowNotFound(id);
-        var profileReadResponse = ProfileMapper.INSTANCE.mapToProfileReadResponse(profile);
+        var profileReadResponse = profileMapper.toProfileReadResponse(profile);
 
         log.info("Returning profile found by ID: '{}'", id);
         return ResponseEntity.status(HttpStatus.OK).body(profileReadResponse);

@@ -18,10 +18,11 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final KeycloakService keycloakService;
+    private final UserMapper userMapper;
 
     public ApplicationUser saveApplicationUser(ApplicationUserCreationRequest creationRequest) {
         assertEmailDoesNotExist(creationRequest);
-        var user = UserMapper.INSTANCE.mapToApplicationUser(creationRequest);
+        var user = userMapper.mapToApplicationUser(creationRequest);
         log.info("Creating user with email: {}", creationRequest.getEmail());
 
         var keycloakUserId = keycloakService.createUser(creationRequest);

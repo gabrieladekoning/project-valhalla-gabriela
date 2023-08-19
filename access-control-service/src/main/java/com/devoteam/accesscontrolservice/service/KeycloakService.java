@@ -20,10 +20,11 @@ public class KeycloakService {
     private final Keycloak keycloak;
     @Value("${keycloak.realm}")
     private String realm;
+    private final KeycloakUserMapper keycloakUserMapper;
 
     public String createUser(ApplicationUserCreationRequest creationRequest) {
         log.debug("Creating user in Keycloak: {}", creationRequest.getEmail());
-        UserRepresentation user = KeycloakUserMapper.INSTANCE.mapToUserRepresentation(creationRequest);
+        UserRepresentation user = keycloakUserMapper.mapToUserRepresentation(creationRequest);
         user.setEnabled(true);
 
         var realmResource = keycloak.realm(realm);

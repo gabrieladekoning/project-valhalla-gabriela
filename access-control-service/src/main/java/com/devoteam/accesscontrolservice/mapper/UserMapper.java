@@ -4,13 +4,11 @@ import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationResponse;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants.ComponentModel;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = ComponentModel.SPRING)
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-
     ApplicationUser mapToApplicationUser(ApplicationUserCreationRequest creationRequest);
 
-    ApplicationUserCreationResponse mapToApplicationUserDto(ApplicationUser user);
+    ApplicationUserCreationResponse mapToApplicationUserCreationResponse(ApplicationUser user);
 }

@@ -19,6 +19,7 @@ import java.util.UUID;
 @Slf4j
 public class BusinessFunctionService {
     private final BusinessFunctionRepository businessFunctionRepository;
+    private final BusinessFunctionMapper businessFunctionMapper;
 
     public BusinessFunction createOrRetrieveBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
         log.info("Received a request to create a new business function with application name: '{}' and function name: '{}'",
@@ -38,7 +39,7 @@ public class BusinessFunctionService {
     private BusinessFunction createNewBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
         log.info("Creating new business function '{}'", creationRequest);
 
-        var businessFunction = BusinessFunctionMapper.INSTANCE.mapToBusinessFunction(creationRequest);
+        var businessFunction = businessFunctionMapper.mapToBusinessFunction(creationRequest);
 
         return businessFunctionRepository.save(businessFunction);
     }

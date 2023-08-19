@@ -5,12 +5,10 @@ import com.devoteam.accesscontrolservice.dto.PermissionCreationResponse;
 import com.devoteam.accesscontrolservice.dto.PermissionReadResponse;
 import com.devoteam.accesscontrolservice.entity.Permission;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants.ComponentModel;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = ComponentModel.SPRING)
 public interface PermissionMapper {
-    PermissionMapper INSTANCE = Mappers.getMapper(PermissionMapper.class);
-
     Permission mapToPermission(PermissionCreationRequest creationRequest);
 
     PermissionCreationResponse mapToPermissionCreationResponse(Permission permission);

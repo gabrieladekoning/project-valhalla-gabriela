@@ -20,6 +20,7 @@ import java.util.UUID;
 @Slf4j
 public class ProfileService {
     private final ProfileRepository profileRepository;
+    private final ProfileMapper profileMapper;
 
     public Profile createOrRetrieveProfile(ProfileCreationRequest creationRequest) {
         log.info("Received a request to create a new profile with name: '{}'", creationRequest.getName());
@@ -37,7 +38,7 @@ public class ProfileService {
     private Profile createNewProfile(ProfileCreationRequest creationRequest) {
         log.info("Creating new profile '{}'", creationRequest);
 
-        var profile = ProfileMapper.INSTANCE.mapToProfile(creationRequest);
+        var profile = profileMapper.mapToProfile(creationRequest);
 
         return profileRepository.save(profile);
     }

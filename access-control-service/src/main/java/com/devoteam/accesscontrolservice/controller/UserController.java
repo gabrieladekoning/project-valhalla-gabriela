@@ -23,12 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/users")
 public class UserController {
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @PostMapping
     @Operation(summary = "Create a user")
     public ResponseEntity<ApplicationUserCreationResponse> save(@Valid @RequestBody ApplicationUserCreationRequest creationRequest) {
         var savedUser = userService.saveApplicationUser(creationRequest);
-        var creationResponse = UserMapper.INSTANCE.mapToApplicationUserDto(savedUser);
+        var creationResponse = userMapper.mapToApplicationUserCreationResponse(savedUser);
 
         log.debug("Saved user with ID: {}", creationResponse.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);

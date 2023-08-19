@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/business-functions")
 public class BusinessFunctionController {
     private final BusinessFunctionService businessFunctionService;
+    private final BusinessFunctionMapper businessFunctionMapper;
 
     @PostMapping
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
@@ -32,7 +33,7 @@ public class BusinessFunctionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'create')")
     public ResponseEntity<BusinessFunctionCreationResponse> save(@Valid @RequestBody BusinessFunctionCreationRequest creationRequest) {
         var businessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
-        var creationResponse = BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionCreationResponse(businessFunction);
+        var creationResponse = businessFunctionMapper.mapToBusinessFunctionCreationResponse(businessFunction);
 
         log.info("Created new / returned existing business function '{}'", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
@@ -43,7 +44,7 @@ public class BusinessFunctionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'read')")
     public ResponseEntity<Page<BusinessFunctionReadResponse>> listAll(Pageable pageable) {
         var businessFunctions = businessFunctionService.listAll(pageable);
-        var businessFunctionReadResponses = businessFunctions.map(BusinessFunctionMapper.INSTANCE::mapToBusinessFunctionReadResponse);
+        var businessFunctionReadResponses = businessFunctions.map(businessFunctionMapper::mapToBusinessFunctionReadResponse);
 
         log.info("Listing all business functions");
         return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponses);
@@ -54,7 +55,7 @@ public class BusinessFunctionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'read')")
     public ResponseEntity<BusinessFunctionReadResponse> findById(@PathVariable String id) {
         var businessFunction = businessFunctionService.findByIdOrThrowNotFound(id);
-        var businessFunctionReadResponse = BusinessFunctionMapper.INSTANCE.mapToBusinessFunctionReadResponse(businessFunction);
+        var businessFunctionReadResponse = businessFunctionMapper.mapToBusinessFunctionReadResponse(businessFunction);
 
         log.info("Returning business function found by ID: '{}'", id);
         return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponse);

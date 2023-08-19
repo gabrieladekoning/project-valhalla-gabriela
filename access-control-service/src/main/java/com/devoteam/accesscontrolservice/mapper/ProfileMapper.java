@@ -5,15 +5,13 @@ import com.devoteam.accesscontrolservice.dto.ProfileCreationResponse;
 import com.devoteam.accesscontrolservice.dto.ProfileReadResponse;
 import com.devoteam.accesscontrolservice.entity.Profile;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants.ComponentModel;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = ComponentModel.SPRING, uses = UserMapper.class)
 public interface ProfileMapper {
-    ProfileMapper INSTANCE = Mappers.getMapper(ProfileMapper.class);
-
     Profile mapToProfile(ProfileCreationRequest creationRequest);
 
-    ProfileCreationResponse mapToProfileCreationResponse(Profile permission);
+    ProfileCreationResponse mapToProfileCreationResponse(Profile profile);
 
-    ProfileReadResponse mapToProfileReadResponse(Profile permission);
+    ProfileReadResponse toProfileReadResponse(Profile profile);
 }

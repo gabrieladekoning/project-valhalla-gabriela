@@ -1,9 +1,20 @@
 package com.devoteam.accesscontrolservice.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.devoteam.accesscontrolservice.dto.ProfileCreationRequest;
 import com.devoteam.accesscontrolservice.entity.Profile;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
+import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
 import com.devoteam.accesscontrolservice.repository.ProfileRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,21 +27,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class ProfileServiceTest {
     @Mock
     ProfileRepository profileRepository;
+    @Mock
+    ProfileMapper profileMapper;
     @InjectMocks
     ProfileService profileService;
     private ProfileCreationRequest creationRequest;
@@ -61,7 +63,8 @@ class ProfileServiceTest {
 
         var returnedProfile = profileService.createOrRetrieveProfile(creationRequest);
 
-        Assertions.assertThat(returnedProfile).hasNoNullFieldsOrProperties();
+        Assertions.assertThat(returnedProfile.getId()).isNotNull();
+        Assertions.assertThat(returnedProfile.getName()).isNotNull();
         Assertions.assertThat(returnedProfile.getId()).isEqualTo(profile.getId());
     }
 

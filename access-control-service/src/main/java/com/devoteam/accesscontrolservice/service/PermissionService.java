@@ -19,6 +19,7 @@ import java.util.UUID;
 @Slf4j
 public class PermissionService {
     private final PermissionRepository permissionRepository;
+    private final PermissionMapper permissionMapper;
 
     public Permission createOrRetrievePermission(PermissionCreationRequest creationRequest) {
         log.info("Received a request to create a new permission with name: '{}'", creationRequest.getName());
@@ -36,7 +37,7 @@ public class PermissionService {
     private Permission createNewPermission(PermissionCreationRequest creationRequest) {
         log.info("Creating new permission '{}'", creationRequest);
 
-        var permission = PermissionMapper.INSTANCE.mapToPermission(creationRequest);
+        var permission = permissionMapper.mapToPermission(creationRequest);
 
         return permissionRepository.save(permission);
     }

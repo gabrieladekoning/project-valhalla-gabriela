@@ -1,10 +1,20 @@
 package com.devoteam.accesscontrolservice.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationRequest;
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
-import com.devoteam.accesscontrolservice.entity.BusinessFunction;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
+import com.devoteam.accesscontrolservice.mapper.BusinessFunctionMapper;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,21 +26,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class BusinessFunctionServiceTest {
     @Mock
-    BusinessFunctionRepository businessFunctionRepository;
+    private BusinessFunctionRepository businessFunctionRepository;
+    @Mock
+    private BusinessFunctionMapper businessFunctionMapper;
     @InjectMocks
     BusinessFunctionService businessFunctionService;
     private BusinessFunctionCreationRequest creationRequest;

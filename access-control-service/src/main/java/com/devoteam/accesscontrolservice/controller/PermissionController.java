@@ -16,7 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/permissions")
 public class PermissionController {
     private final PermissionService permissionService;
+    private final PermissionMapper permissionMapper;
 
     @PostMapping
     @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
@@ -32,7 +38,7 @@ public class PermissionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'create')")
     public ResponseEntity<PermissionCreationResponse> save(@Valid @RequestBody PermissionCreationRequest creationRequest) {
         var permission = permissionService.createOrRetrievePermission(creationRequest);
-        var creationResponse = PermissionMapper.INSTANCE.mapToPermissionCreationResponse(permission);
+        var creationResponse = permissionMapper.mapToPermissionCreationResponse(permission);
 
         log.info("Created new / returned existing permission '{}'", creationResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
@@ -43,7 +49,7 @@ public class PermissionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
     public ResponseEntity<Page<PermissionReadResponse>> listAll(Pageable pageable) {
         var permissions = permissionService.listAll(pageable);
-        var permissionReadResponses = permissions.map(PermissionMapper.INSTANCE::mapToPermissionReadResponse);
+        var permissionReadResponses = permissions.map(permissionMapper::mapToPermissionReadResponse);
 
         log.info("Listing all permissions");
         return ResponseEntity.status(HttpStatus.OK).body(permissionReadResponses);
@@ -54,7 +60,7 @@ public class PermissionController {
     @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
     public ResponseEntity<PermissionReadResponse> findById(@PathVariable String id) {
         var permission = permissionService.findByIdOrThrowNotFound(id);
-        var permissionReadResponse = PermissionMapper.INSTANCE.mapToPermissionReadResponse(permission);
+        var permissionReadResponse = permissionMapper.mapToPermissionReadResponse(permission);
 
         log.info("Returning permission found by ID: '{}'", id);
         return ResponseEntity.status(HttpStatus.OK).body(permissionReadResponse);
