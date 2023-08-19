@@ -6,6 +6,8 @@ import com.devoteam.accesscontrolservice.mapper.ProfileBusinessFunctionPermissio
 import com.devoteam.accesscontrolservice.repository.ProfileBusinessFunctionPermissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -49,5 +51,11 @@ public class ProfileBusinessFunctionPermissionService {
         creationRequest);
 
     return profileBusinessFunctionPermissionRepository.save(profileBusinessFunctionPermission);
+  }
+
+  public Page<ProfileBusinessFunctionPermission> listAllByProfileName(String profileName, Pageable pageable) {
+    log.info("Finding profile business function permissions by profile name: '{}'", profileName);
+
+    return profileBusinessFunctionPermissionRepository.findByProfile_Name(profileName, pageable);
   }
 }
