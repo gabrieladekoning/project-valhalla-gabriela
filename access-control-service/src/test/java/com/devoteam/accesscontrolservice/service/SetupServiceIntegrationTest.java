@@ -28,64 +28,65 @@ import static org.mockito.Mockito.doThrow;
 @ActiveProfiles("test")
 @Slf4j
 class SetupServiceIntegrationTest {
-    @Autowired
-    private SetupService setupService;
 
-    @Autowired
-    private BusinessFunctionRepository businessFunctionRepository;
+  @Autowired
+  private SetupService setupService;
 
-    @Autowired
-    private PermissionRepository permissionRepository;
+  @Autowired
+  private BusinessFunctionRepository businessFunctionRepository;
 
-    @MockBean
-    ProfileService profileService;
+  @Autowired
+  private PermissionRepository permissionRepository;
 
-    private SetupAllRequest setupAllRequest;
+  @MockBean
+  ProfileService profileService;
 
-    @BeforeEach
-    void setUp() {
-        var applicationUser = ApplicationUser.builder()
-                .id(UUID.randomUUID())
-                .email("test@email.com")
-                .build();
-        var businessFunction = BusinessFunction.builder()
-                .id(UUID.randomUUID())
-                .applicationName("Application name")
-                .functionName("Function name")
-                .build();
-        var permission = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("Permission name")
-                .build();
-        var profile = Profile.builder()
-                .id(UUID.randomUUID())
-                .name("Profile name")
-                .build();
+  private SetupAllRequest setupAllRequest;
 
-        setupAllRequest = SetupAllRequest.builder()
-                .applicationName(businessFunction.getApplicationName())
-                .functionName(businessFunction.getFunctionName())
-                .permissionName(permission.getName())
-                .profileName(profile.getName())
-                .email(applicationUser.getEmail())
-                .build();
-    }
+  @BeforeEach
+  void setUp() {
+    var applicationUser = ApplicationUser.builder()
+        .id(UUID.randomUUID())
+        .email("test@email.com")
+        .build();
+    var businessFunction = BusinessFunction.builder()
+        .id(UUID.randomUUID())
+        .applicationName("Application name")
+        .functionName("Function name")
+        .build();
+    var permission = Permission.builder()
+        .id(UUID.randomUUID())
+        .name("Permission name")
+        .build();
+    var profile = Profile.builder()
+        .id(UUID.randomUUID())
+        .name("Profile name")
+        .build();
 
-    @DisplayName("Ensure transactional behavior when profile creation/retrieval fails")
-    @Test
-    void testSetupAll_TransactionalBehavior() {
-        doThrow(new RuntimeException("This is a Runtime Exception which will definitely not ruin everything"))
-                .when(profileService).createOrRetrieveProfile(any(ProfileCreationRequest.class));
+    setupAllRequest = SetupAllRequest.builder()
+        .applicationName(businessFunction.getApplicationName())
+        .functionName(businessFunction.getFunctionName())
+        .permissionName(permission.getName())
+        .profileName(profile.getName())
+        .email(applicationUser.getEmail())
+        .build();
+  }
 
-        var initialBusinessFunctionCount = businessFunctionRepository.count();
-        var initialPermissionCount = permissionRepository.count();
+  @DisplayName("Ensure transactional behavior when profile creation/retrieval fails")
+  @Test
+  void testSetupAll_TransactionalBehavior() {
+    doThrow(new RuntimeException("This is a Runtime Exception which will definitely not ruin everything"))
+        .when(profileService).createOrRetrieveProfile(any(ProfileCreationRequest.class));
 
-        assertThrows(RuntimeException.class, () -> setupService.setupAll(setupAllRequest));
+    var initialBusinessFunctionCount = businessFunctionRepository.count();
+    var initialPermissionCount = permissionRepository.count();
 
-        var afterBusinessFunctionCount = businessFunctionRepository.count();
-        var afterPermissionCount = permissionRepository.count();
+    assertThrows(RuntimeException.class, () -> setupService.setupAll(setupAllRequest));
 
-        assertEquals(initialBusinessFunctionCount, afterBusinessFunctionCount);
-        assertEquals(initialPermissionCount, afterPermissionCount);
-    }
+    var afterBusinessFunctionCount = businessFunctionRepository.count();
+    var afterPermissionCount = permissionRepository.count();
+
+    assertEquals(initialBusinessFunctionCount, afterBusinessFunctionCount);
+    assertEquals(initialPermissionCount, afterPermissionCount);
+  }
 }

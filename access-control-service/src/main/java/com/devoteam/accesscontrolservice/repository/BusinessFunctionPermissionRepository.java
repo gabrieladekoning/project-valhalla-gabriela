@@ -11,7 +11,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BusinessFunctionPermissionRepository extends JpaRepository<BusinessFunctionPermission, UUID> {
-    Optional<BusinessFunctionPermission> findByBusinessFunctionAndPermission(BusinessFunction businessFunction, Permission permission);
 
-    Page<BusinessFunctionPermission> findByBusinessFunction_ApplicationName(String applicationName, Pageable pageable);
+  Optional<BusinessFunctionPermission> findByBusinessFunctionAndPermission(BusinessFunction businessFunction,
+      Permission permission);
+
+  Page<BusinessFunctionPermission> findByBusinessFunction_ApplicationName(String applicationName, Pageable pageable);
 }

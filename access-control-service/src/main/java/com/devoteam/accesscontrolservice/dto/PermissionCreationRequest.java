@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PermissionCreationRequest {
-    @NotBlank(message = "Permission name is required")
-    private String name;
+
+  @NotBlank(message = "Permission name is required")
+  private String name;
 }

@@ -24,17 +24,23 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/v1/profile-business-function-permissions")
 public class ProfileBusinessFunctionPermissionController {
-    private final ProfileBusinessFunctionPermissionService profileBusinessFunctionPermissionService;
 
-    @PostMapping
-    @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-            summary = "Create an association between business function permission and profile")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile-business-function-permission', 'create')")
-    public ResponseEntity<ProfileBusinessFunctionPermissionCreationResponse> save(@Valid @RequestBody ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
-        var profileBusinessFunctionPermission = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(creationRequest);
-        var creationResponse = ProfileBusinessFunctionPermissionMapper.INSTANCE.mapToProfileBusinessFunctionPermissionResponse(profileBusinessFunctionPermission);
+  private final ProfileBusinessFunctionPermissionService profileBusinessFunctionPermissionService;
+  private final ProfileBusinessFunctionPermissionMapper profileBusinessFunctionPermissionMapper;
 
-        log.info("Created new / returned existing association between business function permission and profile '{}'", creationResponse);
-        return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
-    }
+  @PostMapping
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Create an association between business function permission and profile")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile-business-function-permission', 'create')")
+  public ResponseEntity<ProfileBusinessFunctionPermissionCreationResponse> save(
+      @Valid @RequestBody ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
+    var profileBusinessFunctionPermission = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(
+        creationRequest);
+    var creationResponse = profileBusinessFunctionPermissionMapper.mapToProfileBusinessFunctionPermissionCreationResponse(
+        profileBusinessFunctionPermission);
+
+    log.info("Created new / returned existing association between business function permission and profile '{}'",
+        creationResponse);
+    return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
+  }
 }

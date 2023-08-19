@@ -5,15 +5,14 @@ import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationResponse;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionReadResponse;
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants.ComponentModel;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = ComponentModel.SPRING)
 public interface BusinessFunctionMapper {
-    BusinessFunctionMapper INSTANCE = Mappers.getMapper(BusinessFunctionMapper.class);
 
-    BusinessFunction mapToBusinessFunction(BusinessFunctionCreationRequest creationRequest);
+  BusinessFunction mapToBusinessFunction(BusinessFunctionCreationRequest creationRequest);
 
-    BusinessFunctionCreationResponse mapToBusinessFunctionCreationResponse(BusinessFunction businessFunction);
+  BusinessFunctionCreationResponse mapToBusinessFunctionCreationResponse(BusinessFunction businessFunction);
 
-    BusinessFunctionReadResponse mapToBusinessFunctionReadResponse(BusinessFunction businessFunction);
+  BusinessFunctionReadResponse mapToBusinessFunctionReadResponse(BusinessFunction businessFunction);
 }

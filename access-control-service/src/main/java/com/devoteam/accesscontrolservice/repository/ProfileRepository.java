@@ -1,11 +1,11 @@
 package com.devoteam.accesscontrolservice.repository;
 
 import com.devoteam.accesscontrolservice.entity.Profile;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProfileRepository extends JpaRepository<Profile, UUID> {
-    Optional<Profile> findByName(String name);
+
+  Optional<Profile> findByName(String name);
 }

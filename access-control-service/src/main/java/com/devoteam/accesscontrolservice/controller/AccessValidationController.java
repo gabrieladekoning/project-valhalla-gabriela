@@ -20,19 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/v1/access-validation")
 public class AccessValidationController {
-    private final AccessValidationService accessValidationService;
 
-    @GetMapping("/validate")
-    @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-            summary = "Check if user has permission to access a specific resource")
-    public ResponseEntity<Void> checkAccess(@NotBlank @RequestParam String applicationName,
-                                            @NotBlank @RequestParam String functionName,
-                                            @NotBlank @RequestParam String permission) {
-        var isAllowed = accessValidationService.checkAccess(applicationName, functionName, permission);
+  private final AccessValidationService accessValidationService;
 
-        log.info("User has {} to application: '{}', function: '{}' with permission: '{}'",
-                isAllowed ? "access" : "no access", applicationName, functionName, permission);
+  @GetMapping("/validate")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Check if user has permission to access a specific resource")
+  public ResponseEntity<Void> checkAccess(@NotBlank @RequestParam String applicationName,
+      @NotBlank @RequestParam String functionName,
+      @NotBlank @RequestParam String permission) {
+    var isAllowed = accessValidationService.checkAccess(applicationName, functionName, permission);
 
-        return isAllowed ? ResponseEntity.status(HttpStatus.OK).build() : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-    }
+    log.info("User has {} to application: '{}', function: '{}' with permission: '{}'",
+        isAllowed ? "access" : "no access", applicationName, functionName, permission);
+
+    return isAllowed ? ResponseEntity.status(HttpStatus.OK).build()
+        : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+  }
 }

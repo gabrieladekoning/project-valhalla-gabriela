@@ -22,15 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/v1/users")
 public class UserController {
-    private final UserService userService;
 
-    @PostMapping
-    @Operation(summary = "Create a user")
-    public ResponseEntity<ApplicationUserCreationResponse> save(@Valid @RequestBody ApplicationUserCreationRequest creationRequest) {
-        var savedUser = userService.saveApplicationUser(creationRequest);
-        var creationResponse = UserMapper.INSTANCE.mapToApplicationUserDto(savedUser);
+  private final UserService userService;
+  private final UserMapper userMapper;
 
-        log.debug("Saved user with ID: {}", creationResponse.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
-    }
+  @PostMapping
+  @Operation(summary = "Create a user")
+  public ResponseEntity<ApplicationUserCreationResponse> save(
+      @Valid @RequestBody ApplicationUserCreationRequest creationRequest) {
+    var savedUser = userService.saveApplicationUser(creationRequest);
+    var creationResponse = userMapper.mapToApplicationUserCreationResponse(savedUser);
+
+    log.debug("Saved user with ID: {}", creationResponse.getId());
+    return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
+  }
 }

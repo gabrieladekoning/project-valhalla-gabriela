@@ -8,7 +8,8 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 public class BusinessFunctionReadResponse {
-    private String id;
-    private String applicationName;
-    private String functionName;
+
+  private String id;
+  private String applicationName;
+  private String functionName;
 }

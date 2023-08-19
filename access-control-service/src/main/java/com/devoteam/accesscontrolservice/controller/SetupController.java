@@ -22,17 +22,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/v1/setup")
 public class SetupController {
-    private final SetupService setupService;
 
-    @PostMapping
-    @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-            summary = "Endpoint to setup business function, permission, profile, association between business function and permission, " +
-                    "association between profile and business function permission according to upsert approach")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'setup-all', 'create')")
-    public ResponseEntity<Void> setupAll(@Valid @RequestBody SetupAllRequest setupAllRequest) {
-        setupService.setupAll(setupAllRequest);
+  private final SetupService setupService;
 
-        log.info("Upsert performed with the following data: '{}'", setupAllRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
+  @PostMapping
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary =
+          "Endpoint to setup business function, permission, profile, association between business function and permission, "
+              +
+              "association between profile and business function permission according to upsert approach")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'setup-all', 'create')")
+  public ResponseEntity<Void> setupAll(@Valid @RequestBody SetupAllRequest setupAllRequest) {
+    setupService.setupAll(setupAllRequest);
+
+    log.info("Upsert performed with the following data: '{}'", setupAllRequest);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
 }

@@ -18,47 +18,52 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class BusinessFunctionPermissionService {
-    private final BusinessFunctionService businessFunctionService;
-    private final PermissionService permissionService;
-    private final BusinessFunctionPermissionRepository businessFunctionPermissionRepository;
 
-    public BusinessFunctionPermission createOrRetrieveBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest) {
-        log.info("Received a request to create an association between business function ID: '{}' and permission ID: '{}'",
-                creationRequest.getBusinessFunctionId(), creationRequest.getPermissionId());
+  private final BusinessFunctionService businessFunctionService;
+  private final PermissionService permissionService;
+  private final BusinessFunctionPermissionRepository businessFunctionPermissionRepository;
+  private final BusinessFunctionPermissionMapper businessFunctionPermissionMapper;
 
-        return findByExistingBusinessFunctionPermission(creationRequest)
-                .orElseGet(() -> createNewBusinessFunctionPermission(creationRequest));
-    }
+  public BusinessFunctionPermission createOrRetrieveBusinessFunctionPermission(
+      BusinessFunctionPermissionCreationRequest creationRequest) {
+    log.info("Received a request to create an association between business function ID: '{}' and permission ID: '{}'",
+        creationRequest.getBusinessFunctionId(), creationRequest.getPermissionId());
 
-    private Optional<BusinessFunctionPermission> findByExistingBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest) {
-        log.info("Checking if association between business function and permission exists '{}'", creationRequest);
+    return findByExistingBusinessFunctionPermission(creationRequest)
+        .orElseGet(() -> createNewBusinessFunctionPermission(creationRequest));
+  }
 
-        var businessFunction = businessFunctionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionId());
-        var permission = permissionService.findByIdOrThrowNotFound(creationRequest.getPermissionId());
+  private Optional<BusinessFunctionPermission> findByExistingBusinessFunctionPermission(
+      BusinessFunctionPermissionCreationRequest creationRequest) {
+    log.info("Checking if association between business function and permission exists '{}'", creationRequest);
 
-        return businessFunctionPermissionRepository.findByBusinessFunctionAndPermission(businessFunction, permission);
-    }
+    var businessFunction = businessFunctionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionId());
+    var permission = permissionService.findByIdOrThrowNotFound(creationRequest.getPermissionId());
 
-    private BusinessFunctionPermission createNewBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest) {
-        log.info("Creating new association between business function and permission '{}'", creationRequest);
+    return businessFunctionPermissionRepository.findByBusinessFunctionAndPermission(businessFunction, permission);
+  }
 
-        var businessFunctionPermission = BusinessFunctionPermissionMapper.INSTANCE.mapToBusinessFunctionPermission(creationRequest);
+  private BusinessFunctionPermission createNewBusinessFunctionPermission(
+      BusinessFunctionPermissionCreationRequest creationRequest) {
+    log.info("Creating new association between business function and permission '{}'", creationRequest);
 
-        return businessFunctionPermissionRepository.save(businessFunctionPermission);
-    }
+    var businessFunctionPermission = businessFunctionPermissionMapper.mapToBusinessFunctionPermission(creationRequest);
 
-    public BusinessFunctionPermission findByIdOrThrowNotFound(String businessFunctionPermissionId) {
-        log.info("Finding business function permission by ID: '{}'", businessFunctionPermissionId);
+    return businessFunctionPermissionRepository.save(businessFunctionPermission);
+  }
 
-        return businessFunctionPermissionRepository.findById(UUID.fromString(businessFunctionPermissionId))
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Business function permission with ID: %s not found.".formatted(businessFunctionPermissionId)
-                ));
-    }
+  public BusinessFunctionPermission findByIdOrThrowNotFound(String businessFunctionPermissionId) {
+    log.info("Finding business function permission by ID: '{}'", businessFunctionPermissionId);
 
-    public Page<BusinessFunctionPermission> listAllByApplicationName(String applicationName, Pageable pageable) {
-        log.info("Finding business function permissions by application name: '{}'", applicationName);
+    return businessFunctionPermissionRepository.findById(UUID.fromString(businessFunctionPermissionId))
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Business function permission with ID: %s not found.".formatted(businessFunctionPermissionId)
+        ));
+  }
 
-        return businessFunctionPermissionRepository.findByBusinessFunction_ApplicationName(applicationName, pageable);
-    }
+  public Page<BusinessFunctionPermission> listAllByApplicationName(String applicationName, Pageable pageable) {
+    log.info("Finding business function permissions by application name: '{}'", applicationName);
+
+    return businessFunctionPermissionRepository.findByBusinessFunction_ApplicationName(applicationName, pageable);
+  }
 }

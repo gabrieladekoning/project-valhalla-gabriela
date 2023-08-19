@@ -23,53 +23,54 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AccessValidationServiceTest {
-    @Mock
-    private UserRepository userRepository;
-    @InjectMocks
-    private AccessValidationService accessValidationService;
-    private String applicationName;
-    private String functionName;
-    private String permissionName;
-    private UUID userUuid;
 
-    @BeforeEach
-    void setup() {
-        userUuid = UUID.randomUUID();
+  @Mock
+  private UserRepository userRepository;
+  @InjectMocks
+  private AccessValidationService accessValidationService;
+  private String applicationName;
+  private String functionName;
+  private String permissionName;
+  private UUID userUuid;
 
-        applicationName = "Application name";
-        functionName = "Function name";
-        permissionName = "Permission name";
+  @BeforeEach
+  void setup() {
+    userUuid = UUID.randomUUID();
 
-        Jwt jwt = Jwt.withTokenValue("token")
-                .header("alg", "none")
-                .claim("sub", userUuid.toString())
-                .build();
+    applicationName = "Application name";
+    functionName = "Function name";
+    permissionName = "Permission name";
 
-        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Jwt jwt = Jwt.withTokenValue("token")
+        .header("alg", "none")
+        .claim("sub", userUuid.toString())
+        .build();
 
-        when(authentication.getPrincipal()).thenReturn(jwt);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-    }
+    Authentication authentication = Mockito.mock(Authentication.class);
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
-    @DisplayName("Access validation when user has access")
-    @Test
-    void testAccessValidation_Success_WhenUserHasAccess() {
-        given(userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName)).willReturn(1L);
+    when(authentication.getPrincipal()).thenReturn(jwt);
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+  }
 
-        boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName);
+  @DisplayName("Access validation when user has access")
+  @Test
+  void testAccessValidation_Success_WhenUserHasAccess() {
+    given(userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName)).willReturn(1L);
 
-        assertTrue(accessResult);
-    }
+    boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName);
 
-    @DisplayName("Access validation when user does not have access")
-    @Test
-    void testAccessValidation_Fail_WhenUserDoesNotHaveAccess() {
-        given(userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName)).willReturn(0L);
+    assertTrue(accessResult);
+  }
 
-        boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName);
+  @DisplayName("Access validation when user does not have access")
+  @Test
+  void testAccessValidation_Fail_WhenUserDoesNotHaveAccess() {
+    given(userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName)).willReturn(0L);
 
-        assertFalse(accessResult);
-    }
+    boolean accessResult = accessValidationService.checkAccess(applicationName, functionName, permissionName);
+
+    assertFalse(accessResult);
+  }
 }

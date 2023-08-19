@@ -18,41 +18,43 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class PermissionService {
-    private final PermissionRepository permissionRepository;
 
-    public Permission createOrRetrievePermission(PermissionCreationRequest creationRequest) {
-        log.info("Received a request to create a new permission with name: '{}'", creationRequest.getName());
+  private final PermissionRepository permissionRepository;
+  private final PermissionMapper permissionMapper;
 
-        return findExistingPermission(creationRequest)
-                .orElseGet(() -> createNewPermission(creationRequest));
-    }
+  public Permission createOrRetrievePermission(PermissionCreationRequest creationRequest) {
+    log.info("Received a request to create a new permission with name: '{}'", creationRequest.getName());
 
-    private Optional<Permission> findExistingPermission(PermissionCreationRequest creationRequest) {
-        log.info("Checking if permission exists '{}'", creationRequest);
+    return findExistingPermission(creationRequest)
+        .orElseGet(() -> createNewPermission(creationRequest));
+  }
 
-        return permissionRepository.findByName(creationRequest.getName());
-    }
+  private Optional<Permission> findExistingPermission(PermissionCreationRequest creationRequest) {
+    log.info("Checking if permission exists '{}'", creationRequest);
 
-    private Permission createNewPermission(PermissionCreationRequest creationRequest) {
-        log.info("Creating new permission '{}'", creationRequest);
+    return permissionRepository.findByName(creationRequest.getName());
+  }
 
-        var permission = PermissionMapper.INSTANCE.mapToPermission(creationRequest);
+  private Permission createNewPermission(PermissionCreationRequest creationRequest) {
+    log.info("Creating new permission '{}'", creationRequest);
 
-        return permissionRepository.save(permission);
-    }
+    var permission = permissionMapper.mapToPermission(creationRequest);
 
-    public Permission findByIdOrThrowNotFound(String permissionId) {
-        log.info("Finding permission by ID: '{}'", permissionId);
+    return permissionRepository.save(permission);
+  }
 
-        return permissionRepository.findById(UUID.fromString(permissionId))
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Permission with ID: %s not found.".formatted(permissionId)
-                ));
-    }
+  public Permission findByIdOrThrowNotFound(String permissionId) {
+    log.info("Finding permission by ID: '{}'", permissionId);
 
-    public Page<Permission> listAll(Pageable pageable) {
-        log.info("Finding all permissions");
+    return permissionRepository.findById(UUID.fromString(permissionId))
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Permission with ID: %s not found.".formatted(permissionId)
+        ));
+  }
 
-        return permissionRepository.findAll(pageable);
-    }
+  public Page<Permission> listAll(Pageable pageable) {
+    log.info("Finding all permissions");
+
+    return permissionRepository.findAll(pageable);
+  }
 }

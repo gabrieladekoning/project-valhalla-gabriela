@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileCreationRequest {
-    @NotBlank(message = "Profile name is required")
-    private String name;
+
+  @NotBlank(message = "Profile name is required")
+  private String name;
 }

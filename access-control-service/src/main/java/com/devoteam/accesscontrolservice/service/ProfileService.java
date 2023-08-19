@@ -1,7 +1,6 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.dto.ProfileCreationRequest;
-import com.devoteam.accesscontrolservice.entity.Permission;
 import com.devoteam.accesscontrolservice.entity.Profile;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
@@ -19,41 +18,42 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileService {
-    private final ProfileRepository profileRepository;
+  private final ProfileRepository profileRepository;
+  private final ProfileMapper profileMapper;
 
-    public Profile createOrRetrieveProfile(ProfileCreationRequest creationRequest) {
-        log.info("Received a request to create a new profile with name: '{}'", creationRequest.getName());
+  public Profile createOrRetrieveProfile(ProfileCreationRequest creationRequest) {
+    log.info("Received a request to create a new profile with name: '{}'", creationRequest.getName());
 
-        return findExistingProfile(creationRequest)
-                .orElseGet(() -> createNewProfile(creationRequest));
-    }
+    return findExistingProfile(creationRequest)
+            .orElseGet(() -> createNewProfile(creationRequest));
+  }
 
-    private Optional<Profile> findExistingProfile(ProfileCreationRequest creationRequest) {
-        log.info("Checking if profile exists '{}'", creationRequest);
+  private Optional<Profile> findExistingProfile(ProfileCreationRequest creationRequest) {
+    log.info("Checking if profile exists '{}'", creationRequest);
 
-        return profileRepository.findByName(creationRequest.getName());
-    }
+    return profileRepository.findByName(creationRequest.getName());
+  }
 
-    private Profile createNewProfile(ProfileCreationRequest creationRequest) {
-        log.info("Creating new profile '{}'", creationRequest);
+  private Profile createNewProfile(ProfileCreationRequest creationRequest) {
+    log.info("Creating new profile '{}'", creationRequest);
 
-        var profile = ProfileMapper.INSTANCE.mapToProfile(creationRequest);
+    var profile = profileMapper.mapToProfile(creationRequest);
 
-        return profileRepository.save(profile);
-    }
+    return profileRepository.save(profile);
+  }
 
-    public Profile findByIdOrThrowNotFound(String profileId) {
-        log.info("Finding profile by ID: '{}'", profileId);
+  public Profile findByIdOrThrowNotFound(String profileId) {
+    log.info("Finding profile by ID: '{}'", profileId);
 
-        return profileRepository.findById(UUID.fromString(profileId))
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Profile with ID: %s not found.".formatted(profileId)
-                ));
-    }
+    return profileRepository.findById(UUID.fromString(profileId))
+            .orElseThrow(() -> new ResourceNotFoundException(
+                    "Profile with ID: %s not found.".formatted(profileId)
+            ));
+  }
 
-    public Page<Profile> listAll(Pageable pageable) {
-        log.info("Finding all profiles");
+  public Page<Profile> listAll(Pageable pageable) {
+    log.info("Finding all profiles");
 
-        return profileRepository.findAll(pageable);
-    }
+    return profileRepository.findAll(pageable);
+  }
 }

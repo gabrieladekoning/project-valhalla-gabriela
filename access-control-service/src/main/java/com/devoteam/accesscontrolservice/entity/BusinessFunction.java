@@ -12,16 +12,17 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(
-        name = "business_functions",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"application_name", "function_name"})
+    name = "business_functions",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"application_name", "function_name"})
 )
 public class BusinessFunction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-    @Column(name = "application_name", nullable = false)
-    private String applicationName;
-    @Column(name = "function_name", nullable = false)
-    private String functionName;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
+  @Column(name = "application_name", nullable = false)
+  private String applicationName;
+  @Column(name = "function_name", nullable = false)
+  private String functionName;
 }

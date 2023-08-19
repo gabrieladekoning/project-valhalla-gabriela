@@ -9,8 +9,9 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 public class UserProfileCreationRequest {
-    @NotBlank(message = "User ID is required")
-    private String applicationUserId;
-    @NotBlank(message = "Profile ID is required")
-    private String profileId;
+
+  @NotBlank(message = "User ID is required")
+  private String applicationUserId;
+  @NotBlank(message = "Profile ID is required")
+  private String profileId;
 }

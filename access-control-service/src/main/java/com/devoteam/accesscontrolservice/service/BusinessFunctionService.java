@@ -18,43 +18,45 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class BusinessFunctionService {
-    private final BusinessFunctionRepository businessFunctionRepository;
 
-    public BusinessFunction createOrRetrieveBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
-        log.info("Received a request to create a new business function with application name: '{}' and function name: '{}'",
-                creationRequest.getApplicationName(), creationRequest.getFunctionName());
+  private final BusinessFunctionRepository businessFunctionRepository;
+  private final BusinessFunctionMapper businessFunctionMapper;
 
-        return findExistingBusinessFunction(creationRequest)
-                .orElseGet(() -> createNewBusinessFunction(creationRequest));
-    }
+  public BusinessFunction createOrRetrieveBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
+    log.info("Received a request to create a new business function with application name: '{}' and function name: '{}'",
+        creationRequest.getApplicationName(), creationRequest.getFunctionName());
 
-    private Optional<BusinessFunction> findExistingBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
-        log.info("Checking if business function exists '{}'", creationRequest);
+    return findExistingBusinessFunction(creationRequest)
+        .orElseGet(() -> createNewBusinessFunction(creationRequest));
+  }
 
-        return businessFunctionRepository.findByApplicationNameAndFunctionName(
-                creationRequest.getApplicationName(), creationRequest.getFunctionName());
-    }
+  private Optional<BusinessFunction> findExistingBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
+    log.info("Checking if business function exists '{}'", creationRequest);
 
-    private BusinessFunction createNewBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
-        log.info("Creating new business function '{}'", creationRequest);
+    return businessFunctionRepository.findByApplicationNameAndFunctionName(
+        creationRequest.getApplicationName(), creationRequest.getFunctionName());
+  }
 
-        var businessFunction = BusinessFunctionMapper.INSTANCE.mapToBusinessFunction(creationRequest);
+  private BusinessFunction createNewBusinessFunction(BusinessFunctionCreationRequest creationRequest) {
+    log.info("Creating new business function '{}'", creationRequest);
 
-        return businessFunctionRepository.save(businessFunction);
-    }
+    var businessFunction = businessFunctionMapper.mapToBusinessFunction(creationRequest);
 
-    public BusinessFunction findByIdOrThrowNotFound(String businessFunctionId) {
-        log.info("Finding business function by ID: '{}'", businessFunctionId);
+    return businessFunctionRepository.save(businessFunction);
+  }
 
-        return businessFunctionRepository.findById(UUID.fromString(businessFunctionId))
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Business function with ID: %s not found.".formatted(businessFunctionId)
-                ));
-    }
+  public BusinessFunction findByIdOrThrowNotFound(String businessFunctionId) {
+    log.info("Finding business function by ID: '{}'", businessFunctionId);
 
-    public Page<BusinessFunction> listAll(Pageable pageable) {
-        log.info("Finding all businessFunctions");
+    return businessFunctionRepository.findById(UUID.fromString(businessFunctionId))
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Business function with ID: %s not found.".formatted(businessFunctionId)
+        ));
+  }
 
-        return businessFunctionRepository.findAll(pageable);
-    }
+  public Page<BusinessFunction> listAll(Pageable pageable) {
+    log.info("Finding all businessFunctions");
+
+    return businessFunctionRepository.findAll(pageable);
+  }
 }

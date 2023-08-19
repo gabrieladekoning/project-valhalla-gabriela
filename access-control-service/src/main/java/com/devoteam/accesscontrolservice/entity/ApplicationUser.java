@@ -18,13 +18,14 @@ import java.util.UUID;
 @Data
 @Table(name = "application_users")
 public class ApplicationUser {
-    @Id
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
+
+  @Id
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
+  @Column(name = "first_name", nullable = false)
+  private String firstName;
+  @Column(name = "last_name", nullable = false)
+  private String lastName;
+  @Column(name = "email", nullable = false, unique = true)
+  private String email;
 }
