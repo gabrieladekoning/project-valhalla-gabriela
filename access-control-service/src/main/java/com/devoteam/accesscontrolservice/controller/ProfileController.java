@@ -29,40 +29,41 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/v1/profiles")
 public class ProfileController {
-    private final ProfileService profileService;
-    private final ProfileMapper profileMapper;
 
-    @PostMapping
-    @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-            summary = "Create a profile")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'create')")
-    public ResponseEntity<ProfileCreationResponse> save(@Valid @RequestBody ProfileCreationRequest creationRequest) {
-        var profile = profileService.createOrRetrieveProfile(creationRequest);
-        var creationResponse = profileMapper.mapToProfileCreationResponse(profile);
+  private final ProfileService profileService;
+  private final ProfileMapper profileMapper;
 
-        log.info("Created new / returned existing profile '{}", creationResponse);
-        return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
-    }
+  @PostMapping
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Create a profile")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'create')")
+  public ResponseEntity<ProfileCreationResponse> save(@Valid @RequestBody ProfileCreationRequest creationRequest) {
+    var profile = profileService.createOrRetrieveProfile(creationRequest);
+    var creationResponse = profileMapper.mapToProfileCreationResponse(profile);
 
-    @GetMapping
-    @Operation(summary = "Retrieve a paginated list of all profiles")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
-    public ResponseEntity<Page<ProfileReadResponse>> listAll(Pageable pageable) {
-        var profiles = profileService.listAll(pageable);
-        var profileReadResponses = profiles.map(profileMapper::toProfileReadResponse);
+    log.info("Created new / returned existing profile '{}", creationResponse);
+    return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
+  }
 
-        log.info("Listing all profiles");
-        return ResponseEntity.status(HttpStatus.OK).body(profileReadResponses);
-    }
+  @GetMapping
+  @Operation(summary = "Retrieve a paginated list of all profiles")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
+  public ResponseEntity<Page<ProfileReadResponse>> listAll(Pageable pageable) {
+    var profiles = profileService.listAll(pageable);
+    var profileReadResponses = profiles.map(profileMapper::toProfileReadResponse);
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Find profile by ID")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
-    public ResponseEntity<ProfileReadResponse> findById(@PathVariable String id) {
-        var profile = profileService.findByIdOrThrowNotFound(id);
-        var profileReadResponse = profileMapper.toProfileReadResponse(profile);
+    log.info("Listing all profiles");
+    return ResponseEntity.status(HttpStatus.OK).body(profileReadResponses);
+  }
 
-        log.info("Returning profile found by ID: '{}'", id);
-        return ResponseEntity.status(HttpStatus.OK).body(profileReadResponse);
-    }
+  @GetMapping("/{id}")
+  @Operation(summary = "Find profile by ID")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
+  public ResponseEntity<ProfileReadResponse> findById(@PathVariable String id) {
+    var profile = profileService.findByIdOrThrowNotFound(id);
+    var profileReadResponse = profileMapper.toProfileReadResponse(profile);
+
+    log.info("Returning profile found by ID: '{}'", id);
+    return ResponseEntity.status(HttpStatus.OK).body(profileReadResponse);
+  }
 }

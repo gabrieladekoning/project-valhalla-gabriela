@@ -8,7 +8,8 @@ import org.mapstruct.MappingConstants.ComponentModel;
 
 @Mapper(componentModel = ComponentModel.SPRING)
 public interface UserMapper {
-    ApplicationUser mapToApplicationUser(ApplicationUserCreationRequest creationRequest);
 
-    ApplicationUserCreationResponse mapToApplicationUserCreationResponse(ApplicationUser user);
+  ApplicationUser mapToApplicationUser(ApplicationUserCreationRequest creationRequest);
+
+  ApplicationUserCreationResponse mapToApplicationUserCreationResponse(ApplicationUser user);
 }

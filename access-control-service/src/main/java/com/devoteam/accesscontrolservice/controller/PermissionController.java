@@ -29,40 +29,42 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/v1/permissions")
 public class PermissionController {
-    private final PermissionService permissionService;
-    private final PermissionMapper permissionMapper;
 
-    @PostMapping
-    @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-            summary = "Create a permission")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'create')")
-    public ResponseEntity<PermissionCreationResponse> save(@Valid @RequestBody PermissionCreationRequest creationRequest) {
-        var permission = permissionService.createOrRetrievePermission(creationRequest);
-        var creationResponse = permissionMapper.mapToPermissionCreationResponse(permission);
+  private final PermissionService permissionService;
+  private final PermissionMapper permissionMapper;
 
-        log.info("Created new / returned existing permission '{}'", creationResponse);
-        return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
-    }
+  @PostMapping
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Create a permission")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'create')")
+  public ResponseEntity<PermissionCreationResponse> save(
+      @Valid @RequestBody PermissionCreationRequest creationRequest) {
+    var permission = permissionService.createOrRetrievePermission(creationRequest);
+    var creationResponse = permissionMapper.mapToPermissionCreationResponse(permission);
 
-    @GetMapping
-    @Operation(summary = "Retrieve a paginated list of all permissions")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
-    public ResponseEntity<Page<PermissionReadResponse>> listAll(Pageable pageable) {
-        var permissions = permissionService.listAll(pageable);
-        var permissionReadResponses = permissions.map(permissionMapper::mapToPermissionReadResponse);
+    log.info("Created new / returned existing permission '{}'", creationResponse);
+    return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
+  }
 
-        log.info("Listing all permissions");
-        return ResponseEntity.status(HttpStatus.OK).body(permissionReadResponses);
-    }
+  @GetMapping
+  @Operation(summary = "Retrieve a paginated list of all permissions")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
+  public ResponseEntity<Page<PermissionReadResponse>> listAll(Pageable pageable) {
+    var permissions = permissionService.listAll(pageable);
+    var permissionReadResponses = permissions.map(permissionMapper::mapToPermissionReadResponse);
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Find permission by ID")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
-    public ResponseEntity<PermissionReadResponse> findById(@PathVariable String id) {
-        var permission = permissionService.findByIdOrThrowNotFound(id);
-        var permissionReadResponse = permissionMapper.mapToPermissionReadResponse(permission);
+    log.info("Listing all permissions");
+    return ResponseEntity.status(HttpStatus.OK).body(permissionReadResponses);
+  }
 
-        log.info("Returning permission found by ID: '{}'", id);
-        return ResponseEntity.status(HttpStatus.OK).body(permissionReadResponse);
-    }
+  @GetMapping("/{id}")
+  @Operation(summary = "Find permission by ID")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
+  public ResponseEntity<PermissionReadResponse> findById(@PathVariable String id) {
+    var permission = permissionService.findByIdOrThrowNotFound(id);
+    var permissionReadResponse = permissionMapper.mapToPermissionReadResponse(permission);
+
+    log.info("Returning permission found by ID: '{}'", id);
+    return ResponseEntity.status(HttpStatus.OK).body(permissionReadResponse);
+  }
 }

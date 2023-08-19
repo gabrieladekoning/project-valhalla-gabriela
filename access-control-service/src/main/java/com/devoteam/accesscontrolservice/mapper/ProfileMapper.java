@@ -9,9 +9,10 @@ import org.mapstruct.MappingConstants.ComponentModel;
 
 @Mapper(componentModel = ComponentModel.SPRING, uses = UserMapper.class)
 public interface ProfileMapper {
-    Profile mapToProfile(ProfileCreationRequest creationRequest);
 
-    ProfileCreationResponse mapToProfileCreationResponse(Profile profile);
+  Profile mapToProfile(ProfileCreationRequest creationRequest);
 
-    ProfileReadResponse toProfileReadResponse(Profile profile);
+  ProfileCreationResponse mapToProfileCreationResponse(Profile profile);
+
+  ProfileReadResponse toProfileReadResponse(Profile profile);
 }

@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ProfileBusinessFunctionPermissionRepository extends JpaRepository<ProfileBusinessFunctionPermission, UUID> {
-    Optional<ProfileBusinessFunctionPermission> findByBusinessFunctionPermissionAndProfile(BusinessFunctionPermission businessFunctionPermission, Profile profile);
-    boolean existsByBusinessFunctionPermissionAndProfile(BusinessFunctionPermission businessFunctionPermission, Profile profile);
+public interface ProfileBusinessFunctionPermissionRepository extends
+    JpaRepository<ProfileBusinessFunctionPermission, UUID> {
+
+  Optional<ProfileBusinessFunctionPermission> findByBusinessFunctionPermissionAndProfile(
+      BusinessFunctionPermission businessFunctionPermission, Profile profile);
 }

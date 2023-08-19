@@ -8,5 +8,6 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 public class PermissionCreationResponse {
-    private String id;
+
+  private String id;
 }

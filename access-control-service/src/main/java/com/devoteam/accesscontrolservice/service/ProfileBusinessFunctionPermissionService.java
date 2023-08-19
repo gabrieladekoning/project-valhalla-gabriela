@@ -14,32 +14,40 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileBusinessFunctionPermissionService {
-    private final BusinessFunctionPermissionService businessFunctionPermissionService;
-    private final ProfileService profileService;
-    private final ProfileBusinessFunctionPermissionRepository profileBusinessFunctionPermissionRepository;
 
-    public ProfileBusinessFunctionPermission createOrRetrieveProfileBusinessFunctionPermission(ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
-        log.info("Received a request to create an association between business function ID: '{}' and permission ID: '{}'",
-                creationRequest.getBusinessFunctionPermissionId(), creationRequest.getProfileId());
+  private final BusinessFunctionPermissionService businessFunctionPermissionService;
+  private final ProfileService profileService;
+  private final ProfileBusinessFunctionPermissionRepository profileBusinessFunctionPermissionRepository;
+  private final ProfileBusinessFunctionPermissionMapper profileBusinessFunctionPermissionMapper;
 
-        return findByExistingProfileBusinessFunctionPermission(creationRequest)
-                .orElseGet(() -> createNewProfileBusinessFunctionPermission(creationRequest));
-    }
+  public ProfileBusinessFunctionPermission createOrRetrieveProfileBusinessFunctionPermission(
+      ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
+    log.info("Received a request to create an association between business function ID: '{}' and permission ID: '{}'",
+        creationRequest.getBusinessFunctionPermissionId(), creationRequest.getProfileId());
 
-    private Optional<ProfileBusinessFunctionPermission> findByExistingProfileBusinessFunctionPermission(ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
-        log.info("Checking if association between profile and business function permission exists '{}'", creationRequest);
+    return findByExistingProfileBusinessFunctionPermission(creationRequest)
+        .orElseGet(() -> createNewProfileBusinessFunctionPermission(creationRequest));
+  }
 
-        var businessFunctionPermission = businessFunctionPermissionService.findByIdOrThrowNotFound(creationRequest.getBusinessFunctionPermissionId());
-        var profile = profileService.findByIdOrThrowNotFound(creationRequest.getProfileId());
+  private Optional<ProfileBusinessFunctionPermission> findByExistingProfileBusinessFunctionPermission(
+      ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
+    log.info("Checking if association between profile and business function permission exists '{}'", creationRequest);
 
-        return profileBusinessFunctionPermissionRepository.findByBusinessFunctionPermissionAndProfile(businessFunctionPermission, profile);
-    }
+    var businessFunctionPermission = businessFunctionPermissionService.findByIdOrThrowNotFound(
+        creationRequest.getBusinessFunctionPermissionId());
+    var profile = profileService.findByIdOrThrowNotFound(creationRequest.getProfileId());
 
-    private ProfileBusinessFunctionPermission createNewProfileBusinessFunctionPermission(ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
-        log.info("Creating new association between profile and business function permission '{}'", creationRequest);
+    return profileBusinessFunctionPermissionRepository.findByBusinessFunctionPermissionAndProfile(
+        businessFunctionPermission, profile);
+  }
 
-        var profileBusinessFunctionPermission = ProfileBusinessFunctionPermissionMapper.INSTANCE.mapToProfileBusinessFunctionPermission(creationRequest);
+  private ProfileBusinessFunctionPermission createNewProfileBusinessFunctionPermission(
+      ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
+    log.info("Creating new association between profile and business function permission '{}'", creationRequest);
 
-        return profileBusinessFunctionPermissionRepository.save(profileBusinessFunctionPermission);
-    }
+    var profileBusinessFunctionPermission = profileBusinessFunctionPermissionMapper.mapToProfileBusinessFunctionPermission(
+        creationRequest);
+
+    return profileBusinessFunctionPermissionRepository.save(profileBusinessFunctionPermission);
+  }
 }

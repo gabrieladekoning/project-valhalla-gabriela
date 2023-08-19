@@ -8,5 +8,6 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 public class UserProfileCreationResponse {
-    private String id;
+
+  private String id;
 }

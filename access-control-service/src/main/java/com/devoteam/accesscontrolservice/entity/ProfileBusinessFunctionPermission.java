@@ -13,14 +13,15 @@ import java.util.UUID;
 @Setter
 @Table(name = "profile_business_function_permissions")
 public class ProfileBusinessFunctionPermission {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-    @ManyToOne
-    @JoinColumn(name = "business_function_permission_id", nullable = false)
-    private BusinessFunctionPermission businessFunctionPermission;
-    @ManyToOne
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
+  @ManyToOne
+  @JoinColumn(name = "business_function_permission_id", nullable = false)
+  private BusinessFunctionPermission businessFunctionPermission;
+  @ManyToOne
+  @JoinColumn(name = "profile_id", nullable = false)
+  private Profile profile;
 }

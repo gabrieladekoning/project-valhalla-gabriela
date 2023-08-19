@@ -16,40 +16,41 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-    private final UserRepository userRepository;
-    private final KeycloakService keycloakService;
-    private final UserMapper userMapper;
 
-    public ApplicationUser saveApplicationUser(ApplicationUserCreationRequest creationRequest) {
-        assertEmailDoesNotExist(creationRequest);
-        var user = userMapper.mapToApplicationUser(creationRequest);
-        log.info("Creating user with email: {}", creationRequest.getEmail());
+  private final UserRepository userRepository;
+  private final KeycloakService keycloakService;
+  private final UserMapper userMapper;
 
-        var keycloakUserId = keycloakService.createUser(creationRequest);
-        user.setId(UUID.fromString(keycloakUserId));
-        return userRepository.save(user);
-    }
+  public ApplicationUser saveApplicationUser(ApplicationUserCreationRequest creationRequest) {
+    assertEmailDoesNotExist(creationRequest);
+    var user = userMapper.mapToApplicationUser(creationRequest);
+    log.info("Creating user with email: {}", creationRequest.getEmail());
 
-    private void assertEmailDoesNotExist(ApplicationUserCreationRequest creationRequest) {
-        log.info("Checking if email exists");
-        userRepository.findByEmail(creationRequest.getEmail()).ifPresent(user -> {
-            throw new EmailAlreadyExistsException("Email is already registered: '%s'".formatted(user.getEmail()));
-        });
-    }
+    var keycloakUserId = keycloakService.createUser(creationRequest);
+    user.setId(UUID.fromString(keycloakUserId));
+    return userRepository.save(user);
+  }
 
-    public ApplicationUser findByIdOrThrowNotFound(String userId) {
-        log.info("Finding user by ID");
-        return userRepository.findById(UUID.fromString(userId))
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User with ID: %s not found.".formatted(userId)
-                ));
-    }
+  private void assertEmailDoesNotExist(ApplicationUserCreationRequest creationRequest) {
+    log.info("Checking if email exists");
+    userRepository.findByEmail(creationRequest.getEmail()).ifPresent(user -> {
+      throw new EmailAlreadyExistsException("Email is already registered: '%s'".formatted(user.getEmail()));
+    });
+  }
 
-    public ApplicationUser findByEmailOrThrowNotFound(String email) {
-        log.info("Finding user by email");
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User with email: %s not found.".formatted(email)
-                ));
-    }
+  public ApplicationUser findByIdOrThrowNotFound(String userId) {
+    log.info("Finding user by ID");
+    return userRepository.findById(UUID.fromString(userId))
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "User with ID: %s not found.".formatted(userId)
+        ));
+  }
+
+  public ApplicationUser findByEmailOrThrowNotFound(String email) {
+    log.info("Finding user by email");
+    return userRepository.findByEmail(email)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "User with email: %s not found.".formatted(email)
+        ));
+  }
 }

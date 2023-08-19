@@ -9,8 +9,9 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 public class BusinessFunctionPermissionCreationRequest {
-    @NotBlank(message = "Business function ID is required")
-    private String businessFunctionId;
-    @NotBlank(message = "Permission ID is required")
-    private String permissionId;
+
+  @NotBlank(message = "Business function ID is required")
+  private String businessFunctionId;
+  @NotBlank(message = "Permission ID is required")
+  private String permissionId;
 }

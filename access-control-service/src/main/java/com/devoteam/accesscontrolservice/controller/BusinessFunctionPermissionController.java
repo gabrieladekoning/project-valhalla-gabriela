@@ -30,29 +30,37 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/v1/business-function-permissions")
 public class BusinessFunctionPermissionController {
-    private final BusinessFunctionPermissionService businessFunctionPermissionService;
-    private final BusinessFunctionPermissionMapper businessFunctionPermissionMapper;
 
-    @PostMapping
-    @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-            summary = "Create an association between business function and permission")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'create')")
-    public ResponseEntity<BusinessFunctionPermissionCreationResponse> save(@Valid @RequestBody BusinessFunctionPermissionCreationRequest creationRequest) {
-        var businessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(creationRequest);
-        var creationResponse = businessFunctionPermissionMapper.mapToBusinessFunctionPermissionCreationResponse(businessFunctionPermission);
+  private final BusinessFunctionPermissionService businessFunctionPermissionService;
+  private final BusinessFunctionPermissionMapper businessFunctionPermissionMapper;
 
-        log.info("Created new / returned existing association between business function and permission '{}'", creationResponse);
-        return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
-    }
+  @PostMapping
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Create an association between business function and permission")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'create')")
+  public ResponseEntity<BusinessFunctionPermissionCreationResponse> save(
+      @Valid @RequestBody BusinessFunctionPermissionCreationRequest creationRequest) {
+    var businessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(
+        creationRequest);
+    var creationResponse = businessFunctionPermissionMapper.mapToBusinessFunctionPermissionCreationResponse(
+        businessFunctionPermission);
 
-    @GetMapping
-    @Operation(summary = "Retrieve a paginated list of business function permissions by application name")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'read')")
-    public ResponseEntity<Page<BusinessFunctionPermissionReadResponse>> listAll(@NotBlank @RequestParam(value = "applicationName") String applicationName, Pageable pageable) {
-        var businessFunctionPermissions = businessFunctionPermissionService.listAllByApplicationName(applicationName, pageable);
-        var businessFunctionReadResponses = businessFunctionPermissions.map(businessFunctionPermissionMapper::mapToBusinessFunctionPermissionReadResponse);
+    log.info("Created new / returned existing association between business function and permission '{}'",
+        creationResponse);
+    return ResponseEntity.status(HttpStatus.CREATED).body(creationResponse);
+  }
 
-        log.info("Listing business function permissions by application name: '{}'", applicationName);
-        return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponses);
-    }
+  @GetMapping
+  @Operation(summary = "Retrieve a paginated list of business function permissions by application name")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'read')")
+  public ResponseEntity<Page<BusinessFunctionPermissionReadResponse>> listAll(
+      @NotBlank @RequestParam(value = "applicationName") String applicationName, Pageable pageable) {
+    var businessFunctionPermissions = businessFunctionPermissionService.listAllByApplicationName(applicationName,
+        pageable);
+    var businessFunctionReadResponses = businessFunctionPermissions.map(
+        businessFunctionPermissionMapper::mapToBusinessFunctionPermissionReadResponse);
+
+    log.info("Listing business function permissions by application name: '{}'", applicationName);
+    return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponses);
+  }
 }

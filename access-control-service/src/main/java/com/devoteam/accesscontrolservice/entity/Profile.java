@@ -13,10 +13,11 @@ import java.util.UUID;
 @Setter
 @Table(name = "profiles")
 public class Profile {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
+  @Column(name = "name", nullable = false, unique = true)
+  private String name;
 }

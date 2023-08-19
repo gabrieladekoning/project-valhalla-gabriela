@@ -7,5 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BusinessFunctionRepository extends JpaRepository<BusinessFunction, UUID> {
-    Optional<BusinessFunction> findByApplicationNameAndFunctionName(String applicationName, String functionName);
+
+  Optional<BusinessFunction> findByApplicationNameAndFunctionName(String applicationName, String functionName);
 }

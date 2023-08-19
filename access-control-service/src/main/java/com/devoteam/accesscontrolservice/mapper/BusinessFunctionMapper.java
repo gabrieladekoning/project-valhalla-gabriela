@@ -9,9 +9,10 @@ import org.mapstruct.MappingConstants.ComponentModel;
 
 @Mapper(componentModel = ComponentModel.SPRING)
 public interface BusinessFunctionMapper {
-    BusinessFunction mapToBusinessFunction(BusinessFunctionCreationRequest creationRequest);
 
-    BusinessFunctionCreationResponse mapToBusinessFunctionCreationResponse(BusinessFunction businessFunction);
+  BusinessFunction mapToBusinessFunction(BusinessFunctionCreationRequest creationRequest);
 
-    BusinessFunctionReadResponse mapToBusinessFunctionReadResponse(BusinessFunction businessFunction);
+  BusinessFunctionCreationResponse mapToBusinessFunctionCreationResponse(BusinessFunction businessFunction);
+
+  BusinessFunctionReadResponse mapToBusinessFunctionReadResponse(BusinessFunction businessFunction);
 }

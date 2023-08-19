@@ -14,17 +14,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class AccessValidationService {
-    private final UserRepository userRepository;
 
-    public boolean checkAccess(String applicationName, String functionName, String permissionName) {
-        var userUuid = extractUserUuid();
-        return userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName) == 1L;
-    }
+  private final UserRepository userRepository;
 
-    public UUID extractUserUuid() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String userId = jwt.getClaim("sub");
-        return UUID.fromString(userId);
-    }
+  public boolean checkAccess(String applicationName, String functionName, String permissionName) {
+    var userUuid = extractUserUuid();
+    return userRepository.checkUserAccess(userUuid, applicationName, functionName, permissionName) == 1L;
+  }
+
+  public UUID extractUserUuid() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Jwt jwt = (Jwt) authentication.getPrincipal();
+    String userId = jwt.getClaim("sub");
+    return UUID.fromString(userId);
+  }
 }

@@ -9,8 +9,9 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 public class BusinessFunctionCreationRequest {
-    @NotBlank(message = "Application name is required")
-    private String applicationName;
-    @NotBlank(message = "Function name is required")
-    private String functionName;
+
+  @NotBlank(message = "Application name is required")
+  private String applicationName;
+  @NotBlank(message = "Function name is required")
+  private String functionName;
 }

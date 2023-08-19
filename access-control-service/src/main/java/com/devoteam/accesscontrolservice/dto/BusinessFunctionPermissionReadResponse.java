@@ -12,7 +12,8 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class BusinessFunctionPermissionReadResponse {
-    private String id;
-    private BusinessFunctionReadResponse businessFunction;
-    private PermissionReadResponse permission;
+
+  private String id;
+  private BusinessFunctionReadResponse businessFunction;
+  private PermissionReadResponse permission;
 }

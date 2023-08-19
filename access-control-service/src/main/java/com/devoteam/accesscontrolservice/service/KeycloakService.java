@@ -17,38 +17,39 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class KeycloakService {
-    private final Keycloak keycloak;
-    @Value("${keycloak.realm}")
-    private String realm;
-    private final KeycloakUserMapper keycloakUserMapper;
 
-    public String createUser(ApplicationUserCreationRequest creationRequest) {
-        log.debug("Creating user in Keycloak: {}", creationRequest.getEmail());
-        UserRepresentation user = keycloakUserMapper.mapToUserRepresentation(creationRequest);
-        user.setEnabled(true);
+  private final Keycloak keycloak;
+  @Value("${keycloak.realm}")
+  private String realm;
+  private final KeycloakUserMapper keycloakUserMapper;
 
-        var realmResource = keycloak.realm(realm);
-        var usersResource = realmResource.users();
-        var response = usersResource.create(user);
+  public String createUser(ApplicationUserCreationRequest creationRequest) {
+    log.debug("Creating user in Keycloak: {}", creationRequest.getEmail());
+    UserRepresentation user = keycloakUserMapper.mapToUserRepresentation(creationRequest);
+    user.setEnabled(true);
 
-        if (response.getStatus() != HttpStatus.CREATED.value()) {
-            throw new UserCreationFailedException("Failed to create user in Keycloak, HTTP status: " + response.getStatus());
-        }
+    var realmResource = keycloak.realm(realm);
+    var usersResource = realmResource.users();
+    var response = usersResource.create(user);
 
-        var userId = CreatedResponseUtil.getCreatedId(response);
-        var passwordCred = createCredentialRepresentation(creationRequest.getPassword());
-        var userResource = usersResource.get(userId);
-
-        userResource.resetPassword(passwordCred);
-        log.debug("User created in Keycloak with ID: {}", userId);
-        return userId;
+    if (response.getStatus() != HttpStatus.CREATED.value()) {
+      throw new UserCreationFailedException("Failed to create user in Keycloak, HTTP status: " + response.getStatus());
     }
 
-    private CredentialRepresentation createCredentialRepresentation(String password) {
-        var passwordCred = new CredentialRepresentation();
-        passwordCred.setTemporary(false);
-        passwordCred.setType(CredentialRepresentation.PASSWORD);
-        passwordCred.setValue(password);
-        return passwordCred;
-    }
+    var userId = CreatedResponseUtil.getCreatedId(response);
+    var passwordCred = createCredentialRepresentation(creationRequest.getPassword());
+    var userResource = usersResource.get(userId);
+
+    userResource.resetPassword(passwordCred);
+    log.debug("User created in Keycloak with ID: {}", userId);
+    return userId;
+  }
+
+  private CredentialRepresentation createCredentialRepresentation(String password) {
+    var passwordCred = new CredentialRepresentation();
+    passwordCred.setTemporary(false);
+    passwordCred.setType(CredentialRepresentation.PASSWORD);
+    passwordCred.setValue(password);
+    return passwordCred;
+  }
 }

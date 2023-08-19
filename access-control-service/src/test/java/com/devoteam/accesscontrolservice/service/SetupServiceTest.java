@@ -21,93 +21,96 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class SetupServiceTest {
-    @Mock
-    private UserService userService;
-    @Mock
-    private BusinessFunctionService businessFunctionService;
-    @Mock
-    private PermissionService permissionService;
-    @Mock
-    private ProfileService profileService;
-    @Mock
-    private BusinessFunctionPermissionService businessFunctionPermissionService;
-    @Mock
-    private ProfileBusinessFunctionPermissionService profileBusinessFunctionPermissionService;
-    @Mock
-    private UserProfileService userProfileService;
 
-    @InjectMocks
-    private SetupService setupService;
+  @Mock
+  private UserService userService;
+  @Mock
+  private BusinessFunctionService businessFunctionService;
+  @Mock
+  private PermissionService permissionService;
+  @Mock
+  private ProfileService profileService;
+  @Mock
+  private BusinessFunctionPermissionService businessFunctionPermissionService;
+  @Mock
+  private ProfileBusinessFunctionPermissionService profileBusinessFunctionPermissionService;
+  @Mock
+  private UserProfileService userProfileService;
 
-    private SetupAllRequest setupAllRequest;
-    private ApplicationUser applicationUser;
-    private BusinessFunction businessFunction;
-    private Permission permission;
-    private Profile profile;
-    private BusinessFunctionPermission businessFunctionPermission;
+  @InjectMocks
+  private SetupService setupService;
 
-    @BeforeEach
-    void setUp() {
-        applicationUser = ApplicationUser.builder()
-                .id(UUID.randomUUID())
-                .email("test@email.com").build();
-        businessFunction = BusinessFunction.builder()
-                .id(UUID.randomUUID())
-                .applicationName("Application name")
-                .functionName("Function name")
-                .build();
-        permission = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("Permission name").build();
-        profile = Profile.builder()
-                .id(UUID.randomUUID())
-                .name("Profile name").build();
-        businessFunctionPermission = BusinessFunctionPermission.builder()
-                .id(UUID.randomUUID())
-                .businessFunction(businessFunction)
-                .permission(permission).build();
+  private SetupAllRequest setupAllRequest;
+  private ApplicationUser applicationUser;
+  private BusinessFunction businessFunction;
+  private Permission permission;
+  private Profile profile;
+  private BusinessFunctionPermission businessFunctionPermission;
 
-        setupAllRequest = SetupAllRequest.builder()
-                .applicationName(businessFunction.getApplicationName())
-                .functionName(businessFunction.getFunctionName())
-                .permissionName(permission.getName())
-                .profileName(profile.getName())
-                .email(applicationUser.getEmail())
-                .build();
-    }
+  @BeforeEach
+  void setUp() {
+    applicationUser = ApplicationUser.builder()
+        .id(UUID.randomUUID())
+        .email("test@email.com").build();
+    businessFunction = BusinessFunction.builder()
+        .id(UUID.randomUUID())
+        .applicationName("Application name")
+        .functionName("Function name")
+        .build();
+    permission = Permission.builder()
+        .id(UUID.randomUUID())
+        .name("Permission name").build();
+    profile = Profile.builder()
+        .id(UUID.randomUUID())
+        .name("Profile name").build();
+    businessFunctionPermission = BusinessFunctionPermission.builder()
+        .id(UUID.randomUUID())
+        .businessFunction(businessFunction)
+        .permission(permission).build();
 
-    @DisplayName("setupAll successfully upserts application, function, permission, profile")
-    @Test
-    void setupAll_SuccessfullyUpsertsAll() {
-        given(userService.findByEmailOrThrowNotFound(setupAllRequest.getEmail())).willReturn(applicationUser);
-        given(businessFunctionService.createOrRetrieveBusinessFunction(any())).willReturn(businessFunction);
-        given(permissionService.createOrRetrievePermission(any())).willReturn(permission);
-        given(profileService.createOrRetrieveProfile(any())).willReturn(profile);
-        given(businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(any())).willReturn(businessFunctionPermission);
+    setupAllRequest = SetupAllRequest.builder()
+        .applicationName(businessFunction.getApplicationName())
+        .functionName(businessFunction.getFunctionName())
+        .permissionName(permission.getName())
+        .profileName(profile.getName())
+        .email(applicationUser.getEmail())
+        .build();
+  }
 
-        setupService.setupAll(setupAllRequest);
+  @DisplayName("setupAll successfully upserts application, function, permission, profile")
+  @Test
+  void setupAll_SuccessfullyUpsertsAll() {
+    given(userService.findByEmailOrThrowNotFound(setupAllRequest.getEmail())).willReturn(applicationUser);
+    given(businessFunctionService.createOrRetrieveBusinessFunction(any())).willReturn(businessFunction);
+    given(permissionService.createOrRetrievePermission(any())).willReturn(permission);
+    given(profileService.createOrRetrieveProfile(any())).willReturn(profile);
+    given(businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(any())).willReturn(
+        businessFunctionPermission);
 
-        verify(userService).findByEmailOrThrowNotFound(setupAllRequest.getEmail());
-        verify(businessFunctionService).createOrRetrieveBusinessFunction(any());
-        verify(permissionService).createOrRetrievePermission(any());
-        verify(profileService).createOrRetrieveProfile(any());
-        verify(businessFunctionPermissionService).createOrRetrieveBusinessFunctionPermission(any());
-        verify(profileBusinessFunctionPermissionService).createOrRetrieveProfileBusinessFunctionPermission(any());
-        verify(userProfileService).createOrRetrieveUserProfile(any());
-    }
+    setupService.setupAll(setupAllRequest);
 
-    @DisplayName("Handling when user is not found")
-    @Test
-    void setupAll_UserNotFound_ThrowsResourceNotFoundException() {
-        given(userService.findByEmailOrThrowNotFound(setupAllRequest.getEmail()))
-                .willThrow(new ResourceNotFoundException("User with email: %s not found.".formatted(setupAllRequest.getEmail())));
+    verify(userService).findByEmailOrThrowNotFound(setupAllRequest.getEmail());
+    verify(businessFunctionService).createOrRetrieveBusinessFunction(any());
+    verify(permissionService).createOrRetrievePermission(any());
+    verify(profileService).createOrRetrieveProfile(any());
+    verify(businessFunctionPermissionService).createOrRetrieveBusinessFunctionPermission(any());
+    verify(profileBusinessFunctionPermissionService).createOrRetrieveProfileBusinessFunctionPermission(any());
+    verify(userProfileService).createOrRetrieveUserProfile(any());
+  }
 
-        assertThrows(ResourceNotFoundException.class, () -> setupService.setupAll(setupAllRequest));
+  @DisplayName("Handling when user is not found")
+  @Test
+  void setupAll_UserNotFound_ThrowsResourceNotFoundException() {
+    given(userService.findByEmailOrThrowNotFound(setupAllRequest.getEmail()))
+        .willThrow(
+            new ResourceNotFoundException("User with email: %s not found.".formatted(setupAllRequest.getEmail())));
 
-        then(businessFunctionService).shouldHaveNoInteractions();
-        then(permissionService).shouldHaveNoInteractions();
-        then(profileService).shouldHaveNoInteractions();
-        then(profileBusinessFunctionPermissionService).shouldHaveNoInteractions();
-        then(userProfileService).shouldHaveNoInteractions();
-    }
+    assertThrows(ResourceNotFoundException.class, () -> setupService.setupAll(setupAllRequest));
+
+    then(businessFunctionService).shouldHaveNoInteractions();
+    then(permissionService).shouldHaveNoInteractions();
+    then(profileService).shouldHaveNoInteractions();
+    then(profileBusinessFunctionPermissionService).shouldHaveNoInteractions();
+    then(userProfileService).shouldHaveNoInteractions();
+  }
 }

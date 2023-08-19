@@ -8,5 +8,6 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 public class BusinessFunctionCreationResponse {
-    private String id;
+
+  private String id;
 }

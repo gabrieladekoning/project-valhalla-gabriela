@@ -9,9 +9,10 @@ import org.mapstruct.MappingConstants.ComponentModel;
 
 @Mapper(componentModel = ComponentModel.SPRING)
 public interface PermissionMapper {
-    Permission mapToPermission(PermissionCreationRequest creationRequest);
 
-    PermissionCreationResponse mapToPermissionCreationResponse(Permission permission);
+  Permission mapToPermission(PermissionCreationRequest creationRequest);
 
-    PermissionReadResponse mapToPermissionReadResponse(Permission permission);
+  PermissionCreationResponse mapToPermissionCreationResponse(Permission permission);
+
+  PermissionReadResponse mapToPermissionReadResponse(Permission permission);
 }

@@ -11,13 +11,15 @@ import org.mapstruct.MappingConstants.ComponentModel;
 @Mapper(componentModel = ComponentModel.SPRING, uses = {BusinessFunctionMapper.class, PermissionMapper.class})
 public interface BusinessFunctionPermissionMapper {
 
-    @Mapping(source = "businessFunctionId", target = "businessFunction.id")
-    @Mapping(source = "permissionId", target = "permission.id")
-    BusinessFunctionPermission mapToBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest);
+  @Mapping(source = "businessFunctionId", target = "businessFunction.id")
+  @Mapping(source = "permissionId", target = "permission.id")
+  BusinessFunctionPermission mapToBusinessFunctionPermission(BusinessFunctionPermissionCreationRequest creationRequest);
 
-    BusinessFunctionPermissionCreationResponse mapToBusinessFunctionPermissionCreationResponse(BusinessFunctionPermission businessFunctionPermission);
+  BusinessFunctionPermissionCreationResponse mapToBusinessFunctionPermissionCreationResponse(
+      BusinessFunctionPermission businessFunctionPermission);
 
-    @Mapping(source = "businessFunction", target = "businessFunction")
-    @Mapping(source = "permission", target = "permission")
-    BusinessFunctionPermissionReadResponse mapToBusinessFunctionPermissionReadResponse(BusinessFunctionPermission businessFunctionPermission);
+  @Mapping(source = "businessFunction", target = "businessFunction")
+  @Mapping(source = "permission", target = "permission")
+  BusinessFunctionPermissionReadResponse mapToBusinessFunctionPermissionReadResponse(
+      BusinessFunctionPermission businessFunctionPermission);
 }
