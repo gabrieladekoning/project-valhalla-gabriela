@@ -50,7 +50,7 @@ public class ProfileController {
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
   public ResponseEntity<Page<ProfileReadResponse>> listAll(Pageable pageable) {
     var profiles = profileService.listAll(pageable);
-    var profileReadResponses = profiles.map(profileMapper::toProfileReadResponse);
+    var profileReadResponses = profiles.map(profileMapper::mapToProfileReadResponse);
 
     log.info("Listing all profiles");
     return ResponseEntity.status(HttpStatus.OK).body(profileReadResponses);
@@ -61,7 +61,7 @@ public class ProfileController {
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
   public ResponseEntity<ProfileReadResponse> findById(@PathVariable String id) {
     var profile = profileService.findByIdOrThrowNotFound(id);
-    var profileReadResponse = profileMapper.toProfileReadResponse(profile);
+    var profileReadResponse = profileMapper.mapToProfileReadResponse(profile);
 
     log.info("Returning profile found by ID: '{}'", id);
     return ResponseEntity.status(HttpStatus.OK).body(profileReadResponse);

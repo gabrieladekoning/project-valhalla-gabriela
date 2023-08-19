@@ -14,5 +14,5 @@ public interface ProfileMapper {
 
   ProfileCreationResponse mapToProfileCreationResponse(Profile profile);
 
-  ProfileReadResponse toProfileReadResponse(Profile profile);
+  ProfileReadResponse mapToProfileReadResponse(Profile profile);
 }
