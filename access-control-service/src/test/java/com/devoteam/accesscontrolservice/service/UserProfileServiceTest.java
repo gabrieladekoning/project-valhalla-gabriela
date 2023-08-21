@@ -1,19 +1,17 @@
 package com.devoteam.accesscontrolservice.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.devoteam.accesscontrolservice.dto.UserIdAndEmailReadResponse;
-import com.devoteam.accesscontrolservice.dto.ProfileWithUsersReadResponse;
 import com.devoteam.accesscontrolservice.dto.UserProfileCreationRequest;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.entity.Profile;
 import com.devoteam.accesscontrolservice.entity.UserProfile;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
-import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
-import com.devoteam.accesscontrolservice.mapper.UserProfileMapper;
 import com.devoteam.accesscontrolservice.repository.UserProfileRepository;
 import java.util.List;
 import java.util.Optional;
@@ -41,10 +39,6 @@ class UserProfileServiceTest {
   private ProfileService profileService;
   @Mock
   private UserProfileRepository userProfileRepository;
-  @Mock
-  private UserProfileMapper userProfileMapper;
-  @Mock
-  private ProfileMapper profileMapper;
   @InjectMocks
   private UserProfileService userProfileService;
 
@@ -52,9 +46,6 @@ class UserProfileServiceTest {
   private ApplicationUser applicationUser;
   private Profile profile;
   private UserProfile userProfile;
-  private UserIdAndEmailReadResponse applicationUserReadResponse;
-  private ProfileWithUsersReadResponse profileWithUsersReadResponse;
-
 
   @BeforeEach
   public void setup() {
@@ -82,17 +73,6 @@ class UserProfileServiceTest {
         .id(UUID.randomUUID())
         .applicationUser(applicationUser)
         .profile(profile)
-        .build();
-
-    applicationUserReadResponse = UserIdAndEmailReadResponse.builder()
-        .id(userId.toString())
-        .email(applicationUser.getEmail())
-        .build();
-
-    profileWithUsersReadResponse = ProfileWithUsersReadResponse.builder()
-        .id(profileId.toString())
-        .name(profile.getName())
-        .users(List.of(applicationUserReadResponse))
         .build();
   }
 
@@ -148,21 +128,14 @@ class UserProfileServiceTest {
   @DisplayName("Returning a pageable list of profiles with associated users when successful")
   @Test
   void getAllProfilesWithAssociatedUsers_ReturnsPageOfProfilesWithUsers_WhenSuccessful() {
-    List<UserProfile> userProfiles = List.of(userProfile);
-    PageRequest pageable = PageRequest.of(0, 5);
-    Page<UserProfile> userProfilesPage = new PageImpl<>(userProfiles, pageable, userProfiles.size());
+    var pageable = PageRequest.of(0, 5);
 
-    when(userProfileRepository.findAllWithApplicationUserAndProfile(pageable)).thenReturn(userProfilesPage);
-    when(userProfileMapper.mapToUserReadResponse(userProfile)).thenReturn(applicationUserReadResponse);
-    when(profileMapper.mapToProfileWithUsersReadResponse(profile, List.of(applicationUserReadResponse))).thenReturn(
-        profileWithUsersReadResponse);
+    var expectedPage = new PageImpl<>(List.of(userProfile), pageable, 1);
+    when(userProfileRepository.findAllWithApplicationUserAndProfile(pageable)).thenReturn(expectedPage);
 
-    Page<ProfileWithUsersReadResponse> result = userProfileService.getAllProfilesWithAssociatedUsers(pageable);
+    var resultPage = userProfileService.getAllProfilesWithAssociatedUsers(pageable);
 
-    assertThat(result).isNotNull();
-    assertThat(result.getContent()).isNotEmpty();
-    assertThat(result.getContent().get(0).getId()).isEqualTo(profileWithUsersReadResponse.getId());
-    assertThat(result.getContent().get(0).getName()).isEqualTo(profileWithUsersReadResponse.getName());
-    assertThat(result.getContent().get(0).getUsers()).isEqualTo(profileWithUsersReadResponse.getUsers());
+    assertEquals(expectedPage, resultPage);
+    verify(userProfileRepository, times(1)).findAllWithApplicationUserAndProfile(pageable);
   }
 }
