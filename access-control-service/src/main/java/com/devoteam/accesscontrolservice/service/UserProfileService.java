@@ -1,22 +1,13 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.UserIdAndEmailReadResponse;
-import com.devoteam.accesscontrolservice.dto.ProfileWithUsersReadResponse;
 import com.devoteam.accesscontrolservice.dto.UserProfileCreationRequest;
-import com.devoteam.accesscontrolservice.entity.Profile;
 import com.devoteam.accesscontrolservice.entity.UserProfile;
-import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
 import com.devoteam.accesscontrolservice.mapper.UserProfileMapper;
 import com.devoteam.accesscontrolservice.repository.UserProfileRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
