@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserReadResponse;
+import com.devoteam.accesscontrolservice.dto.UserIdAndEmailReadResponse;
 import com.devoteam.accesscontrolservice.dto.ProfileWithUsersReadResponse;
 import com.devoteam.accesscontrolservice.dto.UserProfileCreationRequest;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
@@ -52,7 +52,7 @@ class UserProfileServiceTest {
   private ApplicationUser applicationUser;
   private Profile profile;
   private UserProfile userProfile;
-  private ApplicationUserReadResponse applicationUserReadResponse;
+  private UserIdAndEmailReadResponse applicationUserReadResponse;
   private ProfileWithUsersReadResponse profileWithUsersReadResponse;
 
 
@@ -84,7 +84,7 @@ class UserProfileServiceTest {
         .profile(profile)
         .build();
 
-    applicationUserReadResponse = ApplicationUserReadResponse.builder()
+    applicationUserReadResponse = UserIdAndEmailReadResponse.builder()
         .id(userId.toString())
         .email(applicationUser.getEmail())
         .build();

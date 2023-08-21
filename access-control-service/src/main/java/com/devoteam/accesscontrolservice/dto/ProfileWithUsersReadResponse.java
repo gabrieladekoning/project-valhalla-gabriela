@@ -16,5 +16,5 @@ public class ProfileWithUsersReadResponse {
 
   private String id;
   private String name;
-  private List<ApplicationUserReadResponse> users;
+  private List<UserIdAndEmailReadResponse> users;
 }

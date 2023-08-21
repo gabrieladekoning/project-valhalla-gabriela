@@ -11,7 +11,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @AllArgsConstructor
-public class ApplicationUserReadResponse {
+public class UserIdAndEmailReadResponse {
 
   private String id;
   private String email;

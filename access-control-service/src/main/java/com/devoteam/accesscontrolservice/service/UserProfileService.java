@@ -1,6 +1,6 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserReadResponse;
+import com.devoteam.accesscontrolservice.dto.UserIdAndEmailReadResponse;
 import com.devoteam.accesscontrolservice.dto.ProfileWithUsersReadResponse;
 import com.devoteam.accesscontrolservice.dto.UserProfileCreationRequest;
 import com.devoteam.accesscontrolservice.entity.UserProfile;
@@ -68,7 +68,7 @@ public class UserProfileService {
 
     for (Map.Entry<String, List<UserProfile>> entry : profilesMap.entrySet()) {
       var profile = entry.getValue().get(0).getProfile();
-      List<ApplicationUserReadResponse> users = entry.getValue().stream()
+      List<UserIdAndEmailReadResponse> users = entry.getValue().stream()
           .map(userProfileMapper::mapToUserReadResponse)
           .toList();
       profileDTOs.add(profileMapper.mapToProfileWithUsersReadResponse(profile, users));

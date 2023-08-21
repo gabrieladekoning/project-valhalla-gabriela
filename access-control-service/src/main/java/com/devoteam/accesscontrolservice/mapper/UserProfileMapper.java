@@ -1,8 +1,8 @@
 package com.devoteam.accesscontrolservice.mapper;
 
+import com.devoteam.accesscontrolservice.dto.UserIdAndEmailReadResponse;
 import com.devoteam.accesscontrolservice.dto.UserProfileCreationRequest;
 import com.devoteam.accesscontrolservice.dto.UserProfileCreationResponse;
-import com.devoteam.accesscontrolservice.dto.ApplicationUserReadResponse;
 import com.devoteam.accesscontrolservice.entity.UserProfile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,5 +19,5 @@ public interface UserProfileMapper {
 
   @Mapping(source = "applicationUser.id", target = "id")
   @Mapping(source = "applicationUser.email", target = "email")
-  ApplicationUserReadResponse mapToUserReadResponse(UserProfile userProfile);
+  UserIdAndEmailReadResponse mapToUserReadResponse(UserProfile userProfile);
 }
