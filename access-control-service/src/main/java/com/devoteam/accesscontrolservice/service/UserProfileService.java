@@ -3,6 +3,7 @@ package com.devoteam.accesscontrolservice.service;
 import com.devoteam.accesscontrolservice.dto.UserIdAndEmailReadResponse;
 import com.devoteam.accesscontrolservice.dto.ProfileWithUsersReadResponse;
 import com.devoteam.accesscontrolservice.dto.UserProfileCreationRequest;
+import com.devoteam.accesscontrolservice.entity.Profile;
 import com.devoteam.accesscontrolservice.entity.UserProfile;
 import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
 import com.devoteam.accesscontrolservice.mapper.UserProfileMapper;
@@ -28,7 +29,6 @@ public class UserProfileService {
   private final ProfileService profileService;
   private final UserProfileRepository userProfileRepository;
   private final UserProfileMapper userProfileMapper;
-  private final ProfileMapper profileMapper;
 
 
   public UserProfile createOrRetrieveUserProfile(UserProfileCreationRequest creationRequest) {
@@ -58,24 +58,31 @@ public class UserProfileService {
   public Page<ProfileWithUsersReadResponse> getAllProfilesWithAssociatedUsers(Pageable pageable) {
     log.info("Fetching all profiles with associated users");
 
-    Page<UserProfile> userProfilesPage = userProfileRepository.findAllWithApplicationUserAndProfile(pageable);
+    var userProfilesPage = userProfileRepository.findAllWithApplicationUserAndProfile(pageable);
+    var userProfiles = userProfilesPage.getContent();
 
-    List<UserProfile> userProfiles = userProfilesPage.getContent();
-    Map<String, List<UserProfile>> profilesMap = userProfiles.stream()
-        .collect(Collectors.groupingBy(userProfile -> userProfile.getProfile().getId().toString()));
+    var profilesMap = groupProfilesWithUsers(userProfiles);
 
-    List<ProfileWithUsersReadResponse> profileDTOs = new ArrayList<>();
+    var profileDTOs = profilesMap.entrySet().stream()
+        .map(entry -> {
+          Profile profile = entry.getKey();
+          var users = entry.getValue();
+          log.info("Mapped profile with ID: {} and name: {} to ProfileWithUsersReadResponse", profile.getId(),
+              profile.getName());
+          return userProfileMapper.mapToProfileWithUsersReadResponse(profile, users);
+        })
+        .toList();
 
-    for (Map.Entry<String, List<UserProfile>> entry : profilesMap.entrySet()) {
-      var profile = entry.getValue().get(0).getProfile();
-      List<UserIdAndEmailReadResponse> users = entry.getValue().stream()
-          .map(userProfileMapper::mapToUserReadResponse)
-          .toList();
-      profileDTOs.add(profileMapper.mapToProfileWithUsersReadResponse(profile, users));
-      log.info("Mapped profile with ID: {} and name: {} to ProfileWithUsersReadResponse", profile.getId(), profile.getName());
-    }
     log.info("Returning a page of {} profiles with associated users", profileDTOs.size());
 
     return new PageImpl<>(profileDTOs, pageable, userProfilesPage.getTotalElements());
+  }
+
+  private Map<Profile, List<UserIdAndEmailReadResponse>> groupProfilesWithUsers(List<UserProfile> userProfiles) {
+    return userProfiles.stream()
+        .collect(Collectors.groupingBy(
+            UserProfile::getProfile,
+            Collectors.mapping(userProfileMapper::mapToUserReadResponse, Collectors.toList())
+        ));
   }
 }
