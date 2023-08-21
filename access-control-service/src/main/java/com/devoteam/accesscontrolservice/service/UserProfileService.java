@@ -55,34 +55,9 @@ public class UserProfileService {
     return userProfileRepository.save(userProfile);
   }
 
-  public Page<ProfileWithUsersReadResponse> getAllProfilesWithAssociatedUsers(Pageable pageable) {
-    log.info("Fetching all profiles with associated users");
+  public Page<UserProfile> getAllProfilesWithAssociatedUsers(Pageable pageable) {
+    log.info("Finding user profiles by profile");
 
-    var userProfilesPage = userProfileRepository.findAllWithApplicationUserAndProfile(pageable);
-    var userProfiles = userProfilesPage.getContent();
-
-    var profilesMap = groupProfilesWithUsers(userProfiles);
-
-    var profileDTOs = profilesMap.entrySet().stream()
-        .map(entry -> {
-          Profile profile = entry.getKey();
-          var users = entry.getValue();
-          log.info("Mapped profile with ID: {} and name: {} to ProfileWithUsersReadResponse", profile.getId(),
-              profile.getName());
-          return userProfileMapper.mapToProfileWithUsersReadResponse(profile, users);
-        })
-        .toList();
-
-    log.info("Returning a page of {} profiles with associated users", profileDTOs.size());
-
-    return new PageImpl<>(profileDTOs, pageable, userProfilesPage.getTotalElements());
-  }
-
-  private Map<Profile, List<UserIdAndEmailReadResponse>> groupProfilesWithUsers(List<UserProfile> userProfiles) {
-    return userProfiles.stream()
-        .collect(Collectors.groupingBy(
-            UserProfile::getProfile,
-            Collectors.mapping(userProfileMapper::mapToUserReadResponse, Collectors.toList())
-        ));
+    return userProfileRepository.findAllWithApplicationUserAndProfile(pageable);
   }
 }
