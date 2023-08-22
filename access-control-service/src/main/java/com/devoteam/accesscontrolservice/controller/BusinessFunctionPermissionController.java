@@ -55,7 +55,7 @@ public class BusinessFunctionPermissionController {
   @GetMapping
   @Operation(summary = "Retrieve a paginated list of business function permissions by application name")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'read')")
-  public ResponseEntity<Page<BusinessFunctionPermissionReadResponse>> listAll(
+  public ResponseEntity<Page<BusinessFunctionPermissionReadResponse>> listAllByApplicationName(
       @NotBlank @RequestParam(value = "applicationName") String applicationName, Pageable pageable) {
     var businessFunctionPermissions = businessFunctionPermissionService.listAllByApplicationName(applicationName,
         pageable);
