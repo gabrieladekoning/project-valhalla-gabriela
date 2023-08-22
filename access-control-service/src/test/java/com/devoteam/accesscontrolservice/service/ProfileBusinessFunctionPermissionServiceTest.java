@@ -1,12 +1,22 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ProfileBusinessFunctionPermissionCreationRequest;
-import com.devoteam.accesscontrolservice.entity.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.devoteam.accesscontrolservice.entity.BusinessFunction;
+import com.devoteam.accesscontrolservice.entity.BusinessFunctionPermission;
+import com.devoteam.accesscontrolservice.entity.Permission;
+import com.devoteam.accesscontrolservice.entity.Profile;
+import com.devoteam.accesscontrolservice.entity.ProfileBusinessFunctionPermission;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
-import com.devoteam.accesscontrolservice.mapper.ProfileBusinessFunctionPermissionMapper;
 import com.devoteam.accesscontrolservice.repository.ProfileBusinessFunctionPermissionRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,77 +25,47 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-import java.util.UUID;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileBusinessFunctionPermissionServiceTest {
 
   @Mock
   private BusinessFunctionPermissionService businessFunctionPermissionService;
-
   @Mock
   private ProfileService profileService;
-
   @Mock
   private ProfileBusinessFunctionPermissionRepository profileBusinessFunctionPermissionRepository;
-  @Mock
-  private ProfileBusinessFunctionPermissionMapper profileBusinessFunctionPermissionMapper;
-
   @InjectMocks
   private ProfileBusinessFunctionPermissionService profileBusinessFunctionPermissionService;
-
-  private ProfileBusinessFunctionPermissionCreationRequest creationRequest;
   private BusinessFunctionPermission businessFunctionPermission;
   private Profile profile;
   private ProfileBusinessFunctionPermission profileBusinessFunctionPermission;
 
   @BeforeEach
   public void setup() {
-    UUID profileBusinessFunctionPermissionId = UUID.randomUUID();
-    UUID businessFunctionPermissionId = UUID.randomUUID();
-    UUID businessFunctionId = UUID.randomUUID();
-    UUID permissionId = UUID.randomUUID();
-    UUID profileId = UUID.randomUUID();
-
-    creationRequest = ProfileBusinessFunctionPermissionCreationRequest.builder()
-        .businessFunctionPermissionId(String.valueOf(businessFunctionPermissionId))
-        .profileId(String.valueOf(profileId))
-        .build();
-
-    BusinessFunction businessFunction = BusinessFunction.builder()
-        .id(businessFunctionId)
+    var businessFunction = BusinessFunction.builder()
+        .id(UUID.randomUUID())
         .applicationName("Application name")
         .functionName("Function name")
         .build();
-
-    Permission permission = Permission.builder()
-        .id(permissionId)
+    var permission = Permission.builder()
+        .id(UUID.randomUUID())
         .name("Permission name")
         .build();
-
     businessFunctionPermission = BusinessFunctionPermission.builder()
-        .id(businessFunctionPermissionId)
+        .id(UUID.randomUUID())
         .businessFunction(businessFunction)
         .permission(permission)
         .build();
-
     profile = Profile.builder()
-        .id(profileId)
+        .id(UUID.randomUUID())
         .name("Profile name")
         .build();
 
     profileBusinessFunctionPermission = ProfileBusinessFunctionPermission.builder()
-        .id(profileBusinessFunctionPermissionId)
+        .id(UUID.randomUUID())
         .businessFunctionPermission(businessFunctionPermission)
         .profile(profile)
         .build();
@@ -95,15 +75,15 @@ class ProfileBusinessFunctionPermissionServiceTest {
   @Test
   void createOrRetrieveProfileBusinessFunctionPermission_SuccessfullySaved_WhenAssociationDoesNotAlreadyExist() {
     given(businessFunctionPermissionService.findByIdOrThrowNotFound(
-        creationRequest.getBusinessFunctionPermissionId())).willReturn(businessFunctionPermission);
-    given(profileService.findByIdOrThrowNotFound(creationRequest.getProfileId())).willReturn(profile);
+        businessFunctionPermission.getId())).willReturn(businessFunctionPermission);
+    given(profileService.findByIdOrThrowNotFound(profile.getId())).willReturn(profile);
     given(profileBusinessFunctionPermissionRepository.findByBusinessFunctionPermissionAndProfile(
         businessFunctionPermission, profile)).willReturn(Optional.empty());
     given(profileBusinessFunctionPermissionRepository.save(ArgumentMatchers.any())).willReturn(
         profileBusinessFunctionPermission);
 
     var response = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(
-        creationRequest);
+        profileBusinessFunctionPermission);
 
     assertThat(response).isNotNull();
     assertThat(response.getId()).isEqualTo(profileBusinessFunctionPermission.getId());
@@ -113,13 +93,13 @@ class ProfileBusinessFunctionPermissionServiceTest {
   @Test
   void createOrRetrieveProfileBusinessFunctionPermission_SuccessfullyRetrieved_WhenAssociationAlreadyExists() {
     given(businessFunctionPermissionService.findByIdOrThrowNotFound(
-        creationRequest.getBusinessFunctionPermissionId())).willReturn(businessFunctionPermission);
-    given(profileService.findByIdOrThrowNotFound(creationRequest.getProfileId())).willReturn(profile);
+        businessFunctionPermission.getId())).willReturn(businessFunctionPermission);
+    given(profileService.findByIdOrThrowNotFound(profile.getId())).willReturn(profile);
     given(profileBusinessFunctionPermissionRepository.findByBusinessFunctionPermissionAndProfile(
         businessFunctionPermission, profile)).willReturn(Optional.of(profileBusinessFunctionPermission));
 
     var response = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(
-        creationRequest);
+        profileBusinessFunctionPermission);
 
     assertThat(response).isNotNull();
     assertThat(response.getId()).isEqualTo(profileBusinessFunctionPermission.getId());
@@ -129,24 +109,24 @@ class ProfileBusinessFunctionPermissionServiceTest {
   @Test
   void createOrRetrieveProfileBusinessFunctionPermission_ThrowsResourceNotFoundException_WhenBusinessFunctionPermissionNotFound() {
     given(businessFunctionPermissionService.findByIdOrThrowNotFound(
-        creationRequest.getBusinessFunctionPermissionId())).willThrow(ResourceNotFoundException.class);
+        businessFunctionPermission.getId())).willThrow(ResourceNotFoundException.class);
 
     assertThrows(ResourceNotFoundException.class,
         () -> profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(
-            creationRequest));
+            profileBusinessFunctionPermission));
   }
 
   @DisplayName("Handling when Profile is not found")
   @Test
   void createOrRetrieveProfileBusinessFunctionPermission_ThrowsResourceNotFoundException_WhenProfileNotFound() {
     given(businessFunctionPermissionService.findByIdOrThrowNotFound(
-        creationRequest.getBusinessFunctionPermissionId())).willReturn(businessFunctionPermission);
-    given(profileService.findByIdOrThrowNotFound(creationRequest.getProfileId())).willThrow(
+        businessFunctionPermission.getId())).willReturn(businessFunctionPermission);
+    given(profileService.findByIdOrThrowNotFound(profile.getId())).willThrow(
         ResourceNotFoundException.class);
 
     assertThrows(ResourceNotFoundException.class,
         () -> profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(
-            creationRequest));
+            profileBusinessFunctionPermission));
   }
 
   @DisplayName("Returning a pageable list of profile business functions permissions by profile name when successful")

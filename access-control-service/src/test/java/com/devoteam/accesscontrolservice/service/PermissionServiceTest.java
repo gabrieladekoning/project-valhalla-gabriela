@@ -6,10 +6,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.devoteam.accesscontrolservice.dto.PermissionCreationRequest;
 import com.devoteam.accesscontrolservice.entity.Permission;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
-import com.devoteam.accesscontrolservice.mapper.PermissionMapper;
 import com.devoteam.accesscontrolservice.repository.PermissionRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,26 +29,19 @@ class PermissionServiceTest {
 
   @Mock
   private PermissionRepository permissionRepository;
-  @Mock
-  private PermissionMapper permissionMapper;
   @InjectMocks
   PermissionService permissionService;
-  private PermissionCreationRequest creationRequest;
   private Permission permission;
   private Permission secondPermission;
 
   @BeforeEach
   public void setup() {
-    UUID uuid = UUID.randomUUID();
-    creationRequest = PermissionCreationRequest.builder()
+    permission = Permission.builder()
+        .id(UUID.randomUUID())
         .name("Read")
         .build();
-    permission = Permission.builder()
-        .id(uuid)
-        .name(creationRequest.getName())
-        .build();
     secondPermission = Permission.builder()
-        .id(uuid)
+        .id(UUID.randomUUID())
         .name("Write")
         .build();
   }
@@ -58,10 +49,10 @@ class PermissionServiceTest {
   @DisplayName("Saving a new permission successfully")
   @Test
   void createOrRetrievePermission_SuccessfullySaved_WhenFunctionDoesNotAlreadyExist() {
-    given(permissionRepository.findByName(creationRequest.getName())).willReturn(Optional.empty());
+    given(permissionRepository.findByName(permission.getName())).willReturn(Optional.empty());
     given(permissionRepository.save(ArgumentMatchers.any())).willReturn(permission);
 
-    var returnedPermission = permissionService.createOrRetrievePermission(creationRequest);
+    var returnedPermission = permissionService.createOrRetrievePermission(permission);
 
     assertThat(returnedPermission).hasNoNullFieldsOrProperties();
     assertThat(returnedPermission.getId()).isEqualTo(permission.getId());
@@ -70,9 +61,9 @@ class PermissionServiceTest {
   @DisplayName("Retrieving an existing permission successfully")
   @Test
   void createOrRetrievePermission_SuccessfullyRetrieved_WhenFunctionAlreadyExists() {
-    given(permissionRepository.findByName(creationRequest.getName())).willReturn(Optional.of(permission));
+    given(permissionRepository.findByName(permission.getName())).willReturn(Optional.of(permission));
 
-    var returnedPermission = permissionService.createOrRetrievePermission(creationRequest);
+    var returnedPermission = permissionService.createOrRetrievePermission(permission);
 
     assertThat(returnedPermission).isNotNull();
     assertThat(returnedPermission.getId()).isEqualTo(permission.getId());
@@ -84,7 +75,7 @@ class PermissionServiceTest {
     given(permissionRepository.findById(permission.getId())).willReturn(Optional.empty());
 
     assertThrows(ResourceNotFoundException.class,
-        () -> permissionService.findByIdOrThrowNotFound(String.valueOf(permission.getId())));
+        () -> permissionService.findByIdOrThrowNotFound(permission.getId()));
   }
 
   @Test

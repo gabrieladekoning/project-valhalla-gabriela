@@ -1,6 +1,10 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ProfileCreationRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+
 import com.devoteam.accesscontrolservice.dto.SetupAllRequest;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
@@ -8,6 +12,7 @@ import com.devoteam.accesscontrolservice.entity.Permission;
 import com.devoteam.accesscontrolservice.entity.Profile;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
 import com.devoteam.accesscontrolservice.repository.PermissionRepository;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,13 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -76,7 +74,7 @@ class SetupServiceIntegrationTest {
   @Test
   void testSetupAll_TransactionalBehavior() {
     doThrow(new RuntimeException("This is a Runtime Exception which will definitely not ruin everything"))
-        .when(profileService).createOrRetrieveProfile(any(ProfileCreationRequest.class));
+        .when(profileService).createOrRetrieveProfile(any(Profile.class));
 
     var initialBusinessFunctionCount = businessFunctionRepository.count();
     var initialPermissionCount = permissionRepository.count();
