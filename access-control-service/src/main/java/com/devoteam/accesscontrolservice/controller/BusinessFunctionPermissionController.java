@@ -40,8 +40,10 @@ public class BusinessFunctionPermissionController {
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'create')")
   public ResponseEntity<BusinessFunctionPermissionCreationResponse> save(
       @Valid @RequestBody BusinessFunctionPermissionCreationRequest creationRequest) {
-    var businessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(
+    var businessFunctionPermissionToCreate = businessFunctionPermissionMapper.mapToBusinessFunctionPermission(
         creationRequest);
+    var businessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(
+        businessFunctionPermissionToCreate);
     var creationResponse = businessFunctionPermissionMapper.mapToBusinessFunctionPermissionCreationResponse(
         businessFunctionPermission);
 

@@ -1,8 +1,6 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.UserProfileCreationRequest;
 import com.devoteam.accesscontrolservice.entity.UserProfile;
-import com.devoteam.accesscontrolservice.mapper.UserProfileMapper;
 import com.devoteam.accesscontrolservice.repository.UserProfileRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -19,30 +17,27 @@ public class UserProfileService {
   private final UserService userService;
   private final ProfileService profileService;
   private final UserProfileRepository userProfileRepository;
-  private final UserProfileMapper userProfileMapper;
 
 
-  public UserProfile createOrRetrieveUserProfile(UserProfileCreationRequest creationRequest) {
+  public UserProfile createOrRetrieveUserProfile(UserProfile userProfile) {
     log.info("Received a request to create an association between user ID: '{}' and profile ID: '{}'",
-        creationRequest.getApplicationUserId(), creationRequest.getProfileId());
+        userProfile.getApplicationUser().getId(), userProfile.getProfile().getId());
 
-    return findByExistingUserProfile(creationRequest)
-        .orElseGet(() -> createNewUserProfile(creationRequest));
+    return findByExistingUserProfile(userProfile)
+        .orElseGet(() -> createNewUserProfile(userProfile));
   }
 
-  private Optional<UserProfile> findByExistingUserProfile(UserProfileCreationRequest creationRequest) {
-    log.info("Checking if association between user and profile exists '{}'", creationRequest);
+  private Optional<UserProfile> findByExistingUserProfile(UserProfile userProfile) {
+    log.info("Checking if association between user and profile exists");
 
-    var user = userService.findByIdOrThrowNotFound(creationRequest.getApplicationUserId());
-    var profile = profileService.findByIdOrThrowNotFound(creationRequest.getProfileId());
+    var user = userService.findByIdOrThrowNotFound(userProfile.getApplicationUser().getId());
+    var profile = profileService.findByIdOrThrowNotFound(userProfile.getProfile().getId());
 
     return userProfileRepository.findByApplicationUserAndProfile(user, profile);
   }
 
-  private UserProfile createNewUserProfile(UserProfileCreationRequest creationRequest) {
-    log.info("Creating new association between user and profile '{}'", creationRequest);
-
-    var userProfile = userProfileMapper.mapToUserProfile(creationRequest);
+  private UserProfile createNewUserProfile(UserProfile userProfile) {
+    log.info("Creating new association between user and profile");
     return userProfileRepository.save(userProfile);
   }
 

@@ -41,7 +41,8 @@ public class UserProfileController {
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'user-profile', 'create')")
   public ResponseEntity<UserProfileCreationResponse> save(
       @Valid @RequestBody UserProfileCreationRequest creationRequest) {
-    var userProfile = userProfileService.createOrRetrieveUserProfile(creationRequest);
+    var userProfileToCreate = userProfileMapper.mapToUserProfile(creationRequest);
+    var userProfile = userProfileService.createOrRetrieveUserProfile(userProfileToCreate);
     var creationResponse = userProfileMapper.mapToUserProfileCreationResponse(userProfile);
 
     log.info("Created new / returned existing association between user and profile '{}'", creationResponse.getId());
@@ -50,7 +51,7 @@ public class UserProfileController {
 
   @GetMapping
   @Operation(summary = "Retrieve a paginated list of all users categorized by profile")
-    @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'user-profile', 'read')")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'user-profile', 'read')")
   public ResponseEntity<Page<ProfileWithUsersReadResponse>> listAll(Pageable pageable) {
     log.info("Fetching all profiles with associated users");
 

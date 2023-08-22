@@ -35,8 +35,10 @@ public class ProfileBusinessFunctionPermissionController {
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile-business-function-permission', 'create')")
   public ResponseEntity<ProfileBusinessFunctionPermissionCreationResponse> save(
       @Valid @RequestBody ProfileBusinessFunctionPermissionCreationRequest creationRequest) {
-    var profileBusinessFunctionPermission = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(
+    var profileBusinessFunctionPermissionToUpsert = profileBusinessFunctionPermissionMapper.mapToProfileBusinessFunctionPermission(
         creationRequest);
+    var profileBusinessFunctionPermission = profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(
+        profileBusinessFunctionPermissionToUpsert);
     var creationResponse = profileBusinessFunctionPermissionMapper.mapToProfileBusinessFunctionPermissionCreationResponse(
         profileBusinessFunctionPermission);
 
