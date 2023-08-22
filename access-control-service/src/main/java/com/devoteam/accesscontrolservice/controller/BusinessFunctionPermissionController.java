@@ -8,7 +8,6 @@ import com.devoteam.accesscontrolservice.service.BusinessFunctionPermissionServi
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -56,7 +55,7 @@ public class BusinessFunctionPermissionController {
   @Operation(summary = "Retrieve a paginated list of business function permissions by application name")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'read')")
   public ResponseEntity<Page<BusinessFunctionPermissionReadResponse>> listAllByApplicationName(
-      @NotBlank @RequestParam(value = "applicationName") String applicationName, Pageable pageable) {
+      @RequestParam(value = "applicationName") String applicationName, Pageable pageable) {
     var businessFunctionPermissions = businessFunctionPermissionService.listAllByApplicationName(applicationName,
         pageable);
     var businessFunctionReadResponses = businessFunctionPermissions.map(

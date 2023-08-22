@@ -60,5 +60,4 @@ public class ProfileBusinessFunctionPermissionController {
     log.info("Listing business function permissions by application name: '{}'", profileName);
     return ResponseEntity.status(HttpStatus.OK).body(profileBusinessFunctionReadPermissions);
   }
-
 }
