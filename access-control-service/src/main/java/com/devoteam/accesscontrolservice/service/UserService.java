@@ -1,16 +1,13 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.EmailAlreadyExistsException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
-import com.devoteam.accesscontrolservice.mapper.UserMapper;
 import com.devoteam.accesscontrolservice.repository.UserRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,28 +16,30 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final KeycloakService keycloakService;
-  private final UserMapper userMapper;
 
-  public ApplicationUser saveApplicationUser(ApplicationUserCreationRequest creationRequest) {
-    assertEmailDoesNotExist(creationRequest);
-    var user = userMapper.mapToApplicationUser(creationRequest);
-    log.info("Creating user with email: {}", creationRequest.getEmail());
+  public ApplicationUser saveApplicationUser(ApplicationUser applicationUser) {
+    assertEmailDoesNotExist(applicationUser.getEmail());
 
-    var keycloakUserId = keycloakService.createUser(creationRequest);
-    user.setId(UUID.fromString(keycloakUserId));
-    return userRepository.save(user);
+    log.info("Creating user with email: '{}'", applicationUser.getEmail());
+
+    var keycloakUserId = keycloakService.createUser(applicationUser);
+    log.debug("Setting ID generated from keycloak");
+    applicationUser.setId(UUID.fromString(keycloakUserId));
+
+    log.info("Saving user with ID: '{}' and email: '{}'", applicationUser.getId(), applicationUser.getEmail());
+    return userRepository.save(applicationUser);
   }
 
-  private void assertEmailDoesNotExist(ApplicationUserCreationRequest creationRequest) {
+  private void assertEmailDoesNotExist(String email) {
     log.info("Checking if email exists");
-    userRepository.findByEmail(creationRequest.getEmail()).ifPresent(user -> {
+    userRepository.findByEmail(email).ifPresent(user -> {
       throw new EmailAlreadyExistsException("Email is already registered: '%s'".formatted(user.getEmail()));
     });
   }
 
-  public ApplicationUser findByIdOrThrowNotFound(String userId) {
+  public ApplicationUser findByIdOrThrowNotFound(UUID userId) {
     log.info("Finding user by ID");
-    return userRepository.findById(UUID.fromString(userId))
+    return userRepository.findById(userId)
         .orElseThrow(() -> new ResourceNotFoundException(
             "User with ID: %s not found.".formatted(userId)
         ));

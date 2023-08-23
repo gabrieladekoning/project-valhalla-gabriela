@@ -1,6 +1,6 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.ApplicationUserCreationRequest;
+import com.devoteam.accesscontrolservice.entity.ApplicationUser;
 import com.devoteam.accesscontrolservice.exception.UserCreationFailedException;
 import com.devoteam.accesscontrolservice.mapper.KeycloakUserMapper;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,9 +22,9 @@ public class KeycloakService {
   private String realm;
   private final KeycloakUserMapper keycloakUserMapper;
 
-  public String createUser(ApplicationUserCreationRequest creationRequest) {
-    log.debug("Creating user in Keycloak: {}", creationRequest.getEmail());
-    UserRepresentation user = keycloakUserMapper.mapToUserRepresentation(creationRequest);
+  public String createUser(ApplicationUser applicationUser) {
+    log.info("Creating user in Keycloak: '{}'", applicationUser.getEmail());
+    var user = keycloakUserMapper.mapToUserRepresentation(applicationUser);
     user.setEnabled(true);
 
     var realmResource = keycloak.realm(realm);
@@ -37,16 +36,19 @@ public class KeycloakService {
     }
 
     var userId = CreatedResponseUtil.getCreatedId(response);
-    var passwordCred = createCredentialRepresentation(creationRequest.getPassword());
+    var passwordCred = createCredentialRepresentation(applicationUser.getPassword());
     var userResource = usersResource.get(userId);
 
     userResource.resetPassword(passwordCred);
-    log.debug("User created in Keycloak with ID: {}", userId);
+    log.info("User created in Keycloak with ID: '{}", userId);
     return userId;
   }
 
   private CredentialRepresentation createCredentialRepresentation(String password) {
     var passwordCred = new CredentialRepresentation();
+
+    log.debug("Setting password");
+
     passwordCred.setTemporary(false);
     passwordCred.setType(CredentialRepresentation.PASSWORD);
     passwordCred.setValue(password);
