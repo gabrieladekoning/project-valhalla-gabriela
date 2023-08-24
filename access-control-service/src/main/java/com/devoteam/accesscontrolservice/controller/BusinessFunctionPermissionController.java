@@ -8,7 +8,6 @@ import com.devoteam.accesscontrolservice.service.BusinessFunctionPermissionServi
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,8 +39,10 @@ public class BusinessFunctionPermissionController {
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'create')")
   public ResponseEntity<BusinessFunctionPermissionCreationResponse> save(
       @Valid @RequestBody BusinessFunctionPermissionCreationRequest creationRequest) {
-    var businessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(
+    var businessFunctionPermissionToCreate = businessFunctionPermissionMapper.mapToBusinessFunctionPermission(
         creationRequest);
+    var businessFunctionPermission = businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(
+        businessFunctionPermissionToCreate);
     var creationResponse = businessFunctionPermissionMapper.mapToBusinessFunctionPermissionCreationResponse(
         businessFunctionPermission);
 
@@ -53,8 +54,8 @@ public class BusinessFunctionPermissionController {
   @GetMapping
   @Operation(summary = "Retrieve a paginated list of business function permissions by application name")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'read')")
-  public ResponseEntity<Page<BusinessFunctionPermissionReadResponse>> listAll(
-      @NotBlank @RequestParam(value = "applicationName") String applicationName, Pageable pageable) {
+  public ResponseEntity<Page<BusinessFunctionPermissionReadResponse>> listAllByApplicationName(
+      @RequestParam(value = "applicationName") String applicationName, Pageable pageable) {
     var businessFunctionPermissions = businessFunctionPermissionService.listAllByApplicationName(applicationName,
         pageable);
     var businessFunctionReadResponses = businessFunctionPermissions.map(

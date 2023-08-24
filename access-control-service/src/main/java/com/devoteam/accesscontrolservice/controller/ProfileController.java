@@ -8,6 +8,7 @@ import com.devoteam.accesscontrolservice.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -38,7 +39,8 @@ public class ProfileController {
       summary = "Create a profile")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'create')")
   public ResponseEntity<ProfileCreationResponse> save(@Valid @RequestBody ProfileCreationRequest creationRequest) {
-    var profile = profileService.createOrRetrieveProfile(creationRequest);
+    var profileToCreate = profileMapper.mapToProfile(creationRequest);
+    var profile = profileService.createOrRetrieveProfile(profileToCreate);
     var creationResponse = profileMapper.mapToProfileCreationResponse(profile);
 
     log.info("Created new / returned existing profile '{}", creationResponse);
@@ -50,7 +52,7 @@ public class ProfileController {
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
   public ResponseEntity<Page<ProfileReadResponse>> listAll(Pageable pageable) {
     var profiles = profileService.listAll(pageable);
-    var profileReadResponses = profiles.map(profileMapper::toProfileReadResponse);
+    var profileReadResponses = profiles.map(profileMapper::mapToProfileReadResponse);
 
     log.info("Listing all profiles");
     return ResponseEntity.status(HttpStatus.OK).body(profileReadResponses);
@@ -60,8 +62,8 @@ public class ProfileController {
   @Operation(summary = "Find profile by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
   public ResponseEntity<ProfileReadResponse> findById(@PathVariable String id) {
-    var profile = profileService.findByIdOrThrowNotFound(id);
-    var profileReadResponse = profileMapper.toProfileReadResponse(profile);
+    var profile = profileService.findByIdOrThrowNotFound(UUID.fromString(id));
+    var profileReadResponse = profileMapper.mapToProfileReadResponse(profile);
 
     log.info("Returning profile found by ID: '{}'", id);
     return ResponseEntity.status(HttpStatus.OK).body(profileReadResponse);

@@ -1,7 +1,13 @@
 package com.devoteam.accesscontrolservice.service;
 
-import com.devoteam.accesscontrolservice.dto.*;
-import com.devoteam.accesscontrolservice.entity.*;
+import com.devoteam.accesscontrolservice.dto.SetupAllRequest;
+import com.devoteam.accesscontrolservice.entity.ApplicationUser;
+import com.devoteam.accesscontrolservice.entity.BusinessFunction;
+import com.devoteam.accesscontrolservice.entity.BusinessFunctionPermission;
+import com.devoteam.accesscontrolservice.entity.Permission;
+import com.devoteam.accesscontrolservice.entity.Profile;
+import com.devoteam.accesscontrolservice.entity.ProfileBusinessFunctionPermission;
+import com.devoteam.accesscontrolservice.entity.UserProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,48 +43,69 @@ public class SetupService {
 
   private BusinessFunction upsertBusinessFunction(SetupAllRequest setupAllRequest) {
     log.info("Creating or retrieving business function");
-    var businessFunctionCreationRequest = new BusinessFunctionCreationRequest(
-        setupAllRequest.getApplicationName(),
-        setupAllRequest.getFunctionName());
-    return businessFunctionService.createOrRetrieveBusinessFunction(businessFunctionCreationRequest);
+
+    var businessFunctionToUpsert = BusinessFunction.builder()
+        .applicationName(setupAllRequest.getApplicationName())
+        .functionName(setupAllRequest.getFunctionName())
+        .build();
+
+    return businessFunctionService.createOrRetrieveBusinessFunction(businessFunctionToUpsert);
   }
 
   private Permission upsertPermission(SetupAllRequest setupAllRequest) {
     log.info("Creating or retrieving permission");
-    var permissionCreationRequest = new PermissionCreationRequest(
-        setupAllRequest.getPermissionName());
-    return permissionService.createOrRetrievePermission(permissionCreationRequest);
+
+    var permissionToUpsert = Permission.builder()
+        .name(setupAllRequest.getPermissionName())
+        .build();
+
+    return permissionService.createOrRetrievePermission(permissionToUpsert);
   }
 
   private Profile upsertProfile(SetupAllRequest setupAllRequest) {
     log.info("Creating or retrieving profile");
-    var profileCreationRequest = new ProfileCreationRequest(
-        setupAllRequest.getProfileName());
-    return profileService.createOrRetrieveProfile(profileCreationRequest);
+
+    var profileToUpsert = Profile.builder()
+        .name(setupAllRequest.getProfileName())
+        .build();
+
+    return profileService.createOrRetrieveProfile(profileToUpsert);
   }
 
   private BusinessFunctionPermission upsertBusinessFunctionPermission(BusinessFunction businessFunction,
       Permission permission) {
     log.info("Creating or retrieving association between business function and permission");
-    var businessFunctionPermissionCreationRequest = new BusinessFunctionPermissionCreationRequest(
-        String.valueOf(businessFunction.getId()), String.valueOf(permission.getId()));
+
+    var businessFunctionPermissionToUpsert = BusinessFunctionPermission.builder()
+        .businessFunction(businessFunction)
+        .permission(permission)
+        .build();
+
     return businessFunctionPermissionService.createOrRetrieveBusinessFunctionPermission(
-        businessFunctionPermissionCreationRequest);
+        businessFunctionPermissionToUpsert);
   }
 
   private void upsertProfileBusinessFunctionPermission(BusinessFunctionPermission businessFunctionPermission,
       Profile profile) {
     log.info("Creating or retrieving association between business function permission and profile'");
-    var profileBusinessFunctionPermissionCreationRequest = new ProfileBusinessFunctionPermissionCreationRequest(
-        String.valueOf(businessFunctionPermission.getId()), String.valueOf(profile.getId()));
+
+    var profileBusinessFunctionPermissionToUpsert = ProfileBusinessFunctionPermission.builder()
+        .businessFunctionPermission(businessFunctionPermission)
+        .profile(profile)
+        .build();
+
     profileBusinessFunctionPermissionService.createOrRetrieveProfileBusinessFunctionPermission(
-        profileBusinessFunctionPermissionCreationRequest);
+        profileBusinessFunctionPermissionToUpsert);
   }
 
   private void upsertUserProfile(ApplicationUser applicationUser, Profile profile) {
     log.info("Creating or retrieving association between user and profile");
-    var userProfileCreationRequest = new UserProfileCreationRequest(String.valueOf(applicationUser.getId()),
-        String.valueOf(profile.getId()));
-    userProfileService.createOrRetrieveUserProfile(userProfileCreationRequest);
+
+    var userProfileToUpsert = UserProfile.builder()
+        .applicationUser(applicationUser)
+        .profile(profile)
+        .build();
+
+    userProfileService.createOrRetrieveUserProfile(userProfileToUpsert);
   }
 }

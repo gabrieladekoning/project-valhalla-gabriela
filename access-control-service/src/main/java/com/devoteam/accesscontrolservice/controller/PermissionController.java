@@ -8,6 +8,7 @@ import com.devoteam.accesscontrolservice.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,8 @@ public class PermissionController {
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'create')")
   public ResponseEntity<PermissionCreationResponse> save(
       @Valid @RequestBody PermissionCreationRequest creationRequest) {
-    var permission = permissionService.createOrRetrievePermission(creationRequest);
+    var permissionToCreate = permissionMapper.mapToPermission(creationRequest);
+    var permission = permissionService.createOrRetrievePermission(permissionToCreate);
     var creationResponse = permissionMapper.mapToPermissionCreationResponse(permission);
 
     log.info("Created new / returned existing permission '{}'", creationResponse);
@@ -61,7 +63,7 @@ public class PermissionController {
   @Operation(summary = "Find permission by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
   public ResponseEntity<PermissionReadResponse> findById(@PathVariable String id) {
-    var permission = permissionService.findByIdOrThrowNotFound(id);
+    var permission = permissionService.findByIdOrThrowNotFound(UUID.fromString(id));
     var permissionReadResponse = permissionMapper.mapToPermissionReadResponse(permission);
 
     log.info("Returning permission found by ID: '{}'", id);

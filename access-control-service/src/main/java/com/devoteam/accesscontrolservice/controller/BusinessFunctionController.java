@@ -8,6 +8,7 @@ import com.devoteam.accesscontrolservice.service.BusinessFunctionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,7 +35,8 @@ public class BusinessFunctionController {
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'create')")
   public ResponseEntity<BusinessFunctionCreationResponse> save(
       @Valid @RequestBody BusinessFunctionCreationRequest creationRequest) {
-    var businessFunction = businessFunctionService.createOrRetrieveBusinessFunction(creationRequest);
+    var businessFunctionToCreate = businessFunctionMapper.mapToBusinessFunction(creationRequest);
+    var businessFunction = businessFunctionService.createOrRetrieveBusinessFunction(businessFunctionToCreate);
     var creationResponse = businessFunctionMapper.mapToBusinessFunctionCreationResponse(businessFunction);
 
     log.info("Created new / returned existing business function '{}'", creationResponse);
@@ -57,7 +59,7 @@ public class BusinessFunctionController {
   @Operation(summary = "Find business function by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'read')")
   public ResponseEntity<BusinessFunctionReadResponse> findById(@PathVariable String id) {
-    var businessFunction = businessFunctionService.findByIdOrThrowNotFound(id);
+    var businessFunction = businessFunctionService.findByIdOrThrowNotFound(UUID.fromString(id));
     var businessFunctionReadResponse = businessFunctionMapper.mapToBusinessFunctionReadResponse(businessFunction);
 
     log.info("Returning business function found by ID: '{}'", id);

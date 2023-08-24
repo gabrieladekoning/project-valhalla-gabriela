@@ -6,10 +6,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.devoteam.accesscontrolservice.dto.ProfileCreationRequest;
 import com.devoteam.accesscontrolservice.entity.Profile;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
-import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
 import com.devoteam.accesscontrolservice.repository.ProfileRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,26 +30,19 @@ class ProfileServiceTest {
 
   @Mock
   ProfileRepository profileRepository;
-  @Mock
-  ProfileMapper profileMapper;
   @InjectMocks
   ProfileService profileService;
-  private ProfileCreationRequest creationRequest;
   private Profile profile;
   private Profile secondProfile;
 
   @BeforeEach
   public void setup() {
-    UUID uuid = UUID.randomUUID();
-    creationRequest = ProfileCreationRequest.builder()
+    profile = Profile.builder()
+        .id(UUID.randomUUID())
         .name("Admin")
         .build();
-    profile = Profile.builder()
-        .id(uuid)
-        .name(creationRequest.getName())
-        .build();
     secondProfile = Profile.builder()
-        .id(uuid)
+        .id(UUID.randomUUID())
         .name("User")
         .build();
   }
@@ -59,10 +50,10 @@ class ProfileServiceTest {
   @DisplayName("Saving a new profile successfully")
   @Test
   void createOrRetrieveProfile_SuccessfullySaved_WhenFunctionDoesNotAlreadyExist() {
-    given(profileRepository.findByName(creationRequest.getName())).willReturn(Optional.empty());
+    given(profileRepository.findByName(profile.getName())).willReturn(Optional.empty());
     given(profileRepository.save(ArgumentMatchers.any())).willReturn(profile);
 
-    var returnedProfile = profileService.createOrRetrieveProfile(creationRequest);
+    var returnedProfile = profileService.createOrRetrieveProfile(profile);
 
     Assertions.assertThat(returnedProfile.getId()).isNotNull();
     Assertions.assertThat(returnedProfile.getName()).isNotNull();
@@ -72,9 +63,9 @@ class ProfileServiceTest {
   @DisplayName("Retrieving an existing profile successfully")
   @Test
   void createOrRetrieveProfile_SuccessfullyRetrieved_WhenFunctionAlreadyExists() {
-    given(profileRepository.findByName(creationRequest.getName())).willReturn(Optional.of(profile));
+    given(profileRepository.findByName(profile.getName())).willReturn(Optional.of(profile));
 
-    var returnedProfile = profileService.createOrRetrieveProfile(creationRequest);
+    var returnedProfile = profileService.createOrRetrieveProfile(profile);
 
     Assertions.assertThat(returnedProfile).isNotNull();
     Assertions.assertThat(returnedProfile.getId()).isEqualTo(profile.getId());
@@ -86,7 +77,7 @@ class ProfileServiceTest {
     given(profileRepository.findById(profile.getId())).willReturn(Optional.empty());
 
     assertThrows(ResourceNotFoundException.class,
-        () -> profileService.findByIdOrThrowNotFound(String.valueOf(profile.getId())));
+        () -> profileService.findByIdOrThrowNotFound(profile.getId()));
   }
 
   @Test

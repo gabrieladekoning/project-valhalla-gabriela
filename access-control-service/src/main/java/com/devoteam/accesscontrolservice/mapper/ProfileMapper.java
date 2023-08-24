@@ -7,12 +7,12 @@ import com.devoteam.accesscontrolservice.entity.Profile;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants.ComponentModel;
 
-@Mapper(componentModel = ComponentModel.SPRING, uses = UserMapper.class)
+@Mapper(componentModel = ComponentModel.SPRING)
 public interface ProfileMapper {
 
   Profile mapToProfile(ProfileCreationRequest creationRequest);
 
   ProfileCreationResponse mapToProfileCreationResponse(Profile profile);
 
-  ProfileReadResponse toProfileReadResponse(Profile profile);
+  ProfileReadResponse mapToProfileReadResponse(Profile profile);
 }

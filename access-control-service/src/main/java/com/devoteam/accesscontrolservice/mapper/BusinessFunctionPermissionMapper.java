@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants.ComponentModel;
 
-@Mapper(componentModel = ComponentModel.SPRING, uses = {BusinessFunctionMapper.class, PermissionMapper.class})
+@Mapper(componentModel = ComponentModel.SPRING)
 public interface BusinessFunctionPermissionMapper {
 
   @Mapping(source = "businessFunctionId", target = "businessFunction.id")
@@ -18,8 +18,11 @@ public interface BusinessFunctionPermissionMapper {
   BusinessFunctionPermissionCreationResponse mapToBusinessFunctionPermissionCreationResponse(
       BusinessFunctionPermission businessFunctionPermission);
 
-  @Mapping(source = "businessFunction", target = "businessFunction")
-  @Mapping(source = "permission", target = "permission")
+  @Mapping(source = "businessFunction.id", target = "businessFunction.id")
+  @Mapping(source = "businessFunction.applicationName", target = "businessFunction.applicationName")
+  @Mapping(source = "businessFunction.functionName", target = "businessFunction.functionName")
+  @Mapping(source = "permission.id", target = "permission.id")
+  @Mapping(source = "permission.name", target = "permission.name")
   BusinessFunctionPermissionReadResponse mapToBusinessFunctionPermissionReadResponse(
       BusinessFunctionPermission businessFunctionPermission);
 }
