@@ -1,12 +1,13 @@
 package com.devoteam.accesscontrolservice.repository;
 
 import com.devoteam.accesscontrolservice.entity.ApplicationUser;
+import java.util.Optional;
+import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.Optional;
-import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<ApplicationUser, UUID> {
 
@@ -30,4 +31,7 @@ public interface UserRepository extends JpaRepository<ApplicationUser, UUID> {
       @Param("applicationName") String applicationName,
       @Param("functionName") String functionName,
       @Param("permissionName") String permissionName);
+
+  Page<ApplicationUser> findByFirstNameContainingOrLastNameContainingOrEmailContaining(String firstName,
+      String lastName, String email, Pageable pageable);
 }

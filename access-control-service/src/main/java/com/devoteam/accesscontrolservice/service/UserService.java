@@ -7,6 +7,8 @@ import com.devoteam.accesscontrolservice.repository.UserRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,5 +53,13 @@ public class UserService {
         .orElseThrow(() -> new ResourceNotFoundException(
             "User with email: %s not found.".formatted(email)
         ));
+  }
+
+  public Page<ApplicationUser> searchAndListUsers(String firstName,
+      String lastName, String email, Pageable pageable) {
+    log.info("Searching for users");
+
+    return userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContaining(firstName, lastName, email,
+        pageable);
   }
 }
