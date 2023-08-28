@@ -22,7 +22,7 @@ public class KeycloakService {
   private String realm;
   private final KeycloakUserMapper keycloakUserMapper;
 
-  public String createUser(ApplicationUser applicationUser) {
+  public String createUser(ApplicationUser applicationUser, String password) {
     log.info("Creating user in Keycloak: '{}'", applicationUser.getEmail());
     var user = keycloakUserMapper.mapToUserRepresentation(applicationUser);
     user.setEnabled(true);
@@ -36,7 +36,7 @@ public class KeycloakService {
     }
 
     var userId = CreatedResponseUtil.getCreatedId(response);
-    var passwordCred = createCredentialRepresentation(applicationUser.getPassword());
+    var passwordCred = createCredentialRepresentation(password);
     var userResource = usersResource.get(userId);
 
     userResource.resetPassword(passwordCred);

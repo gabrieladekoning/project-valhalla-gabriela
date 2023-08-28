@@ -19,12 +19,12 @@ public class UserService {
   private final UserRepository userRepository;
   private final KeycloakService keycloakService;
 
-  public ApplicationUser saveApplicationUser(ApplicationUser applicationUser) {
+  public ApplicationUser saveApplicationUser(ApplicationUser applicationUser, String password) {
     assertEmailDoesNotExist(applicationUser.getEmail());
 
     log.info("Creating user with email: '{}'", applicationUser.getEmail());
 
-    var keycloakUserId = keycloakService.createUser(applicationUser);
+    var keycloakUserId = keycloakService.createUser(applicationUser, password);
     log.debug("Setting ID generated from keycloak");
     applicationUser.setId(UUID.fromString(keycloakUserId));
 

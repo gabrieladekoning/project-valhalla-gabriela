@@ -38,10 +38,10 @@ public class UserController {
   public ResponseEntity<ApplicationUserCreationResponse> save(
       @Valid @RequestBody ApplicationUserCreationRequest creationRequest) {
     var userToCreate = userMapper.mapToApplicationUser(creationRequest);
-    var savedUser = userService.saveApplicationUser(userToCreate);
+    var savedUser = userService.saveApplicationUser(userToCreate, creationRequest.getPassword());
     var userCreationResponse = userMapper.mapToApplicationUserCreationResponse(savedUser);
 
-    log.info("Saved user with ID: {}", userCreationResponse.getId());
+    log.info("Saved user with ID: '{}'", userCreationResponse.getId());
     return ResponseEntity.status(HttpStatus.CREATED).body(userCreationResponse);
   }
 

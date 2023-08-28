@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +29,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-@Slf4j
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
@@ -42,6 +40,7 @@ class UserServiceTest {
   private UserService userService;
   private ApplicationUser user;
   private ApplicationUser secondUser;
+  private String passwordToSave;
 
   @BeforeEach
   public void setup() {
@@ -58,16 +57,18 @@ class UserServiceTest {
         .lastName("Cat")
         .email("taro@email.com")
         .build();
+
+    passwordToSave = "Th!S-1s-a-p4S$w0rD-t0-u$e";
   }
 
   @DisplayName("Saving a new user successfully")
   @Test
   void saveApplicationUser_SuccessfullySaved_WhenUserDoesNotAlreadyExist() {
     given(userRepository.findByEmail(user.getEmail())).willReturn(Optional.empty());
-    given(keycloakService.createUser(user)).willReturn(String.valueOf(user.getId()));
+    given(keycloakService.createUser(user, passwordToSave)).willReturn(String.valueOf(user.getId()));
     given(userRepository.save(any())).willReturn(user);
 
-    var savedUser = userService.saveApplicationUser(user);
+    var savedUser = userService.saveApplicationUser(user, passwordToSave);
     savedUser.setId(user.getId());
 
     Assertions.assertThat(savedUser).isNotNull();
@@ -78,7 +79,7 @@ class UserServiceTest {
   void saveApplicationUser_ThrowsEmailAlreadyExistsException_WhenEmailAlreadyExists() {
     given(userRepository.findByEmail(user.getEmail())).willReturn(Optional.of(user));
 
-    assertThrows(EmailAlreadyExistsException.class, () -> userService.saveApplicationUser(user));
+    assertThrows(EmailAlreadyExistsException.class, () -> userService.saveApplicationUser(user, passwordToSave));
     then(userRepository).should(times(1)).findByEmail(user.getEmail());
     then(userRepository).should(times(0)).save(any(ApplicationUser.class));
   }
@@ -87,10 +88,10 @@ class UserServiceTest {
   @Test
   void saveApplicationUser_ThrowsUserCreationException_WhenKeycloakRegistrationFails() {
     given(userRepository.findByEmail(user.getEmail())).willReturn(Optional.empty());
-    given(keycloakService.createUser(user)).willThrow(
+    given(keycloakService.createUser(user, passwordToSave)).willThrow(
         new UserCreationFailedException("Failed to create user in Keycloak"));
 
-    assertThrows(UserCreationFailedException.class, () -> userService.saveApplicationUser(user));
+    assertThrows(UserCreationFailedException.class, () -> userService.saveApplicationUser(user, passwordToSave));
     then(userRepository).should(times(1)).findByEmail(user.getEmail());
     then(userRepository).should(times(0)).save(any(ApplicationUser.class));
   }

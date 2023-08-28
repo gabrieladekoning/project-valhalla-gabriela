@@ -4,13 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @Builder
 @NoArgsConstructor
@@ -29,6 +27,4 @@ public class ApplicationUser {
   private String lastName;
   @Column(name = "email", nullable = false, unique = true)
   private String email;
-  @Transient
-  private String password;
 }
