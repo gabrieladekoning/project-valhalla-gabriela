@@ -53,4 +53,17 @@ public class BusinessFunctionService {
 
     return businessFunctionRepository.findAll(pageable);
   }
+
+  public void update(BusinessFunction businessFunction) {
+    var businessFunctionToUpdate = findByIdOrThrowNotFound(businessFunction.getId());
+
+    log.info("Updating application name from '{}' to '{}'", businessFunctionToUpdate.getApplicationName(),
+        businessFunction.getApplicationName());
+    businessFunctionToUpdate.setApplicationName(businessFunction.getApplicationName());
+    log.info("Updating function name from '{}' to '{}'", businessFunctionToUpdate.getFunctionName(),
+        businessFunction.getFunctionName());
+    businessFunctionToUpdate.setFunctionName(businessFunction.getFunctionName());
+
+    businessFunctionRepository.save(businessFunctionToUpdate);
+  }
 }
