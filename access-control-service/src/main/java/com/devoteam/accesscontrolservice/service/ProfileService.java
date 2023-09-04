@@ -51,4 +51,13 @@ public class ProfileService {
 
     return profileRepository.findAll(pageable);
   }
+
+  public void update(Profile profile) {
+    var profileToUpdate = findByIdOrThrowNotFound(profile.getId());
+
+    log.info("Updating profile name from '{}' to '{}'", profileToUpdate.getName(), profile.getName());
+
+    profileToUpdate.setName(profile.getName());
+    profileRepository.save(profileToUpdate);
+  }
 }

@@ -3,6 +3,7 @@ package com.devoteam.accesscontrolservice.controller;
 import com.devoteam.accesscontrolservice.dto.ProfileCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ProfileCreationResponse;
 import com.devoteam.accesscontrolservice.dto.ProfileReadResponse;
+import com.devoteam.accesscontrolservice.dto.ProfileUpdateRequest;
 import com.devoteam.accesscontrolservice.mapper.ProfileMapper;
 import com.devoteam.accesscontrolservice.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,5 +69,16 @@ public class ProfileController {
 
     log.info("Returning profile found by ID: '{}'", id);
     return ResponseEntity.status(HttpStatus.OK).body(profileReadResponse);
+  }
+
+  @PutMapping
+  @Operation(summary = "Update profile")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'update')")
+  public ResponseEntity<Void> updateById(@Valid @RequestBody ProfileUpdateRequest updateRequest) {
+    var profileToUpdate = profileMapper.mapToProfile(updateRequest);
+    profileService.update(profileToUpdate);
+
+    log.info("Profile updated");
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
