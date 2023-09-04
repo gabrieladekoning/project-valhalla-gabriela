@@ -51,4 +51,13 @@ public class PermissionService {
 
     return permissionRepository.findAll(pageable);
   }
+
+  public void update(Permission permission) {
+    var permissionToUpdate = findByIdOrThrowNotFound(permission.getId());
+
+    log.info("Updating permission name from '{}' to '{}'", permissionToUpdate.getName(), permission.getName());
+
+    permissionToUpdate.setName(permission.getName());
+    permissionRepository.save(permissionToUpdate);
+  }
 }
