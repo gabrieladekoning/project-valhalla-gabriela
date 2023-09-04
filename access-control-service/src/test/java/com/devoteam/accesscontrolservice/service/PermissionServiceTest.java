@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -50,7 +50,7 @@ class PermissionServiceTest {
   @Test
   void createOrRetrievePermission_SuccessfullySaved_WhenFunctionDoesNotAlreadyExist() {
     given(permissionRepository.findByName(permission.getName())).willReturn(Optional.empty());
-    given(permissionRepository.save(ArgumentMatchers.any())).willReturn(permission);
+    given(permissionRepository.save(any())).willReturn(permission);
 
     var returnedPermission = permissionService.createOrRetrievePermission(permission);
 
@@ -98,5 +98,34 @@ class PermissionServiceTest {
     assertThat(resultPermissionPage.toList()).isNotEmpty();
     assertThat(resultPermissionPage.toList().get(0).getName()).isEqualTo(permission.getName());
     assertThat(resultPermissionPage.toList().get(1).getName()).isEqualTo(secondPermission.getName());
+  }
+
+  @DisplayName("Updating a permission successfully")
+  @Test
+  void update_SuccessfullyUpdated_WhenPermissionExists() {
+    given(permissionRepository.findById(permission.getId())).willReturn(Optional.of(permission));
+
+    var updatedPermission = Permission.builder()
+        .id(permission.getId())
+        .name("Delete")
+        .build();
+
+    permissionService.update(updatedPermission);
+
+    verify(permissionRepository).findById(permission.getId());
+    verify(permissionRepository).save(any(Permission.class));
+  }
+
+  @DisplayName("Handling when permission is not found during update")
+  @Test
+  void update_ThrowsResourceNotFoundException_WhenPermissionNotFound() {
+    var nonExistentPermission = Permission.builder()
+        .id(UUID.randomUUID())
+        .name("Does not exist")
+        .build();
+
+    given(permissionRepository.findById(nonExistentPermission.getId())).willReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> permissionService.update(nonExistentPermission));
   }
 }

@@ -3,6 +3,7 @@ package com.devoteam.accesscontrolservice.controller;
 import com.devoteam.accesscontrolservice.dto.PermissionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.PermissionCreationResponse;
 import com.devoteam.accesscontrolservice.dto.PermissionReadResponse;
+import com.devoteam.accesscontrolservice.dto.PermissionUpdateRequest;
 import com.devoteam.accesscontrolservice.mapper.PermissionMapper;
 import com.devoteam.accesscontrolservice.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,5 +70,16 @@ public class PermissionController {
 
     log.info("Returning permission found by ID: '{}'", id);
     return ResponseEntity.status(HttpStatus.OK).body(permissionReadResponse);
+  }
+
+  @PutMapping
+  @Operation(summary = "Update permission")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'update')")
+  public ResponseEntity<Void> updateById(@Valid @RequestBody PermissionUpdateRequest updateRequest) {
+    var permissionToUpdate = permissionMapper.mapToPermission(updateRequest);
+    permissionService.update(permissionToUpdate);
+
+    log.info("Permission updated");
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
