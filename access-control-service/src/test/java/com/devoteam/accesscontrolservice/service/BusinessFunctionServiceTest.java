@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -52,7 +52,7 @@ class BusinessFunctionServiceTest {
   void createOrRetrieveBusinessFunction_SuccessfullySaved_WhenFunctionDoesNotAlreadyExist() {
     given(businessFunctionRepository.findByApplicationNameAndFunctionName(businessFunction.getApplicationName(),
         businessFunction.getFunctionName())).willReturn(Optional.empty());
-    given(businessFunctionRepository.save(ArgumentMatchers.any())).willReturn(businessFunction);
+    given(businessFunctionRepository.save(any())).willReturn(businessFunction);
 
     var returnedBusinessFunction = businessFunctionService.createOrRetrieveBusinessFunction(businessFunction);
 
@@ -105,5 +105,36 @@ class BusinessFunctionServiceTest {
         businessFunction.getFunctionName());
     assertThat(resultBusinessFunctionPage.toList().get(1).getFunctionName()).isEqualTo(
         secondBusinessFunction.getFunctionName());
+  }
+
+  @DisplayName("Updating a business function when it exists")
+  @Test
+  void update_SuccessfullyUpdated_WhenBusinessFunctionExists() {
+    var updatedBusinessFunction = BusinessFunction.builder()
+        .id(businessFunction.getId())
+        .applicationName("NewApplicationName")
+        .functionName("NewFunctionName")
+        .build();
+
+    given(businessFunctionRepository.findById(businessFunction.getId())).willReturn(Optional.of(businessFunction));
+
+    businessFunctionService.update(updatedBusinessFunction);
+
+    verify(businessFunctionRepository).findById(businessFunction.getId());
+    verify(businessFunctionRepository).save(any(BusinessFunction.class));
+  }
+
+  @DisplayName("Handling when business function ID is not found during update")
+  @Test
+  void update_ThrowsResourceNotFoundException_WhenBusinessFunctionNotFound() {
+    var nonExistentBusinessFunction = BusinessFunction.builder()
+        .id(UUID.randomUUID())
+        .applicationName("NonExistentApplication")
+        .functionName("NonExistentFunction")
+        .build();
+
+    given(businessFunctionRepository.findById(nonExistentBusinessFunction.getId())).willReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> businessFunctionService.update(nonExistentBusinessFunction));
   }
 }

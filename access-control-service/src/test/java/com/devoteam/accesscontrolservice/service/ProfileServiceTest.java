@@ -2,6 +2,7 @@ package com.devoteam.accesscontrolservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -100,5 +101,34 @@ class ProfileServiceTest {
     assertThat(resultProfilePage.toList()).isNotEmpty();
     assertThat(resultProfilePage.toList().get(0).getName()).isEqualTo(profile.getName());
     assertThat(resultProfilePage.toList().get(1).getName()).isEqualTo(secondProfile.getName());
+  }
+
+  @DisplayName("Updating a profile successfully")
+  @Test
+  void update_SuccessfullyUpdated_WhenProfileExists() {
+    var updatedProfile = Profile.builder()
+        .id(profile.getId())
+        .name("Delete")
+        .build();
+
+    given(profileRepository.findById(profile.getId())).willReturn(Optional.of(profile));
+
+    profileService.update(updatedProfile);
+
+    verify(profileRepository).findById(profile.getId());
+    verify(profileRepository).save(any(Profile.class));
+  }
+
+  @DisplayName("Handling when profile is not found during update")
+  @Test
+  void update_ThrowsResourceNotFoundException_WhenProfileNotFound() {
+    var nonExistentProfile = Profile.builder()
+        .id(UUID.randomUUID())
+        .name("Does not exist")
+        .build();
+
+    given(profileRepository.findById(nonExistentProfile.getId())).willReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> profileService.update(nonExistentProfile));
   }
 }

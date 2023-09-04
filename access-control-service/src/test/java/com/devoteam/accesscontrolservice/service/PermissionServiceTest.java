@@ -103,12 +103,12 @@ class PermissionServiceTest {
   @DisplayName("Updating a permission successfully")
   @Test
   void update_SuccessfullyUpdated_WhenPermissionExists() {
-    given(permissionRepository.findById(permission.getId())).willReturn(Optional.of(permission));
-
     var updatedPermission = Permission.builder()
         .id(permission.getId())
         .name("Delete")
         .build();
+
+    given(permissionRepository.findById(permission.getId())).willReturn(Optional.of(permission));
 
     permissionService.update(updatedPermission);
 
