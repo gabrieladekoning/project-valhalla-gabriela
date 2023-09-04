@@ -3,6 +3,7 @@ package com.devoteam.accesscontrolservice.mapper;
 import com.devoteam.accesscontrolservice.dto.ProfileCreationRequest;
 import com.devoteam.accesscontrolservice.dto.ProfileCreationResponse;
 import com.devoteam.accesscontrolservice.dto.ProfileReadResponse;
+import com.devoteam.accesscontrolservice.dto.ProfileUpdateRequest;
 import com.devoteam.accesscontrolservice.entity.Profile;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants.ComponentModel;
@@ -11,6 +12,8 @@ import org.mapstruct.MappingConstants.ComponentModel;
 public interface ProfileMapper {
 
   Profile mapToProfile(ProfileCreationRequest creationRequest);
+
+  Profile mapToProfile(ProfileUpdateRequest updateRequest);
 
   ProfileCreationResponse mapToProfileCreationResponse(Profile profile);
 
