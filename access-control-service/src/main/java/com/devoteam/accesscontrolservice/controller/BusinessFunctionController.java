@@ -75,7 +75,7 @@ public class BusinessFunctionController {
 
   @PutMapping
   @Operation(summary = "Update business function")
-//  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'update')")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'update')")
   public ResponseEntity<Void> updateById(@Valid @RequestBody BusinessFunctionUpdateRequest updateRequest) {
     var businessFunctionToUpdate = businessFunctionMapper.mapToBusinessFunction(updateRequest);
     businessFunctionService.update(businessFunctionToUpdate);
