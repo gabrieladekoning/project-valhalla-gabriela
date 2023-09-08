@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -98,5 +99,19 @@ public class BusinessFunctionService {
           throw new CannotDeleteResourceException(
               "Business function could not be deleted: it is associated with a permission");
         });
+  }
+
+  @Transactional
+  public void cascadeDeleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+
+    log.info("Deleting association between profile and business function permission");
+    businessFunctionRepository.deleteProfileBusinessFunctionPermissionsByBusinessFunctionId(id);
+
+    log.info("Deleting association between business function and permission");
+    businessFunctionRepository.deleteBusinessFunctionPermissionsByBusinessFunctionId(id);
+
+    log.info("Deleting business function");
+    businessFunctionRepository.deleteById(id);
   }
 }
