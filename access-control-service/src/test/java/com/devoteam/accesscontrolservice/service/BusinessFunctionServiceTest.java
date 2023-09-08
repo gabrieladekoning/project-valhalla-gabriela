@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
+import com.devoteam.accesscontrolservice.exception.CannotDeleteResourceException;
 import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
@@ -159,5 +160,64 @@ class BusinessFunctionServiceTest {
         .willReturn(Optional.of(existingBusinessFunction));
 
     assertThrows(DuplicateFieldException.class, () -> businessFunctionService.update(updatedBusinessFunction));
+  }
+
+  @DisplayName("Deleting a business function successfully")
+  @Test
+  void deleteById_SuccessfullyDeleted_WhenNoAssociationsExist() {
+    UUID businessFunctionId = UUID.randomUUID();
+    BusinessFunction businessFunction = BusinessFunction.builder().id(businessFunctionId).build();
+
+    when(businessFunctionRepository.findById(businessFunctionId)).thenReturn(Optional.of(businessFunction));
+    when(businessFunctionRepository.findBusinessFunctionWithPermissionById(businessFunctionId)).thenReturn(
+        Optional.empty());
+
+    businessFunctionService.deleteById(businessFunctionId);
+
+    verify(businessFunctionRepository).deleteById(businessFunctionId);
+  }
+
+  @DisplayName("Throwing CannotDeleteResourceException when associations exist")
+  @Test
+  void deleteById_ThrowsCannotDeleteResourceException_WhenAssociationsExist() {
+    UUID businessFunctionId = UUID.randomUUID();
+    BusinessFunction businessFunction = BusinessFunction.builder().id(businessFunctionId).build();
+
+    when(businessFunctionRepository.findById(businessFunctionId)).thenReturn(Optional.of(businessFunction));
+    when(businessFunctionRepository.findBusinessFunctionWithPermissionById(businessFunctionId)).thenReturn(
+        Optional.of(businessFunction));
+
+    assertThrows(CannotDeleteResourceException.class, () -> businessFunctionService.deleteById(businessFunctionId));
+  }
+
+  @DisplayName("Throwing ResourceNotFoundException when business function does not exist")
+  @Test
+  void deleteById_ThrowsResourceNotFoundException_WhenBusinessFunctionNotFound() {
+    when(businessFunctionRepository.findById(businessFunction.getId())).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> businessFunctionService.deleteById(businessFunction.getId()));
+  }
+
+
+  @DisplayName("Cascade delete business function successfully when ID exists")
+  @Test
+  void cascadeDeleteById_SuccessfullyDeleted_WhenIdExists() {
+    given(businessFunctionRepository.findById(businessFunction.getId())).willReturn(Optional.of(businessFunction));
+
+    businessFunctionService.cascadeDeleteById(businessFunction.getId());
+
+    verify(businessFunctionRepository).deleteBusinessFunctionPermissionsByBusinessFunctionId(businessFunction.getId());
+    verify(businessFunctionRepository).deleteProfileBusinessFunctionPermissionsByBusinessFunctionId(
+        businessFunction.getId());
+    verify(businessFunctionRepository).deleteById(businessFunction.getId());
+  }
+
+  @DisplayName("Throws ResourceNotFoundException when ID not found during cascade delete")
+  @Test
+  void cascadeDeleteById_ThrowsResourceNotFoundException_WhenIdNotFound() {
+    given(businessFunctionRepository.findById(businessFunction.getId())).willReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class,
+        () -> businessFunctionService.cascadeDeleteById(businessFunction.getId()));
   }
 }
