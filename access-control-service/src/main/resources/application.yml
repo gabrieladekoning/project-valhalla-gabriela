@@ -21,6 +21,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
   security:
     oauth2:
       resourceserver:
@@ -43,3 +44,6 @@ keycloak:
 logging:
   level:
     com.devoteam: DEBUG
+    org:
+      hibernate:
+        SQL=DEBUG:
