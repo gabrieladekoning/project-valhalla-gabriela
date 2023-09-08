@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.devoteam.accesscontrolservice.entity.Permission;
+import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.PermissionRepository;
 import java.util.ArrayList;
@@ -127,5 +128,23 @@ class PermissionServiceTest {
     given(permissionRepository.findById(nonExistentPermission.getId())).willReturn(Optional.empty());
 
     assertThrows(ResourceNotFoundException.class, () -> permissionService.update(nonExistentPermission));
+  }
+
+  @DisplayName("Handling when permission name already exists during update")
+  @Test
+  void update_ThrowsDuplicateFieldException_WhenPermissionNameAlreadyExists() {
+    var updatedPermission = Permission.builder()
+        .id(permission.getId())
+        .name("Delete")
+        .build();
+    var existingPermission = Permission.builder()
+        .id(UUID.randomUUID())
+        .name("Delete")
+        .build();
+
+    given(permissionRepository.findById(permission.getId())).willReturn(Optional.of(permission));
+    given(permissionRepository.findByName(updatedPermission.getName())).willReturn(Optional.of(existingPermission));
+
+    assertThrows(DuplicateFieldException.class, () -> permissionService.update(updatedPermission));
   }
 }

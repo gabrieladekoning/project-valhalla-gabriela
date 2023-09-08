@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.devoteam.accesscontrolservice.entity.Profile;
+import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.ProfileRepository;
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ class ProfileServiceTest {
   void update_SuccessfullyUpdated_WhenProfileExists() {
     var updatedProfile = Profile.builder()
         .id(profile.getId())
-        .name("Delete")
+        .name("Moderator")
         .build();
 
     given(profileRepository.findById(profile.getId())).willReturn(Optional.of(profile));
@@ -130,5 +131,23 @@ class ProfileServiceTest {
     given(profileRepository.findById(nonExistentProfile.getId())).willReturn(Optional.empty());
 
     assertThrows(ResourceNotFoundException.class, () -> profileService.update(nonExistentProfile));
+  }
+
+  @DisplayName("Handling when profile name already exists during update")
+  @Test
+  void update_ThrowsDuplicateFieldException_WhenProfileNameAlreadyExists() {
+    var updatedProfile = Profile.builder()
+        .id(profile.getId())
+        .name("Moderator")
+        .build();
+    var existingProfile = Profile.builder()
+        .id(UUID.randomUUID())
+        .name("Moderator")
+        .build();
+
+    given(profileRepository.findById(profile.getId())).willReturn(Optional.of(profile));
+    given(profileRepository.findByName(updatedProfile.getName())).willReturn(Optional.of(existingProfile));
+
+    assertThrows(DuplicateFieldException.class, () -> profileService.update(updatedProfile));
   }
 }

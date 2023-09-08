@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
+import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
 import java.util.ArrayList;
@@ -136,5 +137,27 @@ class BusinessFunctionServiceTest {
     given(businessFunctionRepository.findById(nonExistentBusinessFunction.getId())).willReturn(Optional.empty());
 
     assertThrows(ResourceNotFoundException.class, () -> businessFunctionService.update(nonExistentBusinessFunction));
+  }
+
+  @DisplayName("Handling when business function combination of applicationName and functionName already exists during update")
+  @Test
+  void update_ThrowsDuplicateFieldException_WhenCombinationAlreadyExists() {
+    var updatedBusinessFunction = BusinessFunction.builder()
+        .id(businessFunction.getId())
+        .applicationName("New Application")
+        .functionName("New Function")
+        .build();
+    var existingBusinessFunction = BusinessFunction.builder()
+        .id(UUID.randomUUID())
+        .applicationName("New Application")
+        .functionName("New Function")
+        .build();
+
+    given(businessFunctionRepository.findById(businessFunction.getId())).willReturn(Optional.of(businessFunction));
+    given(businessFunctionRepository.findByApplicationNameAndFunctionName(
+        updatedBusinessFunction.getApplicationName(), updatedBusinessFunction.getFunctionName()))
+        .willReturn(Optional.of(existingBusinessFunction));
+
+    assertThrows(DuplicateFieldException.class, () -> businessFunctionService.update(updatedBusinessFunction));
   }
 }
