@@ -1,6 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.entity.Profile;
+import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.ProfileRepository;
 import java.util.Optional;
@@ -50,5 +51,26 @@ public class ProfileService {
     log.info("Finding all profiles");
 
     return profileRepository.findAll(pageable);
+  }
+
+  public void update(Profile profile) {
+    var profileToUpdate = findByIdOrThrowNotFound(profile.getId());
+
+    assertNameDoesNotExist(profile.getName(), profile.getId());
+
+    log.info("Updating profile name from '{}' to '{}'", profileToUpdate.getName(), profile.getName());
+
+    profileToUpdate.setName(profile.getName());
+    profileRepository.save(profileToUpdate);
+  }
+
+  private void assertNameDoesNotExist(String name, UUID id) {
+    log.info("Checking if profile name exists");
+    profileRepository.findByName(name)
+        .filter(profile -> !profile.getId().equals(id))
+        .ifPresent(profile -> {
+          throw new DuplicateFieldException(
+              "Profile name is already registered: '%s'".formatted(profile.getName()));
+        });
   }
 }

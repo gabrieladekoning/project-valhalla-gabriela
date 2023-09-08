@@ -1,6 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
+import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
 import java.util.Optional;
@@ -52,5 +53,32 @@ public class BusinessFunctionService {
     log.info("Finding all businessFunctions");
 
     return businessFunctionRepository.findAll(pageable);
+  }
+
+  public void update(BusinessFunction businessFunction) {
+    var businessFunctionToUpdate = findByIdOrThrowNotFound(businessFunction.getId());
+
+    assertApplicationAndFunctionNameDoNotExist(businessFunction.getApplicationName(),
+        businessFunction.getFunctionName(), businessFunction.getId());
+
+    log.info("Updating application name from '{}' to '{}'", businessFunctionToUpdate.getApplicationName(),
+        businessFunction.getApplicationName());
+    businessFunctionToUpdate.setApplicationName(businessFunction.getApplicationName());
+    log.info("Updating function name from '{}' to '{}'", businessFunctionToUpdate.getFunctionName(),
+        businessFunction.getFunctionName());
+    businessFunctionToUpdate.setFunctionName(businessFunction.getFunctionName());
+
+    businessFunctionRepository.save(businessFunctionToUpdate);
+  }
+
+  private void assertApplicationAndFunctionNameDoNotExist(String applicationName, String functionName, UUID id) {
+    log.info("Checking if application name and function name combination exists");
+    businessFunctionRepository.findByApplicationNameAndFunctionName(applicationName, functionName)
+        .filter(businessFunction -> !businessFunction.getId().equals(id))
+        .ifPresent(businessFunction -> {
+          throw new DuplicateFieldException(
+              "Combination of application name and function name is already registered: '%s', '%s'".formatted(
+                  businessFunction.getApplicationName(), businessFunction.getFunctionName()));
+        });
   }
 }

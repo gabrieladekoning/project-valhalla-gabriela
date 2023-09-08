@@ -44,6 +44,12 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
   }
 
+  @ExceptionHandler(DuplicateFieldException.class)
+  public ResponseEntity<String> handleDuplicateName(DuplicateFieldException exception) {
+    log.info("Exception caught in handleDuplicateField: {}", exception.getMessage(), exception);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+  }
+
   @ExceptionHandler(AccessDeniedException.class)
   public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException exception) {
     log.info("Exception caught in handleAccessDeniedException: {}", exception.getMessage(), exception);

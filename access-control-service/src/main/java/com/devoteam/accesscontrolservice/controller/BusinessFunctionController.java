@@ -3,6 +3,7 @@ package com.devoteam.accesscontrolservice.controller;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationRequest;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionCreationResponse;
 import com.devoteam.accesscontrolservice.dto.BusinessFunctionReadResponse;
+import com.devoteam.accesscontrolservice.dto.BusinessFunctionUpdateRequest;
 import com.devoteam.accesscontrolservice.mapper.BusinessFunctionMapper;
 import com.devoteam.accesscontrolservice.service.BusinessFunctionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
@@ -64,5 +71,16 @@ public class BusinessFunctionController {
 
     log.info("Returning business function found by ID: '{}'", id);
     return ResponseEntity.status(HttpStatus.OK).body(businessFunctionReadResponse);
+  }
+
+  @PutMapping
+  @Operation(summary = "Update business function")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'update')")
+  public ResponseEntity<Void> updateById(@Valid @RequestBody BusinessFunctionUpdateRequest updateRequest) {
+    var businessFunctionToUpdate = businessFunctionMapper.mapToBusinessFunction(updateRequest);
+    businessFunctionService.update(businessFunctionToUpdate);
+
+    log.info("Business function updated");
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

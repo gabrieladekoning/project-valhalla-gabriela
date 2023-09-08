@@ -1,6 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.entity.Permission;
+import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.PermissionRepository;
 import java.util.Optional;
@@ -55,9 +56,21 @@ public class PermissionService {
   public void update(Permission permission) {
     var permissionToUpdate = findByIdOrThrowNotFound(permission.getId());
 
+    assertNameDoesNotExist(permission.getName(), permission.getId());
+
     log.info("Updating permission name from '{}' to '{}'", permissionToUpdate.getName(), permission.getName());
 
     permissionToUpdate.setName(permission.getName());
     permissionRepository.save(permissionToUpdate);
+  }
+
+  private void assertNameDoesNotExist(String name, UUID id) {
+    log.info("Checking if permission name exists");
+    permissionRepository.findByName(name)
+        .filter(permission -> !permission.getId().equals(id))
+        .ifPresent(permission -> {
+          throw new DuplicateFieldException(
+              "Permission name is already registered: '%s'".formatted(permission.getName()));
+        });
   }
 }

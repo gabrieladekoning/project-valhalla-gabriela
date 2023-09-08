@@ -2,11 +2,13 @@ package com.devoteam.accesscontrolservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.devoteam.accesscontrolservice.entity.Profile;
+import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.ProfileRepository;
 import java.util.ArrayList;
@@ -100,5 +102,52 @@ class ProfileServiceTest {
     assertThat(resultProfilePage.toList()).isNotEmpty();
     assertThat(resultProfilePage.toList().get(0).getName()).isEqualTo(profile.getName());
     assertThat(resultProfilePage.toList().get(1).getName()).isEqualTo(secondProfile.getName());
+  }
+
+  @DisplayName("Updating a profile successfully")
+  @Test
+  void update_SuccessfullyUpdated_WhenProfileExists() {
+    var updatedProfile = Profile.builder()
+        .id(profile.getId())
+        .name("Moderator")
+        .build();
+
+    given(profileRepository.findById(profile.getId())).willReturn(Optional.of(profile));
+
+    profileService.update(updatedProfile);
+
+    verify(profileRepository).findById(profile.getId());
+    verify(profileRepository).save(any(Profile.class));
+  }
+
+  @DisplayName("Handling when profile is not found during update")
+  @Test
+  void update_ThrowsResourceNotFoundException_WhenProfileNotFound() {
+    var nonExistentProfile = Profile.builder()
+        .id(UUID.randomUUID())
+        .name("Does not exist")
+        .build();
+
+    given(profileRepository.findById(nonExistentProfile.getId())).willReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> profileService.update(nonExistentProfile));
+  }
+
+  @DisplayName("Handling when profile name already exists during update")
+  @Test
+  void update_ThrowsDuplicateFieldException_WhenProfileNameAlreadyExists() {
+    var updatedProfile = Profile.builder()
+        .id(profile.getId())
+        .name("Moderator")
+        .build();
+    var existingProfile = Profile.builder()
+        .id(UUID.randomUUID())
+        .name("Moderator")
+        .build();
+
+    given(profileRepository.findById(profile.getId())).willReturn(Optional.of(profile));
+    given(profileRepository.findByName(updatedProfile.getName())).willReturn(Optional.of(existingProfile));
+
+    assertThrows(DuplicateFieldException.class, () -> profileService.update(updatedProfile));
   }
 }
