@@ -1,6 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
+import com.devoteam.accesscontrolservice.exception.CannotDeleteResourceException;
 import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
@@ -79,6 +80,23 @@ public class BusinessFunctionService {
           throw new DuplicateFieldException(
               "Combination of application name and function name is already registered: '%s', '%s'".formatted(
                   businessFunction.getApplicationName(), businessFunction.getFunctionName()));
+        });
+  }
+
+  public void deleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+    log.info("Deleting business function with ID: '{}'", id);
+
+    assertBusinessFunctionIsNotAssociated(id);
+
+    businessFunctionRepository.deleteById(id);
+  }
+
+  private void assertBusinessFunctionIsNotAssociated(UUID id) {
+    businessFunctionRepository.findBusinessFunctionWithPermissionById(id)
+        .ifPresent(businessFunction -> {
+          throw new CannotDeleteResourceException(
+              "Business function could not be deleted: it is associated with a permission");
         });
   }
 }
