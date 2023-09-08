@@ -86,14 +86,14 @@ public class BusinessFunctionService {
 
   public void deleteById(UUID id) {
     findByIdOrThrowNotFound(id);
-    log.info("Deleting business function with ID: '{}'", id);
-
     assertBusinessFunctionIsNotAssociated(id);
 
+    log.info("Deleting business function with ID: '{}'", id);
     businessFunctionRepository.deleteById(id);
   }
 
   private void assertBusinessFunctionIsNotAssociated(UUID id) {
+    log.info("Checking for association between business function and permission");
     businessFunctionRepository.findBusinessFunctionWithPermissionById(id)
         .ifPresent(businessFunction -> {
           throw new CannotDeleteResourceException(
