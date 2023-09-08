@@ -2,7 +2,9 @@ name: Project Valhalla Gabriela - Build
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - VGA-6_delete_businessfunction_VGA-7_cascade_delete_businessfunction
 
 jobs:
   build:
