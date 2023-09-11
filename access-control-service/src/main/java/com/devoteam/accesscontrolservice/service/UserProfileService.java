@@ -1,8 +1,10 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.entity.UserProfile;
+import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.UserProfileRepository;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -45,5 +47,20 @@ public class UserProfileService {
     log.info("Finding user profiles by profile");
 
     return userProfileRepository.findAllWithApplicationUserAndProfile(pageable);
+  }
+
+  public void deleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+
+    log.info("Deleting user profile with ID: '{}'", id);
+    userProfileRepository.deleteById(id);
+  }
+
+  public UserProfile findByIdOrThrowNotFound(UUID id) {
+    log.info("Finding user profile by ID: '{}'", id);
+    return userProfileRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "User Profile with ID: %s not found.".formatted(id)
+        ));
   }
 }

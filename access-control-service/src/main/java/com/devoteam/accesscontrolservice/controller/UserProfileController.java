@@ -9,6 +9,7 @@ import com.devoteam.accesscontrolservice.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,5 +74,15 @@ public class UserProfileController {
     log.info("Returning a page of {} profiles with associated users", profileWithUsersReadResponses.size());
     return ResponseEntity.status(HttpStatus.OK)
         .body(new PageImpl<>(profileWithUsersReadResponses, pageable, profileWithUsersReadResponses.size()));
+  }
+
+  @DeleteMapping("/{id}")
+  @Operation(summary = "Delete user profile by ID")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'user-profile', 'delete')")
+  public ResponseEntity<Void> deleteById(@PathVariable String id) {
+    userProfileService.deleteById(UUID.fromString(id));
+
+    log.info("Deleted user profile by ID: '{}'", id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
