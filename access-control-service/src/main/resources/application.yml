@@ -39,11 +39,11 @@ keycloak:
   server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8180/auth/}
   realm: ${KEYCLOAK_REALM:application-users}
   client-id: ${KEYCLOAK_CLIENT_ID:access-control-client}
-  client-secret: ${KEYCLOAK_CLIENT_SECRET}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:M7o8jfjYG2yZ2AsP5tXOMdsmKCmQAalI}
 
 logging:
   level:
     com.devoteam: DEBUG
     org:
       hibernate:
-        SQL=DEBUG:
+        SQL: DEBUG
