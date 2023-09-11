@@ -8,9 +8,9 @@ to add: build
 
 
 <br />
-<h3 style="text-align:center;">Project Valhalla</h3>
+<h3 align="center">Project Valhalla</h3>
 
-  <p style="text-align:center;">
+  <p align="center">
     Scalable microservice responsible for authentication and authorisation of users. (to add: keycloak, service allows to grant users roles, permissions etc, users <-> rights)
     <br />
     <a href="https://github.com/williamsuane/project-valhalla-gabriela/issues">Report Bug</a>
@@ -52,8 +52,7 @@ to add: build
 
 _(work in progress)_
 
-<p style="text-align:right;">(<a href="#readme-top">back to top</a>)</p>
-
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 ### Built With
@@ -61,9 +60,7 @@ _(work in progress)_
 * [![Java][Java]][Java-url]
 * [![Spring Framework][Spring]][Spring-url]
 
-<p style="text-align:right;">(<a href="#readme-top">back to top</a>)</p>
-
-
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Getting Started
 
@@ -119,8 +116,7 @@ Keycloak is configured and run via Docker. After you start the Docker containers
 > All these settings (such as realm name, client ID, and client secret) should match the configurations set in your application.yml file.
 
 
-<p style="text-align:right;">(<a href="#readme-top">back to top</a>)</p>
-
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 ## Usage
@@ -133,10 +129,9 @@ The services are exposed on the following ports:
 * **Access Control Service** - 8090
 
 After setting up, you can test the application by making requests to the various endpoints exposed by the Access Control Service. For authentication, make sure to use the Keycloak token obtained after logging in.
-(add info on endpoints / swagger)
+(add info on endpoints / swagger --> table: post - get - put - del)
 
-<p style="text-align:right;">(<a href="#readme-top">back to top</a>)</p>
-
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 ## Contact
@@ -154,8 +149,7 @@ Project Link: [https://github.com/williamsuane/project-valhalla-gabriela](https:
 * [William Suane, DevoDojo Academy](https://github.com/williamsuane)
 * [Devoteam](https://www.devoteam.com/)
 
-<p style="text-align:right;">(<a href="#readme-top">back to top</a>)</p>
-
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
