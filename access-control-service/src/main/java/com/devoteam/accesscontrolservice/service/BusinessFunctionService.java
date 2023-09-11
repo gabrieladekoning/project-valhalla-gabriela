@@ -1,6 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
+import com.devoteam.accesscontrolservice.exception.CannotDeleteResourceException;
 import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionRepository;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -80,5 +82,36 @@ public class BusinessFunctionService {
               "Combination of application name and function name is already registered: '%s', '%s'".formatted(
                   businessFunction.getApplicationName(), businessFunction.getFunctionName()));
         });
+  }
+
+  public void deleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+    assertBusinessFunctionIsNotAssociated(id);
+
+    log.info("Deleting business function with ID: '{}'", id);
+    businessFunctionRepository.deleteById(id);
+  }
+
+  private void assertBusinessFunctionIsNotAssociated(UUID id) {
+    log.info("Checking for association between business function and permission");
+    businessFunctionRepository.findBusinessFunctionWithPermissionById(id)
+        .ifPresent(businessFunction -> {
+          throw new CannotDeleteResourceException(
+              "Business function could not be deleted: it is associated with a permission");
+        });
+  }
+
+  @Transactional
+  public void cascadeDeleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+
+    log.info("Deleting association between profile and business function permission");
+    businessFunctionRepository.deleteProfileBusinessFunctionPermissionsByBusinessFunctionId(id);
+
+    log.info("Deleting association between business function and permission");
+    businessFunctionRepository.deleteBusinessFunctionPermissionsByBusinessFunctionId(id);
+
+    log.info("Deleting business function");
+    businessFunctionRepository.deleteById(id);
   }
 }

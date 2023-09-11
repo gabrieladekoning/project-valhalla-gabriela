@@ -50,6 +50,12 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
   }
 
+  @ExceptionHandler(CannotDeleteResourceException.class)
+  public ResponseEntity<String> handleCannotDeleteResourceException(CannotDeleteResourceException exception) {
+    log.info("Exception caught in handleCannotDeleteResourceException: {}", exception.getMessage(), exception);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+  }
+
   @ExceptionHandler(AccessDeniedException.class)
   public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException exception) {
     log.info("Exception caught in handleAccessDeniedException: {}", exception.getMessage(), exception);
