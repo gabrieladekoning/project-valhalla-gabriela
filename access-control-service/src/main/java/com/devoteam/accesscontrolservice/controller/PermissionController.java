@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -80,6 +81,26 @@ public class PermissionController {
     permissionService.update(permissionToUpdate);
 
     log.info("Permission updated");
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @DeleteMapping("/{id}")
+  @Operation(summary = "Delete permission by ID")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'delete')")
+  public ResponseEntity<Void> deleteById(@PathVariable String id) {
+    permissionService.deleteById(UUID.fromString(id));
+
+    log.info("Deleted permission by ID: '{}'", id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @DeleteMapping("/{id}/cascade")
+  @Operation(summary = "Cascade delete permission by ID")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'delete')")
+  public ResponseEntity<Void> cascadeDeleteById(@PathVariable String id) {
+    permissionService.cascadeDeleteById(UUID.fromString(id));
+
+    log.info("Cascade deleted permission by ID: '{}'", id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
