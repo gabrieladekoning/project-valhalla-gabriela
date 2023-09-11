@@ -158,4 +158,25 @@ class ProfileBusinessFunctionPermissionServiceTest {
     assertThat(resultProfileBusinessFunctionPage.toList().get(0).getBusinessFunctionPermission())
         .isEqualTo(profileBusinessFunctionPermission.getBusinessFunctionPermission());
   }
+
+  @DisplayName("Deleting a Profile Business Function Permission successfully")
+  @Test
+  void deleteById_SuccessfullyDeleted_WhenIdExists() {
+    given(profileBusinessFunctionPermissionRepository.findById(profileBusinessFunctionPermission.getId())).willReturn(
+        Optional.of(profileBusinessFunctionPermission));
+
+    profileBusinessFunctionPermissionService.deleteById(profileBusinessFunctionPermission.getId());
+
+    verify(profileBusinessFunctionPermissionRepository).deleteById(profileBusinessFunctionPermission.getId());
+  }
+
+  @DisplayName("Throwing ResourceNotFoundException when ID not found")
+  @Test
+  void deleteById_ThrowsResourceNotFoundException_WhenIdNotFound() {
+    given(profileBusinessFunctionPermissionRepository.findById(profileBusinessFunctionPermission.getId())).willReturn(
+        Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class,
+        () -> profileBusinessFunctionPermissionService.deleteById(profileBusinessFunctionPermission.getId()));
+  }
 }
