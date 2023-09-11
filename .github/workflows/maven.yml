@@ -5,9 +5,13 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
+      - VGA-28_multiple_delete_endpoints
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
+      - VGA-28_multiple_delete_endpoints
 
 jobs:
   build:
