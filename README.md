@@ -2,12 +2,17 @@
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Issues][issues-shield]][issues-url]
+![Build][build]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-to add: build
+>>Note:
+>>badges above won't work due to repo being private, badge below works
+>>
+![build](https://github.com/williamsuane/project-valhalla-gabriela/actions/workflows/maven.yml/badge.svg?style=for-the-badge)
 
 
 <br />
+
 <h3 align="center">Project Valhalla</h3>
 
   <p align="center">
@@ -157,6 +162,7 @@ Project Link: [https://github.com/williamsuane/project-valhalla-gabriela](https:
 [contributors-url]: https://github.com/williamsuane/project-valhalla-gabriela/graphs/contributors
 [issues-shield]: https://img.shields.io/github/issues/williamsuane/project-valhalla-gabriela.svg?style=for-the-badge
 [issues-url]: https://github.com/williamsuane/project-valhalla-gabriela/issues
+[build]: https://img.shields.io/github/actions/workflow/status/williamsuane/project-valhalla-gabriela/maven.yml?style=for-the-badge
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/gabrielaldk
 [Java]: https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white
