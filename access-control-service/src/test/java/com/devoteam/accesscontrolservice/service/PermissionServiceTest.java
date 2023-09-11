@@ -209,5 +209,4 @@ class PermissionServiceTest {
     assertThrows(ResourceNotFoundException.class,
         () -> permissionService.cascadeDeleteById(permission.getId()));
   }
-
 }

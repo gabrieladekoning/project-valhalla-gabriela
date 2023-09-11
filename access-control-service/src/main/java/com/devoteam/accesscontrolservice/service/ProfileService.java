@@ -104,5 +104,4 @@ public class ProfileService {
     log.info("Deleting profile");
     profileRepository.deleteById(id);
   }
-
 }
