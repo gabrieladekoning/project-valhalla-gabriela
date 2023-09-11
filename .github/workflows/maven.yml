@@ -3,12 +3,10 @@ name: Java CI with Maven
 on:
   push:
     branches:
-      - master
-      - VGA-28_multiple_delete_endpoints
+      - '*'
   pull_request:
     branches:
-      - master
-      - VGA-28_multiple_delete_endpoints
+      - '*'
 
 jobs:
   build:
@@ -25,5 +23,5 @@ jobs:
           cache: maven
       - name: Set environment variables from secrets
         run: echo "KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}" >> $GITHUB_ENV
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+      - name: Build and Test with Maven
+        run: mvn -B clean verify --file pom.xml
