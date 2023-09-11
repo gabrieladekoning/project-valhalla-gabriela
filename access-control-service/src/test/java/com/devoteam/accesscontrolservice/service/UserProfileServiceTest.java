@@ -125,4 +125,26 @@ class UserProfileServiceTest {
     assertEquals(expectedPage, resultPage);
     verify(userProfileRepository, times(1)).findAllWithApplicationUserAndProfile(pageable);
   }
+
+  @DisplayName("Deleting a user profile successfully")
+  @Test
+  void deleteById_SuccessfullyDeleted_WhenIdExists() {
+    UUID userProfileId = userProfile.getId();
+
+    when(userProfileRepository.findById(userProfileId)).thenReturn(Optional.of(userProfile));
+
+    userProfileService.deleteById(userProfileId);
+
+    verify(userProfileRepository).deleteById(userProfileId);
+  }
+
+  @DisplayName("Throwing ResourceNotFoundException when user profile does not exist")
+  @Test
+  void deleteById_ThrowsResourceNotFoundException_WhenUserProfileNotFound() {
+    UUID userProfileId = UUID.randomUUID();
+
+    when(userProfileRepository.findById(userProfileId)).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> userProfileService.deleteById(userProfileId));
+  }
 }
