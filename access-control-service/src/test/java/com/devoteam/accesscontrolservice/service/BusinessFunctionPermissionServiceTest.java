@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.devoteam.accesscontrolservice.entity.BusinessFunction;
 import com.devoteam.accesscontrolservice.entity.BusinessFunctionPermission;
 import com.devoteam.accesscontrolservice.entity.Permission;
+import com.devoteam.accesscontrolservice.exception.CannotDeleteResourceException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionPermissionRepository;
 import java.util.ArrayList;
@@ -147,5 +148,61 @@ class BusinessFunctionPermissionServiceTest {
     assertThat(resultBusinessFunctionPage.toList()).isNotEmpty();
     assertThat(resultBusinessFunctionPage.toList().get(0).getBusinessFunction().getApplicationName())
         .isEqualTo(businessFunctionPermission.getBusinessFunction().getApplicationName());
+  }
+  @DisplayName("Deleting a business function permission successfully")
+  @Test
+  void deleteById_SuccessfullyDeleted_WhenNoAssociationsExist() {
+    UUID businessFunctionPermissionId = businessFunctionPermission.getId();
+
+    when(businessFunctionPermissionRepository.findById(businessFunctionPermissionId)).thenReturn(Optional.of(businessFunctionPermission));
+    when(businessFunctionPermissionRepository.findBusinessFunctionPermissionWithProfileById(businessFunctionPermissionId)).thenReturn(Optional.empty());
+
+    businessFunctionPermissionService.deleteById(businessFunctionPermissionId);
+
+    verify(businessFunctionPermissionRepository).deleteById(businessFunctionPermissionId);
+  }
+
+  @DisplayName("Throwing CannotDeleteResourceException when associations exist")
+  @Test
+  void deleteById_ThrowsCannotDeleteResourceException_WhenAssociationsExist() {
+    UUID businessFunctionPermissionId = businessFunctionPermission.getId();
+
+    when(businessFunctionPermissionRepository.findById(businessFunctionPermissionId)).thenReturn(Optional.of(businessFunctionPermission));
+    when(businessFunctionPermissionRepository.findBusinessFunctionPermissionWithProfileById(businessFunctionPermissionId)).thenReturn(Optional.of(businessFunctionPermission));
+
+    assertThrows(CannotDeleteResourceException.class, () -> businessFunctionPermissionService.deleteById(businessFunctionPermissionId));
+  }
+
+  @DisplayName("Throwing ResourceNotFoundException when business function permission does not exist")
+  @Test
+  void deleteById_ThrowsResourceNotFoundException_WhenBusinessFunctionPermissionNotFound() {
+    UUID businessFunctionPermissionId = businessFunctionPermission.getId();
+
+    when(businessFunctionPermissionRepository.findById(businessFunctionPermissionId)).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> businessFunctionPermissionService.deleteById(businessFunctionPermissionId));
+  }
+
+  @DisplayName("Cascade delete business function permission successfully when ID exists")
+  @Test
+  void cascadeDeleteById_SuccessfullyDeleted_WhenIdExists() {
+    UUID businessFunctionPermissionId = businessFunctionPermission.getId();
+
+    when(businessFunctionPermissionRepository.findById(businessFunctionPermissionId)).thenReturn(Optional.of(businessFunctionPermission));
+
+    businessFunctionPermissionService.cascadeDeleteById(businessFunctionPermissionId);
+
+    verify(businessFunctionPermissionRepository).deleteProfileBusinessFunctionPermissionsByBusinessFunctionPermissionId(businessFunctionPermissionId);
+    verify(businessFunctionPermissionRepository).deleteById(businessFunctionPermissionId);
+  }
+
+  @DisplayName("Throws ResourceNotFoundException when ID not found during cascade delete")
+  @Test
+  void cascadeDeleteById_ThrowsResourceNotFoundException_WhenIdNotFound() {
+    UUID businessFunctionPermissionId = businessFunctionPermission.getId();
+
+    when(businessFunctionPermissionRepository.findById(businessFunctionPermissionId)).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> businessFunctionPermissionService.cascadeDeleteById(businessFunctionPermissionId));
   }
 }
