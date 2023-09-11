@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +80,26 @@ public class ProfileController {
     profileService.update(profileToUpdate);
 
     log.info("Profile updated");
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @DeleteMapping("/{id}")
+  @Operation(summary = "Delete profile by ID")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'delete')")
+  public ResponseEntity<Void> deleteById(@PathVariable String id) {
+    profileService.deleteById(UUID.fromString(id));
+
+    log.info("Deleted profile by ID: '{}'", id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @DeleteMapping("/{id}/cascade")
+  @Operation(summary = "Cascade delete profile by ID")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'delete')")
+  public ResponseEntity<Void> cascadeDeleteById(@PathVariable String id) {
+    profileService.cascadeDeleteById(UUID.fromString(id));
+
+    log.info("Cascade deleted profile by ID: '{}'", id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
