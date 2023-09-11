@@ -145,13 +145,13 @@ Gabriela de Koning - gabriela.de.koning@devoteam.com
 
 Project Link: [https://github.com/williamsuane/project-valhalla-gabriela](https://github.com/williamsuane/project-valhalla-gabriela)
 
-<p style="text-align:right;">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
 ## Acknowledgments
 
-* [William Suane, DevoDojo Academy](https://github.com/williamsuane)
+* [William Suane, DevDojo Academy](https://github.com/williamsuane)
 * [Devoteam](https://www.devoteam.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
