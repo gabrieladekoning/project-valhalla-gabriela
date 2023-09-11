@@ -40,12 +40,12 @@ public class PermissionService {
     return permissionRepository.save(permission);
   }
 
-  public Permission findByIdOrThrowNotFound(UUID permissionId) {
-    log.info("Finding permission by ID: '{}'", permissionId);
+  public Permission findByIdOrThrowNotFound(UUID id) {
+    log.info("Finding permission by ID: '{}'", id);
 
-    return permissionRepository.findById(permissionId)
+    return permissionRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Permission with ID: %s not found.".formatted(permissionId)
+            "Permission with ID: %s not found.".formatted(id)
         ));
   }
 

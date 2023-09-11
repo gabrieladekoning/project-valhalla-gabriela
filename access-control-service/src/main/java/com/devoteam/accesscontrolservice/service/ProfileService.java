@@ -39,12 +39,12 @@ public class ProfileService {
     return profileRepository.save(profile);
   }
 
-  public Profile findByIdOrThrowNotFound(UUID profileId) {
-    log.info("Finding profile by ID: '{}'", profileId);
+  public Profile findByIdOrThrowNotFound(UUID id) {
+    log.info("Finding profile by ID: '{}'", id);
 
-    return profileRepository.findById(profileId)
+    return profileRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Profile with ID: %s not found.".formatted(profileId)
+            "Profile with ID: %s not found.".formatted(id)
         ));
   }
 

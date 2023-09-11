@@ -18,9 +18,9 @@ public interface BusinessFunctionRepository extends JpaRepository<BusinessFuncti
   @Modifying
   @Query(value = "DELETE FROM profile_business_function_permissions WHERE business_function_permission_id IN "
       + "(SELECT id FROM business_function_permissions WHERE business_function_id = ?1)", nativeQuery = true)
-  void deleteProfileBusinessFunctionPermissionsByBusinessFunctionId(UUID businessFunctionId);
+  void deleteProfileBusinessFunctionPermissionsByBusinessFunctionId(UUID id);
 
   @Modifying
   @Query("DELETE FROM BusinessFunctionPermission bfp WHERE bfp.businessFunction.id = ?1")
-  void deleteBusinessFunctionPermissionsByBusinessFunctionId(UUID businessFunctionId);
+  void deleteBusinessFunctionPermissionsByBusinessFunctionId(UUID id);
 }

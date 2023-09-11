@@ -16,9 +16,9 @@ public interface ProfileRepository extends JpaRepository<Profile, UUID> {
 
   @Modifying
   @Query(value = "DELETE FROM profile_business_function_permissions WHERE profile_id = ?1", nativeQuery = true)
-  void deleteProfileBusinessFunctionPermissionsByProfileId(UUID profileId);
+  void deleteProfileBusinessFunctionPermissionsByProfileId(UUID id);
 
   @Modifying
   @Query("DELETE FROM UserProfile up WHERE up.profile.id = ?1")
-  void deleteUserProfileByProfileId(UUID profileId);
+  void deleteUserProfileByProfileId(UUID id);
 }

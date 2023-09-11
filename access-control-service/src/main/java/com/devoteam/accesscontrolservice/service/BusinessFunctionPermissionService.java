@@ -48,12 +48,12 @@ public class BusinessFunctionPermissionService {
     return businessFunctionPermissionRepository.save(businessFunctionPermission);
   }
 
-  public BusinessFunctionPermission findByIdOrThrowNotFound(UUID businessFunctionPermissionId) {
-    log.info("Finding business function permission by ID: '{}'", businessFunctionPermissionId);
+  public BusinessFunctionPermission findByIdOrThrowNotFound(UUID id) {
+    log.info("Finding business function permission by ID: '{}'", id);
 
-    return businessFunctionPermissionRepository.findById(businessFunctionPermissionId)
+    return businessFunctionPermissionRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Business function permission with ID: %s not found.".formatted(businessFunctionPermissionId)
+            "Business function permission with ID: %s not found.".formatted(id)
         ));
   }
 
