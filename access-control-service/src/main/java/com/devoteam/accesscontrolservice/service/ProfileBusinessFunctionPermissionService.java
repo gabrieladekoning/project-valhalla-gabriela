@@ -61,12 +61,12 @@ public class ProfileBusinessFunctionPermissionService {
     profileBusinessFunctionPermissionRepository.deleteById(id);
   }
 
-  public ProfileBusinessFunctionPermission findByIdOrThrowNotFound(UUID profileBusinessFunctionPermissionId) {
-    log.info("Finding profile business function permission by ID: '{}'", profileBusinessFunctionPermissionId);
+  public ProfileBusinessFunctionPermission findByIdOrThrowNotFound(UUID id) {
+    log.info("Finding profile business function permission by ID: '{}'", id);
 
-    return profileBusinessFunctionPermissionRepository.findById(profileBusinessFunctionPermissionId)
+    return profileBusinessFunctionPermissionRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Profile business function permission with ID: %s not found.".formatted(profileBusinessFunctionPermissionId)
+            "Profile business function permission with ID: %s not found.".formatted(id)
         ));
   }
 }

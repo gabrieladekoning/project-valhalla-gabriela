@@ -159,24 +159,28 @@ class ProfileBusinessFunctionPermissionServiceTest {
         .isEqualTo(profileBusinessFunctionPermission.getBusinessFunctionPermission());
   }
 
-  @DisplayName("Deleting a Profile Business Function Permission successfully")
+  @DisplayName("Successfully deleting a Profile Business Function Permission by ID")
   @Test
   void deleteById_SuccessfullyDeleted_WhenIdExists() {
-    given(profileBusinessFunctionPermissionRepository.findById(profileBusinessFunctionPermission.getId())).willReturn(
-        Optional.of(profileBusinessFunctionPermission));
+    UUID profileBusinessFunctionPermissionId = profileBusinessFunctionPermission.getId();
 
-    profileBusinessFunctionPermissionService.deleteById(profileBusinessFunctionPermission.getId());
+    when(profileBusinessFunctionPermissionRepository.findById(profileBusinessFunctionPermissionId))
+        .thenReturn(Optional.of(profileBusinessFunctionPermission));
 
-    verify(profileBusinessFunctionPermissionRepository).deleteById(profileBusinessFunctionPermission.getId());
+    profileBusinessFunctionPermissionService.deleteById(profileBusinessFunctionPermissionId);
+
+    verify(profileBusinessFunctionPermissionRepository).deleteById(profileBusinessFunctionPermissionId);
   }
 
-  @DisplayName("Throwing ResourceNotFoundException when ID not found")
+  @DisplayName("Throwing ResourceNotFoundException when Profile Business Function Permission ID is not found")
   @Test
   void deleteById_ThrowsResourceNotFoundException_WhenIdNotFound() {
-    given(profileBusinessFunctionPermissionRepository.findById(profileBusinessFunctionPermission.getId())).willReturn(
-        Optional.empty());
+    UUID profileBusinessFunctionPermissionId = UUID.randomUUID();
+
+    when(profileBusinessFunctionPermissionRepository.findById(profileBusinessFunctionPermissionId))
+        .thenReturn(Optional.empty());
 
     assertThrows(ResourceNotFoundException.class,
-        () -> profileBusinessFunctionPermissionService.deleteById(profileBusinessFunctionPermission.getId()));
+        () -> profileBusinessFunctionPermissionService.deleteById(profileBusinessFunctionPermissionId));
   }
 }
