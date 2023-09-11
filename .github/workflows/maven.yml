@@ -23,5 +23,7 @@ jobs:
           cache: maven
       - name: Set environment variables from secrets
         run: echo "KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}" >> $GITHUB_ENV
-      - name: Build and Test with Maven
-        run: mvn -B clean verify --file pom.xml
+      - name: Run Tests
+        run: mvn test
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
