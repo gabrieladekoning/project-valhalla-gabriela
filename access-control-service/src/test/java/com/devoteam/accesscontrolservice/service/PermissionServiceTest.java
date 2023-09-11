@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.devoteam.accesscontrolservice.entity.Permission;
+import com.devoteam.accesscontrolservice.exception.CannotDeleteResourceException;
 import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.PermissionRepository;
@@ -147,4 +148,66 @@ class PermissionServiceTest {
 
     assertThrows(DuplicateFieldException.class, () -> permissionService.update(updatedPermission));
   }
+
+  @DisplayName("Deleting a permission successfully")
+  @Test
+  void deleteById_SuccessfullyDeleted_WhenNoAssociationsExist() {
+    UUID permissionId = UUID.randomUUID();
+    Permission permission = new Permission();
+    permission.setId(permissionId);
+
+    when(permissionRepository.findById(permissionId)).thenReturn(Optional.of(permission));
+    when(permissionRepository.findPermissionWithBusinessFunctionPermissionById(permissionId)).thenReturn(
+        Optional.empty());
+
+    permissionService.deleteById(permissionId);
+
+    verify(permissionRepository).deleteById(permissionId);
+  }
+
+  @DisplayName("Throwing CannotDeleteResourceException when associations exist")
+  @Test
+  void deleteById_ThrowsCannotDeleteResourceException_WhenAssociationsExist() {
+    UUID permissionId = UUID.randomUUID();
+    Permission permission = new Permission();
+    permission.setId(permissionId);
+
+    when(permissionRepository.findById(permissionId)).thenReturn(Optional.of(permission));
+    when(permissionRepository.findPermissionWithBusinessFunctionPermissionById(permissionId)).thenReturn(
+        Optional.of(permission));
+
+    assertThrows(CannotDeleteResourceException.class, () -> permissionService.deleteById(permissionId));
+  }
+
+  @DisplayName("Throwing ResourceNotFoundException when permission does not exist")
+  @Test
+  void deleteById_ThrowsResourceNotFoundException_WhenPermissionNotFound() {
+    UUID permissionId = UUID.randomUUID();
+
+    when(permissionRepository.findById(permissionId)).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> permissionService.deleteById(permissionId));
+  }
+
+  @DisplayName("Cascade delete permission successfully when ID exists")
+  @Test
+  void cascadeDeleteById_SuccessfullyDeleted_WhenIdExists() {
+    given(permissionRepository.findById(permission.getId())).willReturn(Optional.of(permission));
+
+    permissionService.cascadeDeleteById(permission.getId());
+
+    verify(permissionRepository).deleteBusinessFunctionPermissionsByPermissionId(permission.getId());
+    verify(permissionRepository).deleteProfileBusinessFunctionPermissionsByPermissionId(permission.getId());
+    verify(permissionRepository).deleteById(permission.getId());
+  }
+
+  @DisplayName("Throws ResourceNotFoundException when ID not found during cascade delete")
+  @Test
+  void cascadeDeleteById_ThrowsResourceNotFoundException_WhenIdNotFound() {
+    given(permissionRepository.findById(permission.getId())).willReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class,
+        () -> permissionService.cascadeDeleteById(permission.getId()));
+  }
+
 }
