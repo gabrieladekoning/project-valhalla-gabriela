@@ -27,6 +27,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven
-        run: mvn -X -B package --file pom.xml
-      - name: Display Surefire Reports
-        run: cat /home/runner/work/project-valhalla-gabriela/project-valhalla-gabriela/access-control-service/target/surefire-reports/*.txt
+        run: mvn -B package --file pom.xml
+      - name: Upload Surefire Reports
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: surefire-reports
+          path: /home/runner/work/project-valhalla-gabriela/project-valhalla-gabriela/access-control-service/target/surefire-reports/
