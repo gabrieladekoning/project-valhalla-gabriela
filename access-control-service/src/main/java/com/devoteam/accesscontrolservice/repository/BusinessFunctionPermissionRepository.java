@@ -18,9 +18,8 @@ public interface BusinessFunctionPermissionRepository extends JpaRepository<Busi
 
   Page<BusinessFunctionPermission> findByBusinessFunction_ApplicationName(String applicationName, Pageable pageable);
 
-  @Query(
-      "SELECT bfp FROM BusinessFunctionPermission bfp WHERE EXISTS (SELECT pbfp FROM ProfileBusinessFunctionPermission pbfp "
-          + "WHERE pbfp.businessFunctionPermission.id = bfp.id) AND bfp.id = :id")
+  @Query("SELECT pbfp.businessFunctionPermission FROM ProfileBusinessFunctionPermission pbfp "
+      + "WHERE pbfp.businessFunctionPermission.id = :id")
   Optional<BusinessFunctionPermission> findBusinessFunctionPermissionWithProfileById(UUID id);
 
   @Modifying

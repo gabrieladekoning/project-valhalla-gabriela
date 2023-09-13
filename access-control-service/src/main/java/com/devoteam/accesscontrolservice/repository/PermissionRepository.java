@@ -11,8 +11,7 @@ public interface PermissionRepository extends JpaRepository<Permission, UUID> {
 
   Optional<Permission> findByName(String name);
 
-  @Query("SELECT p FROM Permission p WHERE EXISTS (SELECT bfp FROM BusinessFunctionPermission bfp "
-      + "WHERE bfp.permission.id = p.id) AND p.id = :id")
+  @Query("SELECT bfp.permission FROM BusinessFunctionPermission bfp WHERE bfp.permission.id = :id")
   Optional<Permission> findPermissionWithBusinessFunctionPermissionById(UUID id);
 
   @Modifying

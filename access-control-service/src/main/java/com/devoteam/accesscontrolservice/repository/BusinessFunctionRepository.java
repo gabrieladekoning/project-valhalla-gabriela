@@ -11,8 +11,7 @@ public interface BusinessFunctionRepository extends JpaRepository<BusinessFuncti
 
   Optional<BusinessFunction> findByApplicationNameAndFunctionName(String applicationName, String functionName);
 
-  @Query("SELECT bf FROM BusinessFunction bf WHERE EXISTS (SELECT bfp FROM BusinessFunctionPermission bfp "
-      + "WHERE bfp.businessFunction.id = bf.id) AND bf.id = :id")
+  @Query("SELECT bfp.businessFunction FROM BusinessFunctionPermission bfp WHERE bfp.businessFunction.id = :id")
   Optional<BusinessFunction> findBusinessFunctionWithPermissionById(UUID id);
 
   @Modifying

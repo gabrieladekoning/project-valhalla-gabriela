@@ -11,7 +11,7 @@ public interface ProfileRepository extends JpaRepository<Profile, UUID> {
 
   Optional<Profile> findByName(String name);
 
-  @Query("SELECT p FROM Profile p WHERE EXISTS (SELECT up FROM UserProfile up WHERE up.profile.id = p.id) AND p.id = :id")
+  @Query("SELECT up.profile FROM UserProfile up WHERE up.profile.id = :id")
   Optional<Profile> findProfileWithAssociationsById(UUID id);
 
   @Modifying
