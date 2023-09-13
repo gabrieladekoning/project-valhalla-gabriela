@@ -42,12 +42,12 @@ public class BusinessFunctionService {
     return businessFunctionRepository.save(businessFunction);
   }
 
-  public BusinessFunction findByIdOrThrowNotFound(UUID businessFunctionId) {
-    log.info("Finding business function by ID: '{}'", businessFunctionId);
+  public BusinessFunction findByIdOrThrowNotFound(UUID id) {
+    log.info("Finding business function by ID: '{}'", id);
 
-    return businessFunctionRepository.findById(businessFunctionId)
+    return businessFunctionRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Business function with ID: %s not found.".formatted(businessFunctionId)
+            "Business function with ID: %s not found.".formatted(id)
         ));
   }
 

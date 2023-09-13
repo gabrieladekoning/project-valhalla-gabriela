@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -59,5 +60,15 @@ public class ProfileBusinessFunctionPermissionController {
 
     log.info("Listing business function permissions by application name: '{}'", profileName);
     return ResponseEntity.status(HttpStatus.OK).body(profileBusinessFunctionReadPermissions);
+  }
+
+  @DeleteMapping("/{id}")
+  @Operation(summary = "Delete Profile Business Function Permission by ID")
+  @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile-business-function-permission', 'delete')")
+  public ResponseEntity<Void> deleteById(@PathVariable String id) {
+    profileBusinessFunctionPermissionService.deleteById(UUID.fromString(id));
+
+    log.info("Deleted Profile Business Function Permission by ID: '{}'", id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

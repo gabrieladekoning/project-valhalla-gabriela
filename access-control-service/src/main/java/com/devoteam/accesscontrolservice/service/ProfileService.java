@@ -1,6 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.entity.Profile;
+import com.devoteam.accesscontrolservice.exception.CannotDeleteResourceException;
 import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.ProfileRepository;
@@ -38,12 +39,12 @@ public class ProfileService {
     return profileRepository.save(profile);
   }
 
-  public Profile findByIdOrThrowNotFound(UUID profileId) {
-    log.info("Finding profile by ID: '{}'", profileId);
+  public Profile findByIdOrThrowNotFound(UUID id) {
+    log.info("Finding profile by ID: '{}'", id);
 
-    return profileRepository.findById(profileId)
+    return profileRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Profile with ID: %s not found.".formatted(profileId)
+            "Profile with ID: %s not found.".formatted(id)
         ));
   }
 
@@ -72,5 +73,35 @@ public class ProfileService {
           throw new DuplicateFieldException(
               "Profile name is already registered: '%s'".formatted(profile.getName()));
         });
+  }
+
+  public void deleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+    assertProfileIsNotAssociated(id);
+
+    log.info("Deleting profile with ID: '{}'", id);
+    profileRepository.deleteById(id);
+  }
+
+  private void assertProfileIsNotAssociated(UUID id) {
+    log.info("Checking for association between profile and user profile or profile business function permission");
+    profileRepository.findProfileWithAssociationsById(id)
+        .ifPresent(profile -> {
+          throw new CannotDeleteResourceException(
+              "Profile could not be deleted: it is associated with a user profile or profile business function permission");
+        });
+  }
+
+  public void cascadeDeleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+
+    log.info("Deleting association between user and profile");
+    profileRepository.deleteUserProfileByProfileId(id);
+
+    log.info("Deleting association between profile and business function permission");
+    profileRepository.deleteProfileBusinessFunctionPermissionsByProfileId(id);
+
+    log.info("Deleting profile");
+    profileRepository.deleteById(id);
   }
 }

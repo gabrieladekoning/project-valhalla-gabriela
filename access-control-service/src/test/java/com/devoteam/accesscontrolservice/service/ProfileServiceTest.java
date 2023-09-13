@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.devoteam.accesscontrolservice.entity.Profile;
+import com.devoteam.accesscontrolservice.exception.CannotDeleteResourceException;
 import com.devoteam.accesscontrolservice.exception.DuplicateFieldException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.ProfileRepository;
@@ -149,5 +150,59 @@ class ProfileServiceTest {
     given(profileRepository.findByName(updatedProfile.getName())).willReturn(Optional.of(existingProfile));
 
     assertThrows(DuplicateFieldException.class, () -> profileService.update(updatedProfile));
+  }
+
+  @DisplayName("Deleting a profile successfully")
+  @Test
+  void deleteById_SuccessfullyDeleted_WhenNoAssociationsExist() {
+    UUID profileId = profile.getId();
+
+    when(profileRepository.findById(profileId)).thenReturn(Optional.of(profile));
+    when(profileRepository.findProfileWithAssociationsById(profileId)).thenReturn(Optional.empty());
+
+    profileService.deleteById(profileId);
+
+    verify(profileRepository).deleteById(profileId);
+  }
+
+  @DisplayName("Throwing CannotDeleteResourceException when associations exist")
+  @Test
+  void deleteById_ThrowsCannotDeleteResourceException_WhenAssociationsExist() {
+    UUID profileId = profile.getId();
+
+    when(profileRepository.findById(profileId)).thenReturn(Optional.of(profile));
+    when(profileRepository.findProfileWithAssociationsById(profileId)).thenReturn(Optional.of(profile));
+
+    assertThrows(CannotDeleteResourceException.class, () -> profileService.deleteById(profileId));
+  }
+
+  @DisplayName("Throwing ResourceNotFoundException when profile does not exist")
+  @Test
+  void deleteById_ThrowsResourceNotFoundException_WhenProfileNotFound() {
+    UUID profileId = UUID.randomUUID();
+
+    when(profileRepository.findById(profileId)).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> profileService.deleteById(profileId));
+  }
+
+  @DisplayName("Cascade delete profile successfully when ID exists")
+  @Test
+  void cascadeDeleteById_SuccessfullyDeleted_WhenIdExists() {
+    given(profileRepository.findById(profile.getId())).willReturn(Optional.of(profile));
+
+    profileService.cascadeDeleteById(profile.getId());
+
+    verify(profileRepository).deleteUserProfileByProfileId(profile.getId());
+    verify(profileRepository).deleteProfileBusinessFunctionPermissionsByProfileId(profile.getId());
+    verify(profileRepository).deleteById(profile.getId());
+  }
+
+  @DisplayName("Throws ResourceNotFoundException when ID not found during cascade delete")
+  @Test
+  void cascadeDeleteById_ThrowsResourceNotFoundException_WhenIdNotFound() {
+    given(profileRepository.findById(profile.getId())).willReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> profileService.cascadeDeleteById(profile.getId()));
   }
 }

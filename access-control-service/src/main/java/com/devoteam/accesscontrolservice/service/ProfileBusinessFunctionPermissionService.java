@@ -1,8 +1,11 @@
 package com.devoteam.accesscontrolservice.service;
 
+import com.devoteam.accesscontrolservice.entity.Profile;
 import com.devoteam.accesscontrolservice.entity.ProfileBusinessFunctionPermission;
+import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.ProfileBusinessFunctionPermissionRepository;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -49,5 +52,21 @@ public class ProfileBusinessFunctionPermissionService {
     log.info("Finding profile business function permissions by profile name: '{}'", profileName);
 
     return profileBusinessFunctionPermissionRepository.findByProfile_Name(profileName, pageable);
+  }
+
+  public void deleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+
+    log.info("Deleting Profile Business Function Permission with ID: '{}'", id);
+    profileBusinessFunctionPermissionRepository.deleteById(id);
+  }
+
+  public ProfileBusinessFunctionPermission findByIdOrThrowNotFound(UUID id) {
+    log.info("Finding profile business function permission by ID: '{}'", id);
+
+    return profileBusinessFunctionPermissionRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Profile business function permission with ID: %s not found.".formatted(id)
+        ));
   }
 }

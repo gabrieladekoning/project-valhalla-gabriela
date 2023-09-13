@@ -46,4 +46,4 @@ logging:
     com.devoteam: DEBUG
     org:
       hibernate:
-        SQL=DEBUG:
+        SQL: DEBUG

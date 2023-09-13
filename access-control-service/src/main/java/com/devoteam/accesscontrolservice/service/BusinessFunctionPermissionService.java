@@ -1,6 +1,7 @@
 package com.devoteam.accesscontrolservice.service;
 
 import com.devoteam.accesscontrolservice.entity.BusinessFunctionPermission;
+import com.devoteam.accesscontrolservice.exception.CannotDeleteResourceException;
 import com.devoteam.accesscontrolservice.exception.ResourceNotFoundException;
 import com.devoteam.accesscontrolservice.repository.BusinessFunctionPermissionRepository;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,12 +48,12 @@ public class BusinessFunctionPermissionService {
     return businessFunctionPermissionRepository.save(businessFunctionPermission);
   }
 
-  public BusinessFunctionPermission findByIdOrThrowNotFound(UUID businessFunctionPermissionId) {
-    log.info("Finding business function permission by ID: '{}'", businessFunctionPermissionId);
+  public BusinessFunctionPermission findByIdOrThrowNotFound(UUID id) {
+    log.info("Finding business function permission by ID: '{}'", id);
 
-    return businessFunctionPermissionRepository.findById(businessFunctionPermissionId)
+    return businessFunctionPermissionRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Business function permission with ID: %s not found.".formatted(businessFunctionPermissionId)
+            "Business function permission with ID: %s not found.".formatted(id)
         ));
   }
 
@@ -59,5 +61,33 @@ public class BusinessFunctionPermissionService {
     log.info("Finding business function permissions by application name: '{}'", applicationName);
 
     return businessFunctionPermissionRepository.findByBusinessFunction_ApplicationName(applicationName, pageable);
+  }
+
+  public void deleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+    assertBusinessFunctionPermissionIsNotAssociated(id);
+
+    log.info("Deleting business function permission with ID: '{}'", id);
+    businessFunctionPermissionRepository.deleteById(id);
+  }
+
+  private void assertBusinessFunctionPermissionIsNotAssociated(UUID id) {
+    log.info("Checking for association between business function permission and profile");
+    businessFunctionPermissionRepository.findBusinessFunctionPermissionWithProfileById(id)
+        .ifPresent(businessFunctionPermission -> {
+          throw new CannotDeleteResourceException(
+              "Business function permission could not be deleted: it is associated with a profile");
+        });
+  }
+
+  @Transactional
+  public void cascadeDeleteById(UUID id) {
+    findByIdOrThrowNotFound(id);
+
+    log.info("Deleting association between profile and business function permission");
+    businessFunctionPermissionRepository.deleteProfileBusinessFunctionPermissionsByBusinessFunctionPermissionId(id);
+
+    log.info("Deleting business function permission");
+    businessFunctionPermissionRepository.deleteById(id);
   }
 }
