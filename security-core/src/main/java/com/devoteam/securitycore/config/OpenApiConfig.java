@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
     info = @Info(
-        title = "Access Control Service",
-        description = "This is the API documentation for the Access Control Service",
+        title = "Project Valhalla",
+        description = "This is the API documentation for Project Valhalla.",
         contact = @Contact(
             name = "Gabriela",
             url = "https://github.com/gabrieladekoning"
@@ -24,5 +24,4 @@ import org.springframework.context.annotation.Configuration;
     scheme = "bearer"
 )
 public class OpenApiConfig {
-
 }
