@@ -6,6 +6,7 @@ import com.devoteam.accesscontrolservice.dto.ApplicationUserReadResponse;
 import com.devoteam.accesscontrolservice.mapper.UserMapper;
 import com.devoteam.accesscontrolservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,8 @@ public class UserController {
   }
 
   @GetMapping
-  @Operation(summary = "Retrieve a paginated list of users through searching by first name, last name or email")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Retrieve a paginated list of users through searching by first name, last name or email")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'user', 'read')")
   public ResponseEntity<Page<ApplicationUserReadResponse>> listAllByFirstNameOrLastNameOrEmail(
       @RequestParam(value = "firstName", required = false) String firstName,

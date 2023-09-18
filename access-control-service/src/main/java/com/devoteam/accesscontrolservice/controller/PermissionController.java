@@ -52,7 +52,8 @@ public class PermissionController {
   }
 
   @GetMapping
-  @Operation(summary = "Retrieve a paginated list of all permissions")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Retrieve a paginated list of all permissions")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
   public ResponseEntity<Page<PermissionReadResponse>> listAll(Pageable pageable) {
     var permissions = permissionService.listAll(pageable);
@@ -63,7 +64,8 @@ public class PermissionController {
   }
 
   @GetMapping("/{id}")
-  @Operation(summary = "Find permission by ID")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Find permission by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'read')")
   public ResponseEntity<PermissionReadResponse> findById(@PathVariable String id) {
     var permission = permissionService.findByIdOrThrowNotFound(UUID.fromString(id));
@@ -74,7 +76,8 @@ public class PermissionController {
   }
 
   @PutMapping
-  @Operation(summary = "Update permission")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Update permission")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'update')")
   public ResponseEntity<Void> updateById(@Valid @RequestBody PermissionUpdateRequest updateRequest) {
     var permissionToUpdate = permissionMapper.mapToPermission(updateRequest);
@@ -85,7 +88,8 @@ public class PermissionController {
   }
 
   @DeleteMapping("/{id}")
-  @Operation(summary = "Delete permission by ID")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Delete permission by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'delete')")
   public ResponseEntity<Void> deleteById(@PathVariable String id) {
     permissionService.deleteById(UUID.fromString(id));
@@ -95,7 +99,8 @@ public class PermissionController {
   }
 
   @DeleteMapping("/{id}/cascade")
-  @Operation(summary = "Cascade delete permission by ID")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Cascade delete permission by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'permission', 'delete')")
   public ResponseEntity<Void> cascadeDeleteById(@PathVariable String id) {
     permissionService.cascadeDeleteById(UUID.fromString(id));

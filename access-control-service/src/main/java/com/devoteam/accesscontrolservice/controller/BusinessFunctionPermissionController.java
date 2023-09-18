@@ -55,7 +55,8 @@ public class BusinessFunctionPermissionController {
   }
 
   @GetMapping
-  @Operation(summary = "Retrieve a paginated list of business function permissions by application name")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Retrieve a paginated list of business function permissions by application name")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'read')")
   public ResponseEntity<Page<BusinessFunctionPermissionReadResponse>> listAllByApplicationName(
       @RequestParam(value = "applicationName") String applicationName, Pageable pageable) {
@@ -69,7 +70,8 @@ public class BusinessFunctionPermissionController {
   }
 
   @DeleteMapping("/{id}")
-  @Operation(summary = "Delete business function permission by ID")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Delete business function permission by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'delete')")
   public ResponseEntity<Void> deleteById(@PathVariable String id) {
     businessFunctionPermissionService.deleteById(UUID.fromString(id));
@@ -79,7 +81,8 @@ public class BusinessFunctionPermissionController {
   }
 
   @DeleteMapping("/{id}/cascade")
-  @Operation(summary = "Cascade delete business function permission by ID")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Cascade delete business function permission by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'delete')")
   public ResponseEntity<Void> cascadeDeleteById(@PathVariable String id) {
     businessFunctionPermissionService.cascadeDeleteById(UUID.fromString(id));

@@ -51,7 +51,8 @@ public class ProfileController {
   }
 
   @GetMapping
-  @Operation(summary = "Retrieve a paginated list of all profiles")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Retrieve a paginated list of all profiles")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
   public ResponseEntity<Page<ProfileReadResponse>> listAll(Pageable pageable) {
     var profiles = profileService.listAll(pageable);
@@ -62,7 +63,8 @@ public class ProfileController {
   }
 
   @GetMapping("/{id}")
-  @Operation(summary = "Find profile by ID")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Find profile by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'read')")
   public ResponseEntity<ProfileReadResponse> findById(@PathVariable String id) {
     var profile = profileService.findByIdOrThrowNotFound(UUID.fromString(id));
@@ -73,7 +75,8 @@ public class ProfileController {
   }
 
   @PutMapping
-  @Operation(summary = "Update profile")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Update profile")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'update')")
   public ResponseEntity<Void> updateById(@Valid @RequestBody ProfileUpdateRequest updateRequest) {
     var profileToUpdate = profileMapper.mapToProfile(updateRequest);
@@ -84,7 +87,8 @@ public class ProfileController {
   }
 
   @DeleteMapping("/{id}")
-  @Operation(summary = "Delete profile by ID")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Delete profile by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'delete')")
   public ResponseEntity<Void> deleteById(@PathVariable String id) {
     profileService.deleteById(UUID.fromString(id));
@@ -94,7 +98,8 @@ public class ProfileController {
   }
 
   @DeleteMapping("/{id}/cascade")
-  @Operation(summary = "Cascade delete profile by ID")
+  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
+      summary = "Cascade delete profile by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile', 'delete')")
   public ResponseEntity<Void> cascadeDeleteById(@PathVariable String id) {
     profileService.cascadeDeleteById(UUID.fromString(id));
