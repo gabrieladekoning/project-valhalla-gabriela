@@ -12,10 +12,16 @@ public class GatewayRoutesConfig {
   @Bean
   public RouteLocator routeLocator(RouteLocatorBuilder builder) {
     return builder.routes()
-        .route(r -> r.path("/access-control-service/v3/api-docs")
+        .route("access-control-service", r -> r.path("/access-control-service/**")
+            .filters(f -> f.stripPrefix(1))
+            .uri("lb://access-control-service"))
+        .route("demo", r -> r.path("/demo/**")
+            .filters(f -> f.stripPrefix(1))
+            .uri("lb://demo"))
+        .route("api-docs-access-control", r -> r.path("/access-control-service/v3/api-docs")
             .and().method(HttpMethod.GET)
             .uri("lb://access-control-service"))
-        .route(r -> r.path("/demo/v3/api-docs")
+        .route("api-docs-demo", r -> r.path("/demo/v3/api-docs")
             .and().method(HttpMethod.GET)
             .uri("lb://demo"))
         .build();

@@ -20,19 +20,6 @@ spring:
       discovery:
         locator:
           enabled: true
-      routes:
-        - id: access-control-service
-          uri: lb://access-control-service
-          predicates:
-            - Path=/access-control-service/**
-          filters:
-            - StripPrefix=1
-        - id: demo
-          uri: lb://demo
-          predicates:
-            - Path=/demo/**
-          filters:
-            - StripPrefix=1
 
 springdoc:
   enable-native-support: true
