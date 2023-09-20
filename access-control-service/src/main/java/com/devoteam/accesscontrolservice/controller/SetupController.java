@@ -3,7 +3,6 @@ package com.devoteam.accesscontrolservice.controller;
 import com.devoteam.accesscontrolservice.dto.SetupAllRequest;
 import com.devoteam.accesscontrolservice.service.SetupService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +25,8 @@ public class SetupController {
   private final SetupService setupService;
 
   @PostMapping
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary =
-          "Endpoint to setup business function, permission, profile, association between business function and permission, "
-              +
-              "association between profile and business function permission according to upsert approach")
+  @Operation(summary = "Endpoint to setup business function, permission, profile, association between business function"
+      + " and permission, association between profile and business function permission according to upsert approach")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'setup-all', 'create')")
   public ResponseEntity<Void> setupAll(@Valid @RequestBody SetupAllRequest setupAllRequest) {
     setupService.setupAll(setupAllRequest);

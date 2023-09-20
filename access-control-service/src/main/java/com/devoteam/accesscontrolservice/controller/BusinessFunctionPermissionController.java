@@ -6,7 +6,6 @@ import com.devoteam.accesscontrolservice.dto.BusinessFunctionPermissionReadRespo
 import com.devoteam.accesscontrolservice.mapper.BusinessFunctionPermissionMapper;
 import com.devoteam.accesscontrolservice.service.BusinessFunctionPermissionService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +36,7 @@ public class BusinessFunctionPermissionController {
   private final BusinessFunctionPermissionMapper businessFunctionPermissionMapper;
 
   @PostMapping
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Create an association between business function and permission")
+  @Operation(summary = "Create an association between business function and permission")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'create')")
   public ResponseEntity<BusinessFunctionPermissionCreationResponse> save(
       @Valid @RequestBody BusinessFunctionPermissionCreationRequest creationRequest) {
@@ -55,8 +53,7 @@ public class BusinessFunctionPermissionController {
   }
 
   @GetMapping
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Retrieve a paginated list of business function permissions by application name")
+  @Operation(summary = "Retrieve a paginated list of business function permissions by application name")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'read')")
   public ResponseEntity<Page<BusinessFunctionPermissionReadResponse>> listAllByApplicationName(
       @RequestParam(value = "applicationName") String applicationName, Pageable pageable) {
@@ -70,8 +67,7 @@ public class BusinessFunctionPermissionController {
   }
 
   @DeleteMapping("/{id}")
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Delete business function permission by ID")
+  @Operation(summary = "Delete business function permission by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'delete')")
   public ResponseEntity<Void> deleteById(@PathVariable String id) {
     businessFunctionPermissionService.deleteById(UUID.fromString(id));
@@ -81,8 +77,7 @@ public class BusinessFunctionPermissionController {
   }
 
   @DeleteMapping("/{id}/cascade")
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Cascade delete business function permission by ID")
+  @Operation(summary = "Cascade delete business function permission by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'delete')")
   public ResponseEntity<Void> cascadeDeleteById(@PathVariable String id) {
     businessFunctionPermissionService.cascadeDeleteById(UUID.fromString(id));

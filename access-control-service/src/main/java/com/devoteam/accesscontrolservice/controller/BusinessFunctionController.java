@@ -7,7 +7,6 @@ import com.devoteam.accesscontrolservice.dto.BusinessFunctionUpdateRequest;
 import com.devoteam.accesscontrolservice.mapper.BusinessFunctionMapper;
 import com.devoteam.accesscontrolservice.service.BusinessFunctionService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +37,7 @@ public class BusinessFunctionController {
   private final BusinessFunctionMapper businessFunctionMapper;
 
   @PostMapping
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Create a business function")
+  @Operation(summary = "Create a business function")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function', 'create')")
   public ResponseEntity<BusinessFunctionCreationResponse> save(
       @Valid @RequestBody BusinessFunctionCreationRequest creationRequest) {

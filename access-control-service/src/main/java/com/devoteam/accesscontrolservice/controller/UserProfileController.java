@@ -53,8 +53,7 @@ public class UserProfileController {
   }
 
   @GetMapping
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Retrieve a paginated list of all users categorized by profile")
+  @Operation(summary = "Retrieve a paginated list of all users categorized by profile")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'user-profile', 'read')")
   public ResponseEntity<Page<ProfileWithUsersReadResponse>> listAll(Pageable pageable) {
     log.info("Fetching all profiles with associated users");
@@ -78,8 +77,7 @@ public class UserProfileController {
   }
 
   @DeleteMapping("/{id}")
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Delete user profile by ID")
+  @Operation(summary = "Delete user profile by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'user-profile', 'delete')")
   public ResponseEntity<Void> deleteById(@PathVariable String id) {
     userProfileService.deleteById(UUID.fromString(id));

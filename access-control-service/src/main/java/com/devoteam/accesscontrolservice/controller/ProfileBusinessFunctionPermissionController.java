@@ -49,8 +49,7 @@ public class ProfileBusinessFunctionPermissionController {
   }
 
   @GetMapping
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Retrieve a paginated list of profile business function permissions by profile name")
+  @Operation(summary = "Retrieve a paginated list of profile business function permissions by profile name")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile-business-function-permission', 'read')")
   public ResponseEntity<Page<ProfileBusinessFunctionPermissionReadResponse>> listAllByProfileName(
       @NotBlank @RequestParam(value = "profileName") String profileName, Pageable pageable) {
@@ -64,8 +63,7 @@ public class ProfileBusinessFunctionPermissionController {
   }
 
   @DeleteMapping("/{id}")
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Delete Profile Business Function Permission by ID")
+  @Operation(summary = "Delete Profile Business Function Permission by ID")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'profile-business-function-permission', 'delete')")
   public ResponseEntity<Void> deleteById(@PathVariable String id) {
     profileBusinessFunctionPermissionService.deleteById(UUID.fromString(id));
