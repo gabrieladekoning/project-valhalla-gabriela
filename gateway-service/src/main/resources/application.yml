@@ -6,7 +6,13 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
+logging:
+  level:
+    org.springframework: DEBUG
+
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: gateway-service
   cloud:
@@ -14,10 +20,19 @@ spring:
       discovery:
         locator:
           enabled: true
-      routes:
-        - id: access-control-service
-          uri: lb://access-control-service
-          predicates:
-            - Path=/access-control-service/**
-          filters:
-            - StripPrefix=1
+
+springdoc:
+  enable-native-support: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+      - url: /access-control-service/v3/api-docs
+        name: Access Control Service
+      - url: /demo/v3/api-docs
+        name: Demo Service

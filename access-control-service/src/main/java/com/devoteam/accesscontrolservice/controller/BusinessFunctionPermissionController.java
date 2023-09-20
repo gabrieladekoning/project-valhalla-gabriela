@@ -6,7 +6,6 @@ import com.devoteam.accesscontrolservice.dto.BusinessFunctionPermissionReadRespo
 import com.devoteam.accesscontrolservice.mapper.BusinessFunctionPermissionMapper;
 import com.devoteam.accesscontrolservice.service.BusinessFunctionPermissionService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +36,7 @@ public class BusinessFunctionPermissionController {
   private final BusinessFunctionPermissionMapper businessFunctionPermissionMapper;
 
   @PostMapping
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Create an association between business function and permission")
+  @Operation(summary = "Create an association between business function and permission")
   @PreAuthorize("@checkPermissionService.isAccessAllowed('access-control-service', 'business-function-permission', 'create')")
   public ResponseEntity<BusinessFunctionPermissionCreationResponse> save(
       @Valid @RequestBody BusinessFunctionPermissionCreationRequest creationRequest) {

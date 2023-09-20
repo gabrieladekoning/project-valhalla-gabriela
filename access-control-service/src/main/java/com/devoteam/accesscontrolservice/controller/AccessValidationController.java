@@ -2,7 +2,6 @@ package com.devoteam.accesscontrolservice.controller;
 
 import com.devoteam.accesscontrolservice.service.AccessValidationService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +23,7 @@ public class AccessValidationController {
   private final AccessValidationService accessValidationService;
 
   @GetMapping("/validate")
-  @Operation(security = {@SecurityRequirement(name = "bearerAuth")},
-      summary = "Check if user has permission to access a specific resource")
+  @Operation(summary = "Check if user has permission to access a specific resource")
   public ResponseEntity<Void> checkAccess(@NotBlank @RequestParam String applicationName,
       @NotBlank @RequestParam String functionName,
       @NotBlank @RequestParam String permission) {

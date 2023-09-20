@@ -18,14 +18,16 @@ public class SecurityConfig {
       "/swagger-ui.html",
       "/v3/api-docs/**",
       "/swagger-ui/**",
+      "/access-control-service/v3/api-docs/**",
+      "/demo/v3/api-docs/**",
       "/v1/users"
   };
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
+        .cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
-        .formLogin(Customizer.withDefaults())
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated())
